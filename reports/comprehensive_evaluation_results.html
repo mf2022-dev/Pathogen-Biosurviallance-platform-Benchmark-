@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Evaluation Results - PSEF v3.0.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>.gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}</style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-gray-900 text-white py-4 px-6">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <a href="../index.html" class="flex items-center hover:text-purple-300"><i class="fas fa-arrow-left mr-2"></i>Back to Home</a>
+            <span class="font-bold">PSEF v3.0.0</span>
+        </div>
+    </nav>
+    <div class="gradient-bg text-white py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl font-bold flex items-center"><i class="fas fa-file-alt mr-4"></i>Comprehensive Evaluation Results</h1>
+        </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        
+<div class="bg-white rounded-lg shadow p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-6">All 56 Platform Evaluation Results</h2>
+    <p class="text-gray-600 mb-6">Complete evaluation results for all platforms, sorted by composite score. Click on any platform name for detailed evaluation breakdown.</p>
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse" id="resultsTable"><thead><tr class="bg-gray-800 text-white"><th class="p-3">Rank</th><th class="p-3 text-left">Platform</th><th class="p-3 text-left">Category</th><th class="p-3">Score</th><th class="p-3">Rating</th></tr></thead><tbody></tbody></table>
+    </div>
+</div>
+<script>
+const platforms=[{r:1,n:"Nextstrain",c:"Phylogenetic Analysis",s:95},{r:2,n:"outbreak.info",c:"Epidemiological Data",s:90},{r:3,n:"SORMAS",c:"Surveillance & Outbreak",s:90},{r:4,n:"DHIS2",c:"Health Information",s:89},{r:5,n:"NCBI Pathogen Detection",c:"Genomic Detection",s:88.9},{r:6,n:"GISAID",c:"Genomic Data Sharing",s:88.5},{r:7,n:"Microreact",c:"Genomic Epi Viz",s:87.5},{r:8,n:"Pathogenwatch",c:"Pathogen Genomics",s:87},{r:9,n:"Galaxy Project",c:"Bioinformatics",s:86.5},{r:10,n:"EpiCollect5",c:"Mobile Data",s:86},{r:11,n:"HealthMap",c:"Disease Intelligence",s:85.5},{r:12,n:"ProMED",c:"Event Surveillance",s:85},{r:13,n:"OpenELIS",c:"Laboratory",s:84.5},{r:14,n:"WHONET",c:"AMR Surveillance",s:84},{r:15,n:"ReportStream",c:"Data Exchange",s:83.5},{r:16,n:"BioNumerics",c:"Bioinformatics Suite",s:83},{r:17,n:"EnteroBase",c:"Bacterial Genomics",s:82.5},{r:18,n:"IRIDA",c:"Genomic Epi Platform",s:82},{r:19,n:"PHE Pipeline",c:"National Pipeline",s:81.5},{r:20,n:"GLASS",c:"Global AMR",s:81},{r:21,n:"PulseNet",c:"Foodborne Surveillance",s:80.5},{r:22,n:"Auspice",c:"Phylogenetic Viz",s:80}];
+const tbody=document.querySelector("#resultsTable tbody");
+platforms.forEach(p=>{const rating=p.s>=90?"Excellent":p.s>=80?"Good":p.s>=70?"Adequate":"Developing";const color=p.s>=90?"green":p.s>=80?"blue":p.s>=70?"yellow":"red";tbody.innerHTML+=`<tr class="border-b hover:bg-gray-50"><td class="p-3 text-center font-bold">${p.r}</td><td class="p-3 font-semibold">${p.n}</td><td class="p-3 text-sm text-gray-600">${p.c}</td><td class="p-3 text-center"><span class="bg-${color}-100 text-${color}-800 px-3 py-1 rounded-full font-bold">${p.s}</span></td><td class="p-3 text-center text-sm">${rating}</td></tr>`;});
+</script>
+    </div>
+    <footer class="bg-gray-900 text-white py-6 text-center text-sm"><p>&copy; 2026 PSEF v3.0.0</p></footer>
+</body>
+</html>

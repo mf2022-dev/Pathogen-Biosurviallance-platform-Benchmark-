@@ -1,0 +1,13 @@
+title: Pathogen Surveillance Evaluation Framework
+description: Comprehensive evaluation of 56 pathogen surveillance platforms
+baseurl: "/Pathogen-Biosurviallance-platform-Benchmark-"
+url: "https://mf2022-dev.github.io"
+theme: null
+markdown: kramdown
+exclude:
+  - scripts/
+  - "*.py"
+  - "*.sh"
+  - node_modules/
+include:
+  - _config.yml

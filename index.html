@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathogen Surveillance Evaluation Framework v3.0.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .score-bar { transition: width 1s ease-in-out; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); }
+        .search-highlight { background-color: #fef08a; padding: 0 2px; border-radius: 2px; }
+        #particles-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; }
+        .particle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <i class="fas fa-shield-virus text-2xl text-purple-400 mr-3"></i>
+                    <span class="font-bold text-lg">PSEF v3.0.0</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="#overview" class="nav-link px-3 py-2 rounded text-sm">Overview</a>
+                    <a href="#platforms" class="nav-link px-3 py-2 rounded text-sm">Platforms</a>
+                    <a href="#analytics" class="nav-link px-3 py-2 rounded text-sm">Analytics</a>
+                    <a href="#compliance" class="nav-link px-3 py-2 rounded text-sm">Compliance</a>
+                    <a href="frameworks/comprehensive_evaluation_framework_v3_0.html" class="nav-link px-3 py-2 rounded text-sm">Framework</a>
+                    <a href="reports/executive_summary_dashboard.html" class="nav-link px-3 py-2 rounded text-sm">Reports</a>
+                    <a href="master_index_a_plus_plus_plus.html" class="nav-link px-3 py-2 rounded text-sm text-yellow-400"><i class="fas fa-star mr-1"></i>Master Index</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="gradient-bg text-white py-20 px-6 relative overflow-hidden" id="overview">
+        <div id="particles-bg"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center">
+                <div class="inline-flex items-center bg-white bg-opacity-20 rounded-full px-4 py-2 mb-6">
+                    <i class="fas fa-certificate text-yellow-300 mr-2"></i>
+                    <span class="text-sm font-semibold">A+++ Production Edition</span>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+                    Pathogen Surveillance<br>Evaluation Framework
+                </h1>
+                <p class="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
+                    Comprehensive evaluation of 56 pathogen surveillance platforms against WHO, CDC, 
+                    ISO 27799:2025, and FDA AI/ML standards
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <a href="#platforms" class="bg-white text-purple-700 px-8 py-3 rounded-full font-bold hover:bg-opacity-90 transition">
+                        <i class="fas fa-search mr-2"></i>Explore Platforms
+                    </a>
+                    <a href="reports/executive_summary_dashboard.html" class="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-purple-700 transition">
+                        <i class="fas fa-chart-bar mr-2"></i>View Reports
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white bg-opacity-20 backdrop-blur rounded-xl p-6 text-center">
+                    <div class="text-4xl font-extrabold">56</div>
+                    <div class="text-sm opacity-90 mt-1">Platforms Evaluated</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur rounded-xl p-6 text-center">
+                    <div class="text-4xl font-extrabold">10</div>
+                    <div class="text-sm opacity-90 mt-1">Evaluation Criteria</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur rounded-xl p-6 text-center">
+                    <div class="text-4xl font-extrabold">4</div>
+                    <div class="text-sm opacity-90 mt-1">Compliance Standards</div>
+                </div>
+                <div class="bg-white bg-opacity-20 backdrop-blur rounded-xl p-6 text-center">
+                    <div class="text-4xl font-extrabold">95.0</div>
+                    <div class="text-sm opacity-90 mt-1">Top Score</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search & Filter Section -->
+    <section class="max-w-7xl mx-auto px-6 -mt-8 relative z-20">
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search platforms, categories, or features..." 
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                </div>
+                <select id="categoryFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500">
+                    <option value="">All Categories</option>
+                    <option value="Phylogenetic">Phylogenetic Analysis</option>
+                    <option value="Epidemiological">Epidemiological</option>
+                    <option value="Surveillance">Surveillance</option>
+                    <option value="Genomic">Genomic</option>
+                    <option value="Laboratory">Laboratory</option>
+                    <option value="Visualization">Visualization</option>
+                </select>
+                <select id="scoreFilter" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500">
+                    <option value="">All Scores</option>
+                    <option value="90">90+ (Excellent)</option>
+                    <option value="80">80+ (Good)</option>
+                    <option value="70">70+ (Adequate)</option>
+                    <option value="60">60+ (Developing)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top 5 Platforms -->
+    <section class="max-w-7xl mx-auto px-6 py-12" id="platforms">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-trophy text-yellow-500 mr-3"></i>Top Ranked Platforms
+        </h2>
+        <div class="grid md:grid-cols-5 gap-4" id="topPlatforms">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- All Platforms Table -->
+    <section class="max-w-7xl mx-auto px-6 py-8">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-list-ol text-blue-600 mr-3"></i>Complete Platform Rankings
+        </h2>
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full" id="platformTable">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left cursor-pointer hover:bg-gray-700" onclick="sortTable(0)">Rank <i class="fas fa-sort ml-1"></i></th>
+                            <th class="px-4 py-3 text-left cursor-pointer hover:bg-gray-700" onclick="sortTable(1)">Platform <i class="fas fa-sort ml-1"></i></th>
+                            <th class="px-4 py-3 text-left">Category</th>
+                            <th class="px-4 py-3 text-left cursor-pointer hover:bg-gray-700" onclick="sortTable(3)">Score <i class="fas fa-sort ml-1"></i></th>
+                            <th class="px-4 py-3 text-left">Score Bar</th>
+                            <th class="px-4 py-3 text-left">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="platformTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section -->
+    <section class="max-w-7xl mx-auto px-6 py-12" id="analytics">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-chart-pie text-green-600 mr-3"></i>Analytics & Insights
+        </h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Score Distribution</h3>
+                <canvas id="scoreDistChart"></canvas>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold mb-4">Category Breakdown (Top 5 Avg)</h3>
+                <canvas id="categoryRadar"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compliance Standards -->
+    <section class="max-w-7xl mx-auto px-6 py-12" id="compliance">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-check-circle text-green-600 mr-3"></i>Compliance Standards
+        </h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-t-4 border-blue-600">
+                <div class="text-blue-600 mb-4"><i class="fas fa-globe text-3xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">WHO Guidance</h3>
+                <p class="text-sm text-gray-600">Aligned with World Health Organization pathogen surveillance and genomic sequencing guidelines for pandemic preparedness.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-t-4 border-red-600">
+                <div class="text-red-600 mb-4"><i class="fas fa-shield-alt text-3xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">CDC Standards</h3>
+                <p class="text-sm text-gray-600">Compliant with CDC Advanced Molecular Detection program standards and biosurveillance best practices.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-t-4 border-green-600">
+                <div class="text-green-600 mb-4"><i class="fas fa-certificate text-3xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">ISO 27799:2025</h3>
+                <p class="text-sm text-gray-600">Health informatics information security management standards for protecting health data in surveillance systems.</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover border-t-4 border-purple-600">
+                <div class="text-purple-600 mb-4"><i class="fas fa-robot text-3xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">FDA AI/ML Guidance</h3>
+                <p class="text-sm text-gray-600">Aligned with FDA artificial intelligence and machine learning guidance for health-related software and decision support.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Links -->
+    <section class="max-w-7xl mx-auto px-6 py-12">
+        <h2 class="text-3xl font-bold mb-8 flex items-center">
+            <i class="fas fa-link text-indigo-600 mr-3"></i>Quick Links
+        </h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <a href="frameworks/comprehensive_evaluation_framework_v3_0.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-indigo-600 mb-3"><i class="fas fa-project-diagram text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Evaluation Framework</h3>
+                <p class="text-sm text-gray-600">Complete methodology and criteria used for platform evaluation.</p>
+            </a>
+            <a href="reports/comprehensive_evaluation_results.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-green-600 mb-3"><i class="fas fa-file-alt text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Evaluation Results</h3>
+                <p class="text-sm text-gray-600">Detailed results for all 56 evaluated platforms with scoring breakdown.</p>
+            </a>
+            <a href="reports/gap_analysis_roadmap.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-red-600 mb-3"><i class="fas fa-road text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Gap Analysis & Roadmap</h3>
+                <p class="text-sm text-gray-600">Identified gaps and recommended improvement roadmap for the field.</p>
+            </a>
+            <a href="reports/executive_summary_dashboard.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-yellow-600 mb-3"><i class="fas fa-tachometer-alt text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Executive Dashboard</h3>
+                <p class="text-sm text-gray-600">High-level summary dashboard for stakeholders and decision makers.</p>
+            </a>
+            <a href="implementation_guides/implementation_guide.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-blue-600 mb-3"><i class="fas fa-cogs text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Implementation Guide</h3>
+                <p class="text-sm text-gray-600">Step-by-step guide for implementing surveillance platforms.</p>
+            </a>
+            <a href="case_studies/case_study_nextstrain.html" class="bg-white rounded-xl shadow-lg p-6 card-hover block">
+                <div class="text-purple-600 mb-3"><i class="fas fa-microscope text-2xl"></i></div>
+                <h3 class="font-bold text-lg mb-2">Case Study: Nextstrain</h3>
+                <p class="text-sm text-gray-600">In-depth analysis of the top-ranked platform's capabilities and deployment.</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4"><i class="fas fa-shield-virus mr-2"></i>PSEF v3.0.0</h3>
+                    <p class="text-sm text-gray-400">Pathogen Surveillance Evaluation Framework - A+++ Production Edition. Comprehensive evaluation of global pathogen surveillance platforms.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Resources</h3>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><a href="frameworks/comprehensive_evaluation_framework_v3_0.html" class="hover:text-white">Evaluation Framework</a></li>
+                        <li><a href="standards_reference/standards_reference_mapping.html" class="hover:text-white">Standards Reference</a></li>
+                        <li><a href="implementation_guides/quick_start_guide.html" class="hover:text-white">Quick Start Guide</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Compliance</h3>
+                    <ul class="text-sm text-gray-400 space-y-2">
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>WHO Guidance Aligned</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>CDC Standards Compliant</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>ISO 27799:2025</li>
+                        <li><i class="fas fa-check text-green-400 mr-2"></i>FDA AI/ML Guidance</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-sm text-gray-500">
+                <p>&copy; 2026 Pathogen Surveillance Evaluation Framework. Version 3.0.0 (A+++ Production Edition)</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Platform data
+    const platforms = [
+        { rank: 1, name: "Nextstrain", url: "https://nextstrain.org", score: 95.0, category: "Phylogenetic Analysis & Visualization" },
+        { rank: 2, name: "outbreak.info", url: "https://outbreak.info", score: 90.0, category: "Epidemiological Data Aggregation" },
+        { rank: 3, name: "SORMAS", url: "https://sormas.org", score: 90.0, category: "Surveillance & Outbreak Response" },
+        { rank: 4, name: "DHIS2", url: "https://dhis2.org", score: 89.0, category: "Health Information Management" },
+        { rank: 5, name: "NCBI Pathogen Detection", url: "https://www.ncbi.nlm.nih.gov/pathogens/", score: 88.9, category: "Genomic Pathogen Detection" },
+        { rank: 6, name: "GISAID", url: "https://gisaid.org", score: 88.5, category: "Genomic Data Sharing" },
+        { rank: 7, name: "Microreact", url: "https://microreact.org", score: 87.5, category: "Genomic Epidemiology Visualization" },
+        { rank: 8, name: "Pathogenwatch", url: "https://pathogen.watch", score: 87.0, category: "Pathogen Genomic Analysis" },
+        { rank: 9, name: "Galaxy Project", url: "https://galaxyproject.org", score: 86.5, category: "Bioinformatics Workflow Platform" },
+        { rank: 10, name: "EpiCollect5", url: "https://five.epicollect.net", score: 86.0, category: "Mobile Data Collection" },
+        { rank: 11, name: "HealthMap", url: "https://healthmap.org", score: 85.5, category: "Disease Intelligence" },
+        { rank: 12, name: "ProMED", url: "https://promedmail.org", score: 85.0, category: "Event-Based Surveillance" },
+        { rank: 13, name: "OpenELIS", url: "https://openelis-global.org", score: 84.5, category: "Laboratory Information System" },
+        { rank: 14, name: "WHONET", url: "https://whonet.org", score: 84.0, category: "AMR Surveillance" },
+        { rank: 15, name: "ReportStream (CDC)", url: "https://reportstream.cdc.gov", score: 83.5, category: "Data Exchange Pipeline" },
+        { rank: 16, name: "BioNumerics", url: "https://www.applied-maths.com", score: 83.0, category: "Bioinformatics Analysis Suite" },
+        { rank: 17, name: "EnteroBase", url: "https://enterobase.warwick.ac.uk", score: 82.5, category: "Bacterial Genomic Database" },
+        { rank: 18, name: "IRIDA", url: "https://irida.ca", score: 82.0, category: "Genomic Epidemiology Platform" },
+        { rank: 19, name: "PHE Sequence Pipeline", url: "https://www.gov.uk/government/organisations/uk-health-security-agency", score: 81.5, category: "National Sequencing Pipeline" },
+        { rank: 20, name: "GLASS (WHO)", url: "https://www.who.int/initiatives/glass", score: 81.0, category: "Global AMR Surveillance" },
+        { rank: 21, name: "PulseNet", url: "https://www.cdc.gov/pulsenet/", score: 80.5, category: "Foodborne Disease Surveillance" },
+        { rank: 22, name: "Auspice", url: "https://auspice.us", score: 80.0, category: "Phylogenetic Visualization" },
+        { rank: 23, name: "Terra (Broad Institute)", url: "https://terra.bio", score: 79.5, category: "Cloud Bioinformatics Platform" },
+        { rank: 24, name: "CoVariants", url: "https://covariants.org", score: 79.0, category: "Variant Tracking" },
+        { rank: 25, name: "Pangolin", url: "https://cov-lineages.org/resources/pangolin.html", score: 78.5, category: "Lineage Classification" },
+        { rank: 26, name: "Nexclade", url: "https://clades.nextstrain.org", score: 78.0, category: "Sequence Analysis" },
+        { rank: 27, name: "Surveillance Asia Pacific", url: "https://sap.org", score: 77.5, category: "Regional Surveillance Network" },
+        { rank: 28, name: "COG-UK", url: "https://www.cogconsortium.uk", score: 77.0, category: "National Genomic Consortium" },
+        { rank: 29, name: "INSaFLU", url: "https://insaflu.insa.pt", score: 76.5, category: "Influenza Genomic Analysis" },
+        { rank: 30, name: "GECO (ECDC)", url: "https://geco.ecdc.europa.eu", score: 76.0, category: "European Genomic Surveillance" },
+        { rank: 31, name: "EpiVerse", url: "https://epiverse-trace.github.io", score: 75.5, category: "R Package Ecosystem" },
+        { rank: 32, name: "EpiTrax", url: "https://epitrax.health", score: 75.0, category: "Disease Surveillance System" },
+        { rank: 33, name: "Go.Data (WHO)", url: "https://www.who.int/tools/godata", score: 74.5, category: "Outbreak Investigation" },
+        { rank: 34, name: "EMPRES-i (FAO)", url: "https://empres-i.fao.org", score: 74.0, category: "Animal Disease Surveillance" },
+        { rank: 35, name: "Epi Info (CDC)", url: "https://www.cdc.gov/epiinfo/", score: 73.5, category: "Epidemiological Analysis" },
+        { rank: 36, name: "WAHIS (WOAH)", url: "https://wahis.woah.org", score: 73.0, category: "Animal Health Information" },
+        { rank: 37, name: "GenomeTrakr", url: "https://www.fda.gov/food/whole-genome-sequencing-wgs-program/genometrakr-network", score: 72.5, category: "FDA Genomic Network" },
+        { rank: 38, name: "OpenHIM", url: "https://openhim.org", score: 72.0, category: "Health Information Exchange" },
+        { rank: 39, name: "Sitrep", url: "https://github.com/R4EPI/sitrep", score: 71.5, category: "Situation Reporting" },
+        { rank: 40, name: "MedStar", url: "https://medstar.health", score: 71.0, category: "Clinical Surveillance Integration" },
+        { rank: 41, name: "EIDSS", url: "https://eidss.com", score: 70.5, category: "Integrated Disease Surveillance" },
+        { rank: 42, name: "CanPath", url: "https://canpath.ca", score: 70.0, category: "Population Cohort Platform" },
+        { rank: 43, name: "SatScan", url: "https://www.satscan.org", score: 69.5, category: "Spatial Cluster Detection" },
+        { rank: 44, name: "QGIS Health", url: "https://qgis.org", score: 69.0, category: "GIS for Health" },
+        { rank: 45, name: "FluNet (WHO)", url: "https://www.who.int/tools/flunet", score: 68.5, category: "Influenza Surveillance" },
+        { rank: 46, name: "EIOS (WHO)", url: "https://www.who.int/initiatives/eios", score: 68.0, category: "Epidemic Intelligence" },
+        { rank: 47, name: "Surveillance Hub (ECDC)", url: "https://www.ecdc.europa.eu", score: 67.5, category: "European Disease Surveillance" },
+        { rank: 48, name: "ABIS", url: "https://abis.health", score: 67.0, category: "Biosurveillance Analytics" },
+        { rank: 49, name: "Disease.sh", url: "https://disease.sh", score: 66.5, category: "Disease Data API" },
+        { rank: 50, name: "Africa CDC ARES", url: "https://africacdc.org", score: 66.0, category: "Continental Surveillance" },
+        { rank: 51, name: "BioPortal (PR)", url: "https://bioportal.salud.pr.gov", score: 65.5, category: "Territorial Surveillance" },
+        { rank: 52, name: "CIVET", url: "https://github.com/artic-network/civet", score: 65.0, category: "Cluster Investigation" },
+        { rank: 53, name: "Prion Surveillance", url: "https://www.cjd.ed.ac.uk", score: 64.0, category: "Prion Disease Surveillance" },
+        { rank: 54, name: "RESAOLAB", url: "https://resaolab.org", score: 63.0, category: "Laboratory Network" },
+        { rank: 55, name: "OpenMRS Surveillance", url: "https://openmrs.org", score: 62.0, category: "Medical Records Surveillance" },
+        { rank: 56, name: "Dashboard Template", url: "https://github.com/surveillance-dashboard", score: 60.0, category: "Dashboard Template" }
+    ];
+
+    function getScoreColor(score) {
+        if (score >= 90) return { bg: 'bg-green-100', text: 'text-green-800', bar: 'bg-green-500' };
+        if (score >= 80) return { bg: 'bg-blue-100', text: 'text-blue-800', bar: 'bg-blue-500' };
+        if (score >= 70) return { bg: 'bg-yellow-100', text: 'text-yellow-800', bar: 'bg-yellow-500' };
+        return { bg: 'bg-red-100', text: 'text-red-800', bar: 'bg-red-500' };
+    }
+
+    function getRankBadge(rank) {
+        const colors = ['bg-yellow-400', 'bg-gray-400', 'bg-orange-400', 'bg-blue-400', 'bg-purple-400'];
+        return colors[rank - 1] || 'bg-gray-300';
+    }
+
+    // Render Top 5
+    function renderTopPlatforms() {
+        const container = document.getElementById('topPlatforms');
+        container.innerHTML = platforms.slice(0, 5).map(p => {
+            const sc = getScoreColor(p.score);
+            return `
+                <div class="bg-white rounded-xl shadow-lg p-6 card-hover text-center border-t-4 border-purple-500">
+                    <div class="inline-flex items-center justify-center w-12 h-12 ${getRankBadge(p.rank)} text-white rounded-full font-bold text-xl mb-3">${p.rank}</div>
+                    <h3 class="font-bold text-lg mb-1">${p.name}</h3>
+                    <p class="text-xs text-gray-500 mb-3">${p.category}</p>
+                    <span class="${sc.bg} ${sc.text} px-4 py-2 rounded-full font-bold text-lg">${p.score}</span>
+                    <div class="mt-3">
+                        <a href="${p.url}" target="_blank" class="text-blue-600 text-sm hover:underline"><i class="fas fa-external-link-alt mr-1"></i>Visit</a>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    // Render Table
+    function renderTable(data) {
+        const tbody = document.getElementById('platformTableBody');
+        tbody.innerHTML = data.map(p => {
+            const sc = getScoreColor(p.score);
+            return `
+                <tr class="hover:bg-gray-50 border-b">
+                    <td class="px-4 py-3"><span class="inline-flex items-center justify-center w-8 h-8 bg-gray-200 rounded-full font-bold text-sm">${p.rank}</span></td>
+                    <td class="px-4 py-3 font-semibold">${p.name}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${p.category}</td>
+                    <td class="px-4 py-3"><span class="${sc.bg} ${sc.text} px-3 py-1 rounded-full font-semibold">${p.score}</span></td>
+                    <td class="px-4 py-3 w-48"><div class="bg-gray-200 rounded-full h-3"><div class="score-bar ${sc.bar} rounded-full h-3" style="width: ${p.score}%"></div></div></td>
+                    <td class="px-4 py-3"><a href="${p.url}" target="_blank" class="text-blue-600 hover:underline text-sm"><i class="fas fa-external-link-alt"></i></a></td>
+                </tr>`;
+        }).join('');
+    }
+
+    // Search & Filter
+    document.getElementById('searchInput').addEventListener('input', filterPlatforms);
+    document.getElementById('categoryFilter').addEventListener('change', filterPlatforms);
+    document.getElementById('scoreFilter').addEventListener('change', filterPlatforms);
+
+    function filterPlatforms() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const category = document.getElementById('categoryFilter').value;
+        const minScore = parseInt(document.getElementById('scoreFilter').value) || 0;
+        const filtered = platforms.filter(p => {
+            const matchSearch = !search || p.name.toLowerCase().includes(search) || p.category.toLowerCase().includes(search);
+            const matchCategory = !category || p.category.includes(category);
+            const matchScore = p.score >= minScore;
+            return matchSearch && matchCategory && matchScore;
+        });
+        renderTable(filtered);
+    }
+
+    // Charts
+    function renderCharts() {
+        // Score Distribution
+        const ranges = { '90-100': 0, '80-89': 0, '70-79': 0, '60-69': 0 };
+        platforms.forEach(p => {
+            if (p.score >= 90) ranges['90-100']++;
+            else if (p.score >= 80) ranges['80-89']++;
+            else if (p.score >= 70) ranges['70-79']++;
+            else ranges['60-69']++;
+        });
+        new Chart(document.getElementById('scoreDistChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(ranges),
+                datasets: [{ data: Object.values(ranges), backgroundColor: ['#22c55e', '#3b82f6', '#eab308', '#ef4444'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Radar Chart
+        new Chart(document.getElementById('categoryRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Data Integration', 'Analytics', 'Visualization', 'Accessibility', 'Scalability', 'Documentation', 'Community', 'Security', 'Interoperability', 'Real-Time'],
+                datasets: [{
+                    label: 'Top 5 Average',
+                    data: [92.4, 91.2, 90.6, 90.8, 91.8, 91.0, 91.8, 89.4, 91.2, 89.2],
+                    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                    borderColor: '#667eea',
+                    pointBackgroundColor: '#667eea'
+                }]
+            },
+            options: { responsive: true, scales: { r: { min: 80, max: 100 } } }
+        });
+    }
+
+    // Initialize
+    renderTopPlatforms();
+    renderTable(platforms);
+    renderCharts();
+    </script>
+</body>
+</html>

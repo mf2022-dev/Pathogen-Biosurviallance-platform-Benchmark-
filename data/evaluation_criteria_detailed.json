@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "version": "3.0.0",
+    "last_updated": "2026-03-13",
+    "framework_name": "Pathogen Surveillance Evaluation Framework",
+    "compliance_standards": ["WHO Guidance", "CDC Standards", "ISO 27799:2025", "FDA AI/ML Guidance"]
+  },
+  "categories": [
+    {
+      "id": "data_integration",
+      "name": "Data Integration",
+      "weight": 0.12,
+      "description": "Ability to ingest, harmonize, and manage diverse data sources including genomic, epidemiological, clinical, and environmental data.",
+      "subcriteria": [
+        { "name": "Multi-source data ingestion", "description": "Support for diverse data formats and sources" },
+        { "name": "Data harmonization", "description": "Ability to standardize and reconcile disparate datasets" },
+        { "name": "API availability", "description": "Programmatic data access and exchange capabilities" },
+        { "name": "Real-time data feeds", "description": "Support for streaming and real-time data ingestion" },
+        { "name": "Data quality management", "description": "Automated quality checks and data validation" }
+      ]
+    },
+    {
+      "id": "analytics_capability",
+      "name": "Analytics Capability",
+      "weight": 0.12,
+      "description": "Sophistication and breadth of analytical tools for pathogen characterization, outbreak detection, and trend analysis.",
+      "subcriteria": [
+        { "name": "Phylogenetic analysis", "description": "Evolutionary relationship inference capabilities" },
+        { "name": "Statistical analysis", "description": "Built-in statistical modeling and testing" },
+        { "name": "Machine learning integration", "description": "AI/ML-powered prediction and classification" },
+        { "name": "Outbreak detection algorithms", "description": "Automated anomaly and cluster detection" },
+        { "name": "AMR prediction", "description": "Antimicrobial resistance gene detection and prediction" }
+      ]
+    },
+    {
+      "id": "visualization",
+      "name": "Visualization",
+      "weight": 0.10,
+      "description": "Quality and interactivity of data visualization tools for exploration, communication, and decision support.",
+      "subcriteria": [
+        { "name": "Interactive dashboards", "description": "Dynamic, filterable data presentations" },
+        { "name": "Phylogenetic trees", "description": "Interactive tree visualization capabilities" },
+        { "name": "Geographic mapping", "description": "Spatial data visualization and mapping" },
+        { "name": "Temporal analysis charts", "description": "Time-series and epidemic curve visualizations" },
+        { "name": "Export capabilities", "description": "Publication-quality figure export" }
+      ]
+    },
+    {
+      "id": "accessibility",
+      "name": "Accessibility",
+      "weight": 0.10,
+      "description": "Ease of use, deployment options, and availability across different contexts and user skill levels.",
+      "subcriteria": [
+        { "name": "Web-based interface", "description": "Browser-based access without installation" },
+        { "name": "Mobile compatibility", "description": "Responsive design and mobile app support" },
+        { "name": "Offline capability", "description": "Functionality without internet connectivity" },
+        { "name": "Multi-language support", "description": "Interface and documentation in multiple languages" },
+        { "name": "User training resources", "description": "Tutorials, documentation, and training programs" }
+      ]
+    },
+    {
+      "id": "scalability",
+      "name": "Scalability",
+      "weight": 0.10,
+      "description": "Ability to handle increasing data volumes, user loads, and geographic expansion.",
+      "subcriteria": [
+        { "name": "Data volume handling", "description": "Performance with large datasets" },
+        { "name": "Concurrent users", "description": "Multi-user access and performance" },
+        { "name": "Geographic distribution", "description": "Multi-region deployment capabilities" },
+        { "name": "Cloud deployment", "description": "Cloud-native or cloud-compatible architecture" },
+        { "name": "Horizontal scaling", "description": "Ability to add capacity dynamically" }
+      ]
+    },
+    {
+      "id": "documentation",
+      "name": "Documentation",
+      "weight": 0.08,
+      "description": "Completeness and quality of technical documentation, user guides, and developer resources.",
+      "subcriteria": [
+        { "name": "User guides", "description": "Comprehensive end-user documentation" },
+        { "name": "API documentation", "description": "Developer-facing API reference" },
+        { "name": "Deployment guides", "description": "Installation and configuration instructions" },
+        { "name": "Changelog maintenance", "description": "Version history and release notes" }
+      ]
+    },
+    {
+      "id": "community_support",
+      "name": "Community Support",
+      "weight": 0.08,
+      "description": "Strength of user community, developer ecosystem, and ongoing maintenance commitment.",
+      "subcriteria": [
+        { "name": "Active development", "description": "Regular updates and feature additions" },
+        { "name": "Community forums", "description": "Active discussion and support channels" },
+        { "name": "Contribution guidelines", "description": "Open-source contribution framework" },
+        { "name": "Institutional backing", "description": "Organizational support and funding" }
+      ]
+    },
+    {
+      "id": "security_compliance",
+      "name": "Security & Compliance",
+      "weight": 0.12,
+      "description": "Data security measures, privacy protections, and regulatory compliance capabilities.",
+      "subcriteria": [
+        { "name": "Data encryption", "description": "At-rest and in-transit encryption" },
+        { "name": "Access control", "description": "Role-based access and authentication" },
+        { "name": "Audit logging", "description": "Activity tracking and audit trails" },
+        { "name": "HIPAA/GDPR compliance", "description": "Regulatory framework compliance" },
+        { "name": "Data sovereignty", "description": "Geographic data storage controls" }
+      ]
+    },
+    {
+      "id": "interoperability",
+      "name": "Interoperability",
+      "weight": 0.10,
+      "description": "Support for data exchange standards and integration with external systems.",
+      "subcriteria": [
+        { "name": "HL7/FHIR support", "description": "Health data exchange standard compliance" },
+        { "name": "Standard file formats", "description": "Support for FASTA, VCF, CSV, JSON, etc." },
+        { "name": "API standards", "description": "RESTful API and GraphQL support" },
+        { "name": "Third-party integration", "description": "Plug-in and extension ecosystem" }
+      ]
+    },
+    {
+      "id": "real_time_capability",
+      "name": "Real-Time Capability",
+      "weight": 0.08,
+      "description": "Support for real-time data processing, alerting, and rapid response workflows.",
+      "subcriteria": [
+        { "name": "Streaming data support", "description": "Real-time data ingestion and processing" },
+        { "name": "Automated alerts", "description": "Threshold-based notification systems" },
+        { "name": "Rapid turnaround", "description": "Speed of data-to-insight pipeline" },
+        { "name": "Dashboard refresh", "description": "Live data update frequency" }
+      ]
+    }
+  ]
+}

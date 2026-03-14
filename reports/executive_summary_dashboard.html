@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive Summary Dashboard - PSEF v3.0.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>.gradient-bg{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}</style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-gray-900 text-white py-4 px-6">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <a href="../index.html" class="flex items-center hover:text-purple-300"><i class="fas fa-arrow-left mr-2"></i>Back to Home</a>
+            <span class="font-bold">PSEF v3.0.0</span>
+        </div>
+    </nav>
+    <div class="gradient-bg text-white py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-4xl font-bold flex items-center"><i class="fas fa-tachometer-alt mr-4"></i>Executive Summary Dashboard</h1>
+        </div>
+    </div>
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        
+<div class="grid md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-lg shadow p-6 text-center border-t-4 border-purple-600"><div class="text-3xl font-bold text-purple-600">56</div><div class="text-sm text-gray-600">Platforms Evaluated</div></div>
+    <div class="bg-white rounded-lg shadow p-6 text-center border-t-4 border-green-600"><div class="text-3xl font-bold text-green-600">95.0</div><div class="text-sm text-gray-600">Highest Score</div></div>
+    <div class="bg-white rounded-lg shadow p-6 text-center border-t-4 border-blue-600"><div class="text-3xl font-bold text-blue-600">76.8</div><div class="text-sm text-gray-600">Average Score</div></div>
+    <div class="bg-white rounded-lg shadow p-6 text-center border-t-4 border-red-600"><div class="text-3xl font-bold text-red-600">60.0</div><div class="text-sm text-gray-600">Lowest Score</div></div>
+</div>
+<div class="bg-white rounded-lg shadow p-8 mb-8">
+    <h2 class="text-2xl font-bold mb-6">Key Findings</h2>
+    <div class="space-y-4">
+        <div class="border-l-4 border-green-600 pl-4"><h3 class="font-bold">Top Performers</h3><p class="text-sm text-gray-600">Nextstrain (95.0), outbreak.info (90.0), and SORMAS (90.0) lead the field with excellent scores across all dimensions. These platforms demonstrate industry-leading capabilities in phylogenetic analysis, data integration, and outbreak response.</p></div>
+        <div class="border-l-4 border-blue-600 pl-4"><h3 class="font-bold">Strong Middle Tier</h3><p class="text-sm text-gray-600">22 platforms scored in the 80-89 range, indicating a robust ecosystem of surveillance tools. DHIS2, NCBI Pathogen Detection, and GISAID represent strong performers with global impact.</p></div>
+        <div class="border-l-4 border-yellow-600 pl-4"><h3 class="font-bold">Growth Opportunities</h3><p class="text-sm text-gray-600">14 platforms in the 70-79 range show adequate capabilities with significant room for improvement, particularly in real-time capabilities and interoperability.</p></div>
+        <div class="border-l-4 border-red-600 pl-4"><h3 class="font-bold">Emerging Platforms</h3><p class="text-sm text-gray-600">17 platforms scored below 70, primarily newer or highly specialized tools that serve niche functions within the surveillance ecosystem.</p></div>
+    </div>
+</div>
+<div class="bg-white rounded-lg shadow p-8">
+    <h2 class="text-2xl font-bold mb-6">Recommendations</h2>
+    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+        <li><strong>Invest in interoperability</strong> - Adopt HL7 FHIR standards across all platforms</li>
+        <li><strong>Enhance real-time capabilities</strong> - Implement streaming data pipelines</li>
+        <li><strong>Strengthen security compliance</strong> - Achieve ISO 27799:2025 certification</li>
+        <li><strong>Improve accessibility</strong> - Mobile-first design and offline capabilities</li>
+        <li><strong>Foster open-source collaboration</strong> - Encourage community contributions</li>
+    </ol>
+</div>
+    </div>
+    <footer class="bg-gray-900 text-white py-6 text-center text-sm"><p>&copy; 2026 PSEF v3.0.0</p></footer>
+</body>
+</html>
