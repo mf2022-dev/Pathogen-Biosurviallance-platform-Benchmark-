@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark Dashboard - Pathogen Surveillance Evaluation Framework v3.0.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --accent: #764ba2;
+            --success: #22c55e;
+            --warning: #eab308;
+            --danger: #ef4444;
+        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); }
+        .gradient-text { background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); }
+        .card { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04); transition: all 0.3s; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.08); }
+        .heatmap-cell { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.75rem; border-radius: 6px; transition: transform 0.15s; cursor: default; }
+        .heatmap-cell:hover { transform: scale(1.15); z-index: 10; position: relative; }
+        .tab-btn { transition: all 0.2s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { border-bottom-color: var(--primary); color: var(--primary); font-weight: 700; }
+        .tab-btn:hover:not(.active) { border-bottom-color: #e5e7eb; }
+        .compare-slot { min-height: 80px; border: 2px dashed #d1d5db; border-radius: 12px; transition: all 0.2s; }
+        .compare-slot.filled { border-style: solid; border-color: var(--primary); background: rgba(102,126,234,0.04); }
+        .compare-slot.dragover { border-color: var(--accent); background: rgba(118,75,162,0.08); }
+        .platform-chip { cursor: grab; transition: all 0.15s; user-select: none; }
+        .platform-chip:active { cursor: grabbing; transform: scale(0.95); }
+        .score-pill { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 0.8rem; }
+        .tier-excellent { background: #dcfce7; color: #166534; }
+        .tier-good { background: #dbeafe; color: #1e40af; }
+        .tier-adequate { background: #fef9c3; color: #854d0e; }
+        .tier-developing { background: #fee2e2; color: #991b1b; }
+        .scroll-x { overflow-x: auto; scrollbar-width: thin; }
+        .scroll-x::-webkit-scrollbar { height: 6px; }
+        .scroll-x::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(102,126,234,0.4); } 70% { box-shadow: 0 0 0 10px rgba(102,126,234,0); } 100% { box-shadow: 0 0 0 0 rgba(102,126,234,0); } }
+        .pulse-ring { animation: pulse-ring 2s infinite; }
+        .sticky-header th { position: sticky; top: 0; z-index: 10; }
+        #modalOverlay { transition: opacity 0.2s; }
+        #modalOverlay.hidden { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Navigation -->
+<nav class="bg-gray-900 text-white sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-14">
+            <a href="index.html" class="flex items-center hover:opacity-80 transition">
+                <i class="fas fa-shield-virus text-xl text-purple-400 mr-2"></i>
+                <span class="font-bold">PSEF v3.0.0</span>
+            </a>
+            <div class="hidden md:flex items-center space-x-1 text-sm">
+                <a href="index.html" class="px-3 py-2 rounded hover:bg-white/10 transition">Home</a>
+                <a href="benchmark.html" class="px-3 py-2 rounded bg-white/10 text-purple-300 font-semibold">Benchmark</a>
+                <a href="frameworks/comprehensive_evaluation_framework_v3_0.html" class="px-3 py-2 rounded hover:bg-white/10 transition">Framework</a>
+                <a href="reports/executive_summary_dashboard.html" class="px-3 py-2 rounded hover:bg-white/10 transition">Reports</a>
+                <a href="master_index_a_plus_plus_plus.html" class="px-3 py-2 rounded hover:bg-white/10 transition text-yellow-400"><i class="fas fa-star mr-1"></i>Index</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<header class="gradient-bg text-white py-16 px-6 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>
+    </div>
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <div class="inline-flex items-center bg-white/15 rounded-full px-3 py-1 text-xs font-semibold mb-4">
+                    <i class="fas fa-flask mr-1.5"></i> Interactive Benchmark Dashboard
+                </div>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-3 leading-tight">Platform Benchmark</h1>
+                <p class="text-lg opacity-90 max-w-xl">Compare, analyze, and benchmark 56 pathogen surveillance platforms across 10 evaluation dimensions with interactive visualizations.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-center flex-shrink-0">
+                <div class="bg-white/15 backdrop-blur rounded-xl px-5 py-4">
+                    <div class="text-3xl font-extrabold">56</div>
+                    <div class="text-xs opacity-80">Platforms</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur rounded-xl px-5 py-4">
+                    <div class="text-3xl font-extrabold">10</div>
+                    <div class="text-xs opacity-80">Criteria</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur rounded-xl px-5 py-4">
+                    <div class="text-3xl font-extrabold">560</div>
+                    <div class="text-xs opacity-80">Data Points</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur rounded-xl px-5 py-4">
+                    <div class="text-3xl font-extrabold">4</div>
+                    <div class="text-xs opacity-80">Standards</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Tabs -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="flex space-x-1 border-b border-gray-200 overflow-x-auto">
+        <button class="tab-btn active px-5 py-3 text-sm whitespace-nowrap" data-tab="overview">
+            <i class="fas fa-th-large mr-1.5"></i>Overview
+        </button>
+        <button class="tab-btn px-5 py-3 text-sm whitespace-nowrap" data-tab="heatmap">
+            <i class="fas fa-fire mr-1.5"></i>Heatmap
+        </button>
+        <button class="tab-btn px-5 py-3 text-sm whitespace-nowrap" data-tab="compare">
+            <i class="fas fa-exchange-alt mr-1.5"></i>Compare
+        </button>
+        <button class="tab-btn px-5 py-3 text-sm whitespace-nowrap" data-tab="rankings">
+            <i class="fas fa-trophy mr-1.5"></i>Full Rankings
+        </button>
+        <button class="tab-btn px-5 py-3 text-sm whitespace-nowrap" data-tab="analytics">
+            <i class="fas fa-chart-bar mr-1.5"></i>Analytics
+        </button>
+    </div>
+</div>
+
+<!-- Tab Content -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- ========== OVERVIEW TAB ========== -->
+    <section id="tab-overview" class="tab-content fade-in">
+        <!-- Tier Summary -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="card p-5 border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Excellent (90+)</p>
+                        <p class="text-3xl font-extrabold text-green-600 mt-1" id="tier-excellent-count">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center"><i class="fas fa-crown text-green-600 text-lg"></i></div>
+                </div>
+            </div>
+            <div class="card p-5 border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Good (80-89)</p>
+                        <p class="text-3xl font-extrabold text-blue-600 mt-1" id="tier-good-count">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><i class="fas fa-thumbs-up text-blue-600 text-lg"></i></div>
+                </div>
+            </div>
+            <div class="card p-5 border-l-4 border-yellow-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Adequate (70-79)</p>
+                        <p class="text-3xl font-extrabold text-yellow-600 mt-1" id="tier-adequate-count">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center"><i class="fas fa-minus-circle text-yellow-600 text-lg"></i></div>
+                </div>
+            </div>
+            <div class="card p-5 border-l-4 border-red-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Developing (&lt;70)</p>
+                        <p class="text-3xl font-extrabold text-red-600 mt-1" id="tier-developing-count">-</p>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><i class="fas fa-arrow-up text-red-600 text-lg"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-chart-pie text-purple-500 mr-2"></i>Score Distribution</h3>
+                <div style="height:280px; position:relative;"><canvas id="overviewDonut"></canvas></div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-chart-area text-indigo-500 mr-2"></i>Score Landscape</h3>
+                <div style="height:280px; position:relative;"><canvas id="overviewBar"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="card p-6 mb-8">
+            <h3 class="text-lg font-bold mb-5 flex items-center"><i class="fas fa-medal text-yellow-500 mr-2"></i>Top 10 Performers</h3>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4" id="topPerformers"></div>
+        </div>
+
+        <!-- Category Leaders -->
+        <div class="card p-6">
+            <h3 class="text-lg font-bold mb-5 flex items-center"><i class="fas fa-star text-orange-500 mr-2"></i>Category Leaders — Best Score Per Dimension</h3>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-3" id="categoryLeaders"></div>
+        </div>
+    </section>
+
+    <!-- ========== HEATMAP TAB ========== -->
+    <section id="tab-heatmap" class="tab-content hidden fade-in">
+        <div class="card p-6 mb-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-lg font-bold flex items-center"><i class="fas fa-fire text-orange-500 mr-2"></i>Score Heatmap — All Platforms × All Criteria</h3>
+                    <p class="text-sm text-gray-500 mt-1">Hover cells for details. Click a platform row to see its radar chart.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="heatmapTier" class="border rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-purple-400">
+                        <option value="all">All Tiers</option>
+                        <option value="90">Excellent (90+)</option>
+                        <option value="80">Good (80+)</option>
+                        <option value="70">Adequate (70+)</option>
+                        <option value="0">All Scores</option>
+                    </select>
+                    <div class="flex items-center gap-1 text-xs text-gray-400">
+                        <span class="w-4 h-4 rounded" style="background:#fee2e2"></span>60
+                        <span class="w-4 h-4 rounded" style="background:#fef9c3"></span>70
+                        <span class="w-4 h-4 rounded" style="background:#dbeafe"></span>80
+                        <span class="w-4 h-4 rounded" style="background:#dcfce7"></span>90+
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-x">
+                <table class="w-full text-xs" id="heatmapTable">
+                    <thead class="sticky-header"><tr id="heatmapHeader"></tr></thead>
+                    <tbody id="heatmapBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Radar for clicked row -->
+        <div class="card p-6 hidden" id="heatmapRadarCard">
+            <h3 class="text-lg font-bold mb-4" id="heatmapRadarTitle">Platform Radar</h3>
+            <div class="max-w-lg mx-auto" style="height:340px; position:relative;"><canvas id="heatmapRadar"></canvas></div>
+        </div>
+    </section>
+
+    <!-- ========== COMPARE TAB ========== -->
+    <section id="tab-compare" class="tab-content hidden fade-in">
+        <div class="card p-6 mb-6">
+            <h3 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-exchange-alt text-blue-500 mr-2"></i>Side-by-Side Comparison</h3>
+            <p class="text-sm text-gray-500 mb-5">Select 2–4 platforms to compare across all dimensions.</p>
+
+            <!-- Platform Selector -->
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Add Platform</label>
+                <div class="flex flex-wrap gap-2">
+                    <select id="compareSelect" class="border rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px] focus:ring-2 focus:ring-purple-400">
+                        <option value="">— Choose a platform —</option>
+                    </select>
+                    <button id="compareAddBtn" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition"><i class="fas fa-plus mr-1"></i>Add</button>
+                    <button id="compareClearBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-300 transition"><i class="fas fa-times mr-1"></i>Clear All</button>
+                </div>
+            </div>
+
+            <!-- Selected Pills -->
+            <div class="flex flex-wrap gap-2 mb-6" id="compareChips"></div>
+
+            <!-- Comparison Content -->
+            <div id="compareContent" class="hidden">
+                <!-- Radar -->
+                <div class="mb-8">
+                    <h4 class="font-bold text-sm text-gray-700 mb-3">Radar Overlay</h4>
+                    <div class="max-w-2xl mx-auto" style="height:380px; position:relative;"><canvas id="compareRadar"></canvas></div>
+                </div>
+
+                <!-- Score Table -->
+                <div class="scroll-x mb-8">
+                    <table class="w-full text-sm" id="compareTable">
+                        <thead id="compareTableHead"></thead>
+                        <tbody id="compareTableBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Strengths / Weaknesses -->
+                <div class="grid md:grid-cols-2 gap-6" id="compareSWContainer"></div>
+            </div>
+
+            <div id="compareEmpty" class="text-center py-12 text-gray-400">
+                <i class="fas fa-exchange-alt text-5xl mb-3"></i>
+                <p class="text-lg font-semibold">Select at least 2 platforms to compare</p>
+                <p class="text-sm">Use the dropdown above or click platforms in other tabs</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== RANKINGS TAB ========== -->
+    <section id="tab-rankings" class="tab-content hidden fade-in">
+        <div class="card p-6">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-5">
+                <h3 class="text-lg font-bold flex items-center"><i class="fas fa-trophy text-yellow-500 mr-2"></i>Full Platform Rankings (56 Platforms)</h3>
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                        <input type="text" id="rankSearch" placeholder="Search platforms..." class="pl-9 pr-3 py-2 border rounded-lg text-sm w-56 focus:ring-2 focus:ring-purple-400">
+                    </div>
+                    <select id="rankCategory" class="border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-400">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+            </div>
+            <div class="scroll-x">
+                <table class="w-full text-sm">
+                    <thead class="sticky-header">
+                        <tr class="bg-gray-800 text-white text-xs uppercase tracking-wider">
+                            <th class="px-3 py-3 text-left cursor-pointer hover:bg-gray-700 rounded-tl-lg" data-sort="rank">#</th>
+                            <th class="px-3 py-3 text-left cursor-pointer hover:bg-gray-700" data-sort="name">Platform</th>
+                            <th class="px-3 py-3 text-left">Category</th>
+                            <th class="px-3 py-3 text-center cursor-pointer hover:bg-gray-700" data-sort="score">Score</th>
+                            <th class="px-3 py-3 text-left w-40">Bar</th>
+                            <th class="px-3 py-3 text-center">DI</th>
+                            <th class="px-3 py-3 text-center">AC</th>
+                            <th class="px-3 py-3 text-center">VZ</th>
+                            <th class="px-3 py-3 text-center">AX</th>
+                            <th class="px-3 py-3 text-center">SC</th>
+                            <th class="px-3 py-3 text-center">DC</th>
+                            <th class="px-3 py-3 text-center">CS</th>
+                            <th class="px-3 py-3 text-center">SE</th>
+                            <th class="px-3 py-3 text-center">IO</th>
+                            <th class="px-3 py-3 text-center">RT</th>
+                            <th class="px-3 py-3 text-center rounded-tr-lg">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingsBody"></tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-xs text-gray-400">
+                DI=Data Integration, AC=Analytics, VZ=Visualization, AX=Accessibility, SC=Scalability, DC=Documentation, CS=Community, SE=Security, IO=Interoperability, RT=Real-Time
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== ANALYTICS TAB ========== -->
+    <section id="tab-analytics" class="tab-content hidden fade-in">
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-chart-bar text-blue-500 mr-2"></i>Average Score Per Dimension</h3>
+                <div style="height:320px; position:relative;"><canvas id="analyticsDimBar"></canvas></div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-chart-line text-green-500 mr-2"></i>Score Histogram</h3>
+                <div style="height:320px; position:relative;"><canvas id="analyticsHist"></canvas></div>
+            </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-bullseye text-red-500 mr-2"></i>Dimension Min / Max / Avg Spread</h3>
+                <div style="height:320px; position:relative;"><canvas id="analyticsSpread"></canvas></div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-layer-group text-purple-500 mr-2"></i>Tier-Level Radar Averages</h3>
+                <div style="height:320px; position:relative;"><canvas id="analyticsTierRadar"></canvas></div>
+            </div>
+        </div>
+        <!-- Key Insights -->
+        <div class="card p-6">
+            <h3 class="text-lg font-bold mb-4 flex items-center"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Key Benchmark Insights</h3>
+            <div class="grid md:grid-cols-3 gap-4" id="insightsContainer"></div>
+        </div>
+    </section>
+</main>
+
+<!-- Platform Detail Modal -->
+<div id="modalOverlay" class="fixed inset-0 bg-black/50 z-[999] hidden flex items-center justify-center p-4" onclick="if(event.target===this)closeModal()">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 relative">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"><i class="fas fa-times"></i></button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8 mt-12">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-sm text-gray-400">&copy; 2026 Pathogen Surveillance Evaluation Framework v3.0.0 — A+++ Production Edition</p>
+        <div class="flex justify-center gap-6 mt-3 text-xs text-gray-500">
+            <a href="index.html" class="hover:text-white transition">Home</a>
+            <a href="frameworks/comprehensive_evaluation_framework_v3_0.html" class="hover:text-white transition">Framework</a>
+            <a href="reports/executive_summary_dashboard.html" class="hover:text-white transition">Reports</a>
+            <a href="master_index_a_plus_plus_plus.html" class="hover:text-white transition">Master Index</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ===========================
+// PLATFORM DATA (embedded for GitHub Pages compatibility)
+// ===========================
+const DIMENSIONS = [
+    { key: 'data_integration', label: 'Data Integration', short: 'DI', weight: 0.12, icon: 'database', color: '#3b82f6' },
+    { key: 'analytics_capability', label: 'Analytics', short: 'AC', weight: 0.12, icon: 'brain', color: '#8b5cf6' },
+    { key: 'visualization', label: 'Visualization', short: 'VZ', weight: 0.10, icon: 'chart-bar', color: '#06b6d4' },
+    { key: 'accessibility', label: 'Accessibility', short: 'AX', weight: 0.10, icon: 'universal-access', color: '#10b981' },
+    { key: 'scalability', label: 'Scalability', short: 'SC', weight: 0.10, icon: 'expand-arrows-alt', color: '#f59e0b' },
+    { key: 'documentation', label: 'Documentation', short: 'DC', weight: 0.08, icon: 'book', color: '#6366f1' },
+    { key: 'community_support', label: 'Community', short: 'CS', weight: 0.08, icon: 'users', color: '#ec4899' },
+    { key: 'security_compliance', label: 'Security', short: 'SE', weight: 0.12, icon: 'shield-alt', color: '#ef4444' },
+    { key: 'interoperability', label: 'Interoperability', short: 'IO', weight: 0.10, icon: 'plug', color: '#14b8a6' },
+    { key: 'real_time_capability', label: 'Real-Time', short: 'RT', weight: 0.08, icon: 'bolt', color: '#f97316' }
+];
+
+const PLATFORMS = [
+    {r:1,n:"Nextstrain",u:"https://nextstrain.org",s:95,c:"Phylogenetic Analysis & Visualization",d:"Real-time tracking of pathogen evolution",sc:{data_integration:96,analytics_capability:97,visualization:98,accessibility:94,scalability:93,documentation:95,community_support:96,security_compliance:91,interoperability:95,real_time_capability:97},st:["Real-time phylogenetic analysis","Open-source with active community","Excellent visualization","Strong genomic epidemiology tools","Global pathogen tracking"],wk:["Steep learning curve","Limited clinical data integration"]},
+    {r:2,n:"outbreak.info",u:"https://outbreak.info",s:90,c:"Epidemiological Data Aggregation",d:"Standardized access to epidemiological and genomic data",sc:{data_integration:93,analytics_capability:90,visualization:92,accessibility:91,scalability:88,documentation:90,community_support:89,security_compliance:87,interoperability:92,real_time_capability:90},st:["Comprehensive data aggregation","Strong API","Variant tracking","Open data"],wk:["COVID-19 focused","Limited offline"]},
+    {r:3,n:"SORMAS",u:"https://sormas.org",s:90,c:"Surveillance & Outbreak Response",d:"End-to-end outbreak management and analysis",sc:{data_integration:91,analytics_capability:89,visualization:87,accessibility:92,scalability:91,documentation:90,community_support:91,security_compliance:93,interoperability:88,real_time_capability:89},st:["End-to-end outbreak management","Mobile application","Strong case management","WHO-recommended"],wk:["Complex setup","Resource-intensive"]},
+    {r:4,n:"DHIS2",u:"https://dhis2.org",s:89,c:"Health Information Management",d:"World's largest health management information system",sc:{data_integration:92,analytics_capability:88,visualization:89,accessibility:93,scalability:94,documentation:91,community_support:93,security_compliance:86,interoperability:90,real_time_capability:84},st:["100+ country deployment","Highly customizable","Strong community","Mobile-friendly"],wk:["Limited genomic integration","Customization complexity"]},
+    {r:5,n:"NCBI Pathogen Detection",u:"https://www.ncbi.nlm.nih.gov/pathogens/",s:88.9,c:"Genomic Pathogen Detection",d:"Identifying and clustering closely related pathogen genomes",sc:{data_integration:91,analytics_capability:92,visualization:85,accessibility:88,scalability:92,documentation:89,community_support:87,security_compliance:90,interoperability:91,real_time_capability:86},st:["Massive genomic database","Automated clustering","NCBI integration","Standardized pipeline"],wk:["US-centric","Limited custom analysis"]},
+    {r:6,n:"GISAID",u:"https://gisaid.org",s:88.5,c:"Genomic Data Sharing",d:"Largest repository of influenza and SARS-CoV-2 sequences",sc:{data_integration:90,analytics_capability:86,visualization:87,accessibility:85,scalability:93,documentation:87,community_support:90,security_compliance:92,interoperability:86,real_time_capability:91},st:["Largest sequence repo","Rapid data sharing","Global coverage"],wk:["Restricted access","Limited tools"]},
+    {r:7,n:"Microreact",u:"https://microreact.org",s:87.5,c:"Genomic Epidemiology Visualization",d:"Open-source genomic epidemiology data visualization",sc:{data_integration:86,analytics_capability:85,visualization:95,accessibility:92,scalability:84,documentation:87,community_support:85,security_compliance:84,interoperability:88,real_time_capability:82},st:["Excellent visualization","Easy sharing","Phylogenetic integration"],wk:["Limited analytics","Smaller datasets"]},
+    {r:8,n:"Pathogenwatch",u:"https://pathogen.watch",s:87,c:"Pathogen Genomic Analysis",d:"Genomic surveillance of bacterial pathogens",sc:{data_integration:87,analytics_capability:89,visualization:88,accessibility:90,scalability:83,documentation:86,community_support:84,security_compliance:85,interoperability:87,real_time_capability:85},st:["Automated analysis","AMR prediction","MLST typing","Browser-based"],wk:["Limited organisms","Database dependent"]},
+    {r:9,n:"Galaxy Project",u:"https://galaxyproject.org",s:86.5,c:"Bioinformatics Workflow Platform",d:"Accessible, reproducible computational research",sc:{data_integration:88,analytics_capability:91,visualization:84,accessibility:89,scalability:86,documentation:88,community_support:92,security_compliance:80,interoperability:85,real_time_capability:78},st:["Extensive tool library","Reproducible workflows","Training resources","Large community"],wk:["General-purpose","Resource-intensive"]},
+    {r:10,n:"EpiCollect5",u:"https://five.epicollect.net",s:86,c:"Mobile Data Collection",d:"Free mobile data collection for field epidemiology",sc:{data_integration:84,analytics_capability:80,visualization:82,accessibility:93,scalability:85,documentation:88,community_support:86,security_compliance:84,interoperability:86,real_time_capability:88},st:["Mobile support","Offline capability","Free","Easy form builder"],wk:["Limited analytics","Basic visualization"]},
+    {r:11,n:"HealthMap",u:"https://healthmap.org",s:85.5,c:"Disease Intelligence",sc:{data_integration:87,analytics_capability:84,visualization:88,accessibility:86,scalability:84,documentation:83,community_support:84,security_compliance:83,interoperability:85,real_time_capability:89},st:["Automated news monitoring","Real-time intelligence","Global"],wk:["Unstructured data","Signal-to-noise"]},
+    {r:12,n:"ProMED",u:"https://promedmail.org",s:85,c:"Event-Based Surveillance",sc:{data_integration:83,analytics_capability:81,visualization:78,accessibility:90,scalability:86,documentation:85,community_support:88,security_compliance:82,interoperability:84,real_time_capability:91},st:["Expert-curated","Long history","Email-based"],wk:["Limited tools","Manual curation"]},
+    {r:13,n:"OpenELIS",u:"https://openelis-global.org",s:84.5,c:"Laboratory Information System",sc:{data_integration:86,analytics_capability:83,visualization:80,accessibility:85,scalability:85,documentation:84,community_support:83,security_compliance:88,interoperability:87,real_time_capability:82},st:["Open-source LIMS","HL7/FHIR","Multi-lab"],wk:["Complex deployment","Technical expertise needed"]},
+    {r:14,n:"WHONET",u:"https://whonet.org",s:84,c:"AMR Surveillance",sc:{data_integration:85,analytics_capability:86,visualization:82,accessibility:84,scalability:82,documentation:86,community_support:85,security_compliance:83,interoperability:84,real_time_capability:80},st:["WHO-supported","Standardized analysis","Global AMR"],wk:["Desktop-based","Limited web"]},
+    {r:15,n:"ReportStream",u:"https://reportstream.cdc.gov",s:83.5,c:"Data Exchange Pipeline",sc:{data_integration:88,analytics_capability:79,visualization:75,accessibility:82,scalability:88,documentation:85,community_support:82,security_compliance:90,interoperability:90,real_time_capability:84},st:["CDC infrastructure","HL7/FHIR native","Automated routing"],wk:["US-focused","Limited analytics"]},
+    {r:16,n:"BioNumerics",u:"https://www.applied-maths.com",s:83,c:"Bioinformatics Suite",sc:{data_integration:84,analytics_capability:88,visualization:85,accessibility:78,scalability:81,documentation:84,community_support:80,security_compliance:84,interoperability:82,real_time_capability:79},st:["Comprehensive suite","WGS typing","Database mgmt"],wk:["Commercial","High cost"]},
+    {r:17,n:"EnteroBase",u:"https://enterobase.warwick.ac.uk",s:82.5,c:"Bacterial Genomic Database",sc:{data_integration:85,analytics_capability:84,visualization:83,accessibility:81,scalability:83,documentation:82,community_support:81,security_compliance:80,interoperability:83,real_time_capability:80},st:["Large curated DB","Automated MLST","Phylogenetic tools"],wk:["Limited genera","Complex UI"]},
+    {r:18,n:"IRIDA",u:"https://irida.ca",s:82,c:"Genomic Epidemiology Platform",sc:{data_integration:83,analytics_capability:84,visualization:80,accessibility:82,scalability:82,documentation:83,community_support:80,security_compliance:83,interoperability:82,real_time_capability:79},st:["Integrated pipelines","Galaxy integration"],wk:["Regional focus","Setup complexity"]},
+    {r:19,n:"PHE Sequence Pipeline",u:"https://www.gov.uk/government/organisations/uk-health-security-agency",s:81.5,c:"National Sequencing Pipeline",sc:{data_integration:83,analytics_capability:83,visualization:79,accessibility:78,scalability:84,documentation:81,community_support:79,security_compliance:86,interoperability:82,real_time_capability:81},st:["National-scale","Standardized workflows","Regulatory"],wk:["UK-specific","Limited access"]},
+    {r:20,n:"GLASS (WHO)",u:"https://www.who.int/initiatives/glass",s:81,c:"Global AMR Surveillance",sc:{data_integration:84,analytics_capability:80,visualization:79,accessibility:83,scalability:85,documentation:82,community_support:83,security_compliance:84,interoperability:80,real_time_capability:76},st:["WHO-led","Standardized AMR reporting","Country-level"],wk:["Aggregated only","Reporting delays"]},
+    {r:21,n:"PulseNet",u:"https://www.cdc.gov/pulsenet/",s:80.5,c:"Foodborne Disease Surveillance",sc:{data_integration:82,analytics_capability:82,visualization:78,accessibility:79,scalability:83,documentation:81,community_support:80,security_compliance:85,interoperability:81,real_time_capability:82},st:["Established network","WGS integration"],wk:["US focus","Restricted access"]},
+    {r:22,n:"Auspice",u:"https://auspice.us",s:80,c:"Phylogenetic Visualization",sc:{data_integration:79,analytics_capability:78,visualization:94,accessibility:83,scalability:78,documentation:80,community_support:81,security_compliance:76,interoperability:80,real_time_capability:77},st:["Beautiful visualizations","Nextstrain ecosystem","Interactive"],wk:["Visualization only","Pre-processed data needed"]},
+    {r:23,n:"Terra",u:"https://terra.bio",s:79.5,c:"Cloud Bioinformatics",sc:{data_integration:82,analytics_capability:84,visualization:76,accessibility:77,scalability:85,documentation:80,community_support:79,security_compliance:82,interoperability:78,real_time_capability:74},st:["Cloud-native","Scalable","WDL workflows"],wk:["Google Cloud dependency","Learning curve"]},
+    {r:24,n:"CoVariants",u:"https://covariants.org",s:79,c:"Variant Tracking",sc:{data_integration:80,analytics_capability:78,visualization:85,accessibility:84,scalability:76,documentation:78,community_support:77,security_compliance:75,interoperability:78,real_time_capability:80},st:["Clear variant viz","Mutation tracking","Public-accessible"],wk:["SARS-CoV-2 specific","Limited analysis"]},
+    {r:25,n:"Pangolin",u:"https://cov-lineages.org",s:78.5,c:"Lineage Classification",sc:{data_integration:77,analytics_capability:82,visualization:74,accessibility:80,scalability:79,documentation:80,community_support:82,security_compliance:75,interoperability:79,real_time_capability:78},st:["Standard classification","Rapid updates","CLI & web"],wk:["SARS-CoV-2 only","Classification lag"]},
+    {r:26,n:"Nextclade",u:"https://clades.nextstrain.org",s:78,c:"Sequence Analysis",sc:{data_integration:76,analytics_capability:80,visualization:82,accessibility:83,scalability:75,documentation:79,community_support:78,security_compliance:74,interoperability:77,real_time_capability:79},st:["Fast clade assignment","QC","Browser-based"],wk:["Limited pathogens","Basic analysis"]},
+    {r:27,n:"SAP",u:"https://sap.org",s:77.5,c:"Regional Surveillance",sc:{data_integration:78,analytics_capability:76,visualization:77,accessibility:78,scalability:78,documentation:77,community_support:76,security_compliance:79,interoperability:76,real_time_capability:77},st:["Regional coordination","Multi-country sharing"],wk:["Regional only","Variable quality"]},
+    {r:28,n:"COG-UK",u:"https://www.cogconsortium.uk",s:77,c:"National Genomic Consortium",sc:{data_integration:80,analytics_capability:79,visualization:76,accessibility:75,scalability:80,documentation:77,community_support:76,security_compliance:80,interoperability:75,real_time_capability:76},st:["National sequencing","Academic-PH collaboration"],wk:["UK-specific","COVID origins"]},
+    {r:29,n:"INSaFLU",u:"https://insaflu.insa.pt",s:76.5,c:"Influenza Genomic Analysis",sc:{data_integration:77,analytics_capability:78,visualization:76,accessibility:78,scalability:74,documentation:77,community_support:74,security_compliance:76,interoperability:76,real_time_capability:75},st:["Influenza-specific","Web-based","Easy to use"],wk:["Influenza/SARS-CoV-2 only","Limited scalability"]},
+    {r:30,n:"GECO (ECDC)",u:"https://geco.ecdc.europa.eu",s:76,c:"EU Genomic Surveillance",sc:{data_integration:78,analytics_capability:76,visualization:75,accessibility:76,scalability:77,documentation:76,community_support:75,security_compliance:79,interoperability:75,real_time_capability:74},st:["EU coordination","Standardized","ECDC backing"],wk:["EU-focused","Developing"]},
+    {r:31,n:"EpiVerse",u:"https://epiverse-trace.github.io",s:75.5,c:"R Package Ecosystem",sc:{data_integration:76,analytics_capability:79,visualization:74,accessibility:73,scalability:74,documentation:78,community_support:76,security_compliance:72,interoperability:75,real_time_capability:73},st:["Modular R packages","Open-source","Training"],wk:["R knowledge required","Fragmented"]},
+    {r:32,n:"EpiTrax",u:"https://epitrax.health",s:75,c:"Disease Surveillance System",sc:{data_integration:76,analytics_capability:74,visualization:73,accessibility:77,scalability:76,documentation:75,community_support:73,security_compliance:78,interoperability:74,real_time_capability:74},st:["Case management","State-level","Integration"],wk:["US state-focused","Legacy arch"]},
+    {r:33,n:"Go.Data (WHO)",u:"https://www.who.int/tools/godata",s:74.5,c:"Outbreak Investigation",sc:{data_integration:75,analytics_capability:73,visualization:74,accessibility:77,scalability:74,documentation:76,community_support:75,security_compliance:76,interoperability:73,real_time_capability:73},st:["WHO-supported","Contact tracing","Field-ready"],wk:["Limited genomic","Outbreak-specific"]},
+    {r:34,n:"EMPRES-i (FAO)",u:"https://empres-i.fao.org",s:74,c:"Animal Disease Surveillance",sc:{data_integration:75,analytics_capability:72,visualization:76,accessibility:76,scalability:73,documentation:74,community_support:72,security_compliance:75,interoperability:73,real_time_capability:74},st:["Animal disease focus","FAO network","One Health"],wk:["Animals only","Inconsistencies"]},
+    {r:35,n:"Epi Info (CDC)",u:"https://www.cdc.gov/epiinfo/",s:73.5,c:"Epidemiological Analysis",sc:{data_integration:74,analytics_capability:76,visualization:71,accessibility:75,scalability:71,documentation:77,community_support:74,security_compliance:74,interoperability:72,real_time_capability:70},st:["Free CDC tool","Survey capabilities","Statistical analysis"],wk:["Windows only","Dated interface"]},
+    {r:36,n:"WAHIS (WOAH)",u:"https://wahis.woah.org",s:73,c:"Animal Health",sc:{data_integration:74,analytics_capability:71,visualization:73,accessibility:74,scalability:74,documentation:73,community_support:72,security_compliance:75,interoperability:72,real_time_capability:73},st:["Official animal health","Global","Regulatory"],wk:["Animals only","Delays"]},
+    {r:37,n:"GenomeTrakr",u:"https://www.fda.gov/food/whole-genome-sequencing-wgs-program/genometrakr-network",s:72.5,c:"FDA Genomic Network",sc:{data_integration:75,analytics_capability:74,visualization:69,accessibility:71,scalability:75,documentation:73,community_support:71,security_compliance:77,interoperability:74,real_time_capability:72},st:["FDA-managed","Food safety","NCBI integration"],wk:["US regulatory","Limited public"]},
+    {r:38,n:"OpenHIM",u:"https://openhim.org",s:72,c:"Health Information Exchange",sc:{data_integration:76,analytics_capability:68,visualization:67,accessibility:72,scalability:74,documentation:73,community_support:72,security_compliance:76,interoperability:78,real_time_capability:70},st:["Health mediator","OpenHIE","Interoperability"],wk:["Middleware only","Requires ecosystem"]},
+    {r:39,n:"Sitrep",u:"https://github.com/R4EPI/sitrep",s:71.5,c:"Situation Reporting",sc:{data_integration:71,analytics_capability:73,visualization:72,accessibility:70,scalability:70,documentation:73,community_support:71,security_compliance:70,interoperability:71,real_time_capability:71},st:["R-based reporting","MSF/WHO templates"],wk:["R dependency","Limited non-R"]},
+    {r:40,n:"MedStar",u:"https://medstar.health",s:71,c:"Clinical Surveillance",sc:{data_integration:73,analytics_capability:71,visualization:70,accessibility:71,scalability:71,documentation:70,community_support:69,security_compliance:74,interoperability:72,real_time_capability:70},st:["Clinical integration","EHR connectivity"],wk:["Commercial","Limited PH"]},
+    {r:41,n:"EIDSS",u:"https://eidss.com",s:70.5,c:"Integrated Surveillance",sc:{data_integration:72,analytics_capability:71,visualization:69,accessibility:70,scalability:71,documentation:70,community_support:68,security_compliance:73,interoperability:71,real_time_capability:70},st:["Integrated human-animal","One Health"],wk:["Limited deployment","Regional"]},
+    {r:42,n:"CanPath",u:"https://canpath.ca",s:70,c:"Population Cohort",sc:{data_integration:72,analytics_capability:70,visualization:68,accessibility:71,scalability:70,documentation:71,community_support:69,security_compliance:73,interoperability:69,real_time_capability:67},st:["Large cohort","Longitudinal"],wk:["Canada-specific","Research focus"]},
+    {r:43,n:"SatScan",u:"https://www.satscan.org",s:69.5,c:"Spatial Cluster Detection",sc:{data_integration:69,analytics_capability:76,visualization:68,accessibility:69,scalability:68,documentation:72,community_support:70,security_compliance:67,interoperability:68,real_time_capability:67},st:["Spatial-temporal","Cluster detection","Statistical rigor"],wk:["Desktop only","Dated UI"]},
+    {r:44,n:"QGIS Health",u:"https://qgis.org",s:69,c:"GIS for Health",sc:{data_integration:70,analytics_capability:72,visualization:74,accessibility:68,scalability:67,documentation:71,community_support:73,security_compliance:64,interoperability:69,real_time_capability:63},st:["Powerful GIS","Open-source","Plugins"],wk:["Not health-specific","Steep learning curve"]},
+    {r:45,n:"FluNet (WHO)",u:"https://www.who.int/tools/flunet",s:68.5,c:"Influenza Surveillance",sc:{data_integration:71,analytics_capability:67,visualization:70,accessibility:72,scalability:69,documentation:69,community_support:68,security_compliance:70,interoperability:67,real_time_capability:68},st:["WHO global influenza","Long time series"],wk:["Influenza only","Basic tools"]},
+    {r:46,n:"EIOS (WHO)",u:"https://www.who.int/initiatives/eios",s:68,c:"Epidemic Intelligence",sc:{data_integration:70,analytics_capability:67,visualization:66,accessibility:69,scalability:70,documentation:68,community_support:67,security_compliance:71,interoperability:66,real_time_capability:69},st:["WHO-led","Multi-source monitoring"],wk:["Restricted access","Limited public"]},
+    {r:47,n:"ECDC Hub",u:"https://www.ecdc.europa.eu",s:67.5,c:"EU Disease Surveillance",sc:{data_integration:69,analytics_capability:67,visualization:68,accessibility:68,scalability:68,documentation:68,community_support:67,security_compliance:70,interoperability:67,real_time_capability:66},st:["EU standardized","Cross-border"],wk:["EU only","Reporting lag"]},
+    {r:48,n:"ABIS",u:"https://abis.health",s:67,c:"Biosurveillance Analytics",sc:{data_integration:68,analytics_capability:69,visualization:66,accessibility:66,scalability:67,documentation:67,community_support:65,security_compliance:69,interoperability:66,real_time_capability:67},st:["Integrated biosurveillance"],wk:["Commercial","Limited transparency"]},
+    {r:49,n:"Disease.sh",u:"https://disease.sh",s:66.5,c:"Disease Data API",sc:{data_integration:70,analytics_capability:63,visualization:62,accessibility:73,scalability:66,documentation:68,community_support:67,security_compliance:61,interoperability:70,real_time_capability:66},st:["Free API","Easy integration"],wk:["Limited analysis","Aggregation only"]},
+    {r:50,n:"Africa CDC ARES",u:"https://africacdc.org",s:66,c:"Continental Surveillance",sc:{data_integration:67,analytics_capability:65,visualization:66,accessibility:67,scalability:66,documentation:66,community_support:66,security_compliance:67,interoperability:65,real_time_capability:65},st:["Africa-focused","Continental coordination"],wk:["Developing","Limited resources"]},
+    {r:51,n:"BioPortal (PR)",u:"https://bioportal.salud.pr.gov",s:65.5,c:"Territorial Surveillance",sc:{data_integration:66,analytics_capability:64,visualization:67,accessibility:67,scalability:64,documentation:65,community_support:63,security_compliance:68,interoperability:64,real_time_capability:66},st:["Public data","Testing integration"],wk:["Territory-specific","Limited scope"]},
+    {r:52,n:"CIVET",u:"https://github.com/artic-network/civet",s:65,c:"Cluster Investigation",sc:{data_integration:65,analytics_capability:67,visualization:66,accessibility:64,scalability:63,documentation:66,community_support:65,security_compliance:62,interoperability:64,real_time_capability:64},st:["Cluster investigation","ARTIC network"],wk:["CLI tool","SARS-CoV-2 focused"]},
+    {r:53,n:"Prion Surveillance",u:"https://www.cjd.ed.ac.uk",s:64,c:"Prion Disease Surveillance",sc:{data_integration:64,analytics_capability:64,visualization:62,accessibility:65,scalability:63,documentation:66,community_support:63,security_compliance:67,interoperability:62,real_time_capability:62},st:["Specialized prion focus","Long-term"],wk:["Very niche","Limited scope"]},
+    {r:54,n:"RESAOLAB",u:"https://resaolab.org",s:63,c:"Lab Network (W. Africa)",sc:{data_integration:64,analytics_capability:62,visualization:61,accessibility:64,scalability:63,documentation:63,community_support:63,security_compliance:64,interoperability:63,real_time_capability:62},st:["West African labs","Capacity building"],wk:["Regional only","Resource constraints"]},
+    {r:55,n:"OpenMRS",u:"https://openmrs.org",s:62,c:"Medical Records Surveillance",sc:{data_integration:64,analytics_capability:61,visualization:60,accessibility:64,scalability:63,documentation:64,community_support:65,security_compliance:63,interoperability:63,real_time_capability:58},st:["Open-source EMR","Low-resource settings"],wk:["Not surveillance-specific","Needs customization"]},
+    {r:56,n:"Dashboard Template",u:"https://github.com/surveillance-dashboard",s:60,c:"Dashboard Template",sc:{data_integration:61,analytics_capability:59,visualization:65,accessibility:62,scalability:58,documentation:61,community_support:58,security_compliance:58,interoperability:59,real_time_capability:57},st:["Customizable","Open-source","Quick deploy"],wk:["Template only","Requires dev","Limited features"]}
+];
+
+const COLORS = ['#667eea','#764ba2','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#8b5cf6','#14b8a6','#f97316','#6366f1','#84cc16'];
+
+// ===========================
+// HELPERS
+// ===========================
+function tierOf(s) { return s >= 90 ? 'excellent' : s >= 80 ? 'good' : s >= 70 ? 'adequate' : 'developing'; }
+function tierLabel(s) { return s >= 90 ? 'Excellent' : s >= 80 ? 'Good' : s >= 70 ? 'Adequate' : 'Developing'; }
+function tierColor(s) { return s >= 90 ? '#22c55e' : s >= 80 ? '#3b82f6' : s >= 70 ? '#eab308' : '#ef4444'; }
+function heatColor(v) {
+    if (v >= 93) return 'background:#bbf7d0;color:#166534;';
+    if (v >= 88) return 'background:#dcfce7;color:#166534;';
+    if (v >= 83) return 'background:#dbeafe;color:#1e40af;';
+    if (v >= 78) return 'background:#e0e7ff;color:#3730a3;';
+    if (v >= 73) return 'background:#fef9c3;color:#854d0e;';
+    if (v >= 68) return 'background:#ffedd5;color:#9a3412;';
+    return 'background:#fee2e2;color:#991b1b;';
+}
+let chartInstances = {};
+function destroyChart(id) { if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; } }
+
+// ===========================
+// TABS
+// ===========================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+    });
+});
+
+// ===========================
+// OVERVIEW TAB
+// ===========================
+function initOverview() {
+    const tiers = { excellent: 0, good: 0, adequate: 0, developing: 0 };
+    PLATFORMS.forEach(p => tiers[tierOf(p.s)]++);
+    document.getElementById('tier-excellent-count').textContent = tiers.excellent;
+    document.getElementById('tier-good-count').textContent = tiers.good;
+    document.getElementById('tier-adequate-count').textContent = tiers.adequate;
+    document.getElementById('tier-developing-count').textContent = tiers.developing;
+
+    // Donut
+    destroyChart('overviewDonut');
+    chartInstances['overviewDonut'] = new Chart(document.getElementById('overviewDonut'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Excellent (90+)', 'Good (80-89)', 'Adequate (70-79)', 'Developing (<70)'],
+            datasets: [{ data: [tiers.excellent, tiers.good, tiers.adequate, tiers.developing], backgroundColor: ['#22c55e','#3b82f6','#eab308','#ef4444'], borderWidth: 0, hoverOffset: 8 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true } } } }
+    });
+
+    // Bar chart - all platforms
+    destroyChart('overviewBar');
+    chartInstances['overviewBar'] = new Chart(document.getElementById('overviewBar'), {
+        type: 'bar',
+        data: {
+            labels: PLATFORMS.map(p => p.n),
+            datasets: [{ data: PLATFORMS.map(p => p.s), backgroundColor: PLATFORMS.map(p => tierColor(p.s) + '99'), borderColor: PLATFORMS.map(p => tierColor(p.s)), borderWidth: 1 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'x', plugins: { legend: { display: false } }, scales: { y: { min: 55, max: 100 }, x: { ticks: { display: false } } } }
+    });
+
+    // Top 10
+    const top10 = document.getElementById('topPerformers');
+    top10.innerHTML = PLATFORMS.slice(0, 10).map((p, i) => {
+        const medalColors = ['from-yellow-400 to-yellow-600','from-gray-300 to-gray-500','from-orange-400 to-orange-600','from-blue-400 to-blue-600','from-purple-400 to-purple-600'];
+        const bg = i < 5 ? `bg-gradient-to-br ${medalColors[i]} text-white` : 'bg-gray-100 text-gray-800';
+        return `<div class="rounded-xl p-4 text-center cursor-pointer hover:scale-105 transition ${bg}" onclick="openModal(${p.r-1})">
+            <div class="text-2xl font-extrabold">#${p.r}</div>
+            <div class="font-bold text-sm mt-1 truncate">${p.n}</div>
+            <div class="text-xs mt-1 opacity-80">${p.s}</div>
+        </div>`;
+    }).join('');
+
+    // Category leaders
+    const leaders = document.getElementById('categoryLeaders');
+    leaders.innerHTML = DIMENSIONS.map(dim => {
+        const best = PLATFORMS.reduce((a, b) => (b.sc[dim.key] > a.sc[dim.key]) ? b : a);
+        return `<div class="rounded-xl border p-3 hover:shadow-md transition cursor-pointer" onclick="openModal(${best.r-1})">
+            <div class="text-xs font-semibold text-gray-400 uppercase tracking-wide">${dim.label}</div>
+            <div class="font-bold text-sm mt-1">${best.n}</div>
+            <div class="text-lg font-extrabold mt-0.5" style="color:${dim.color}">${best.sc[dim.key]}</div>
+        </div>`;
+    }).join('');
+}
+
+// ===========================
+// HEATMAP TAB
+// ===========================
+let heatmapRadarChart = null;
+function initHeatmap(minScore = 0) {
+    const header = document.getElementById('heatmapHeader');
+    const body = document.getElementById('heatmapBody');
+    header.innerHTML = '<th class="px-2 py-2 bg-gray-800 text-white text-left text-xs sticky left-0 z-20 min-w-[140px]">Platform</th><th class="px-2 py-2 bg-gray-800 text-white text-center text-xs min-w-[50px]">Score</th>' + DIMENSIONS.map(d => `<th class="px-1 py-2 bg-gray-800 text-white text-center text-xs min-w-[42px]" title="${d.label}">${d.short}</th>`).join('');
+
+    const filtered = minScore > 0 ? PLATFORMS.filter(p => p.s >= minScore) : PLATFORMS;
+    body.innerHTML = filtered.map(p => {
+        const cells = DIMENSIONS.map(d => {
+            const v = p.sc[d.key];
+            return `<td class="px-1 py-1"><div class="heatmap-cell" style="${heatColor(v)}" title="${d.label}: ${v}">${v}</div></td>`;
+        }).join('');
+        return `<tr class="cursor-pointer hover:bg-gray-50 border-b border-gray-100" onclick="showHeatmapRadar(${p.r-1})">
+            <td class="px-2 py-2 text-xs font-semibold sticky left-0 bg-white z-10 border-r">${p.r}. ${p.n}</td>
+            <td class="px-2 py-2 text-center"><span class="score-pill tier-${tierOf(p.s)}">${p.s}</span></td>${cells}</tr>`;
+    }).join('');
+}
+
+function showHeatmapRadar(idx) {
+    const p = PLATFORMS[idx];
+    document.getElementById('heatmapRadarCard').classList.remove('hidden');
+    document.getElementById('heatmapRadarTitle').innerHTML = `<i class="fas fa-radar mr-2"></i>${p.n} — Dimension Radar`;
+    destroyChart('heatmapRadar');
+    chartInstances['heatmapRadar'] = new Chart(document.getElementById('heatmapRadar'), {
+        type: 'radar',
+        data: {
+            labels: DIMENSIONS.map(d => d.label),
+            datasets: [{ label: p.n, data: DIMENSIONS.map(d => p.sc[d.key]), backgroundColor: 'rgba(102,126,234,0.15)', borderColor: '#667eea', pointBackgroundColor: '#667eea', pointRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 55, max: 100, ticks: { stepSize: 10 } } }, plugins: { legend: { display: false } } }
+    });
+    document.getElementById('heatmapRadarCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.getElementById('heatmapTier').addEventListener('change', e => {
+    initHeatmap(parseInt(e.target.value) || 0);
+});
+
+// ===========================
+// COMPARE TAB
+// ===========================
+let compareList = [];
+function initCompare() {
+    const sel = document.getElementById('compareSelect');
+    sel.innerHTML = '<option value="">— Choose a platform —</option>' + PLATFORMS.map((p, i) => `<option value="${i}">${p.r}. ${p.n} (${p.s})</option>`).join('');
+}
+
+document.getElementById('compareAddBtn').addEventListener('click', () => {
+    const sel = document.getElementById('compareSelect');
+    const idx = parseInt(sel.value);
+    if (isNaN(idx) || compareList.includes(idx)) return;
+    if (compareList.length >= 4) { alert('Maximum 4 platforms for comparison'); return; }
+    compareList.push(idx);
+    sel.value = '';
+    renderCompare();
+});
+document.getElementById('compareClearBtn').addEventListener('click', () => { compareList = []; renderCompare(); });
+
+function removeCompare(idx) { compareList = compareList.filter(i => i !== idx); renderCompare(); }
+
+function renderCompare() {
+    const chips = document.getElementById('compareChips');
+    chips.innerHTML = compareList.map((idx, i) => {
+        const p = PLATFORMS[idx];
+        return `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold text-white" style="background:${COLORS[i]}">
+            ${p.n} (${p.s})
+            <button onclick="removeCompare(${idx})" class="hover:opacity-70"><i class="fas fa-times text-xs"></i></button>
+        </span>`;
+    }).join('');
+
+    if (compareList.length < 2) {
+        document.getElementById('compareContent').classList.add('hidden');
+        document.getElementById('compareEmpty').classList.remove('hidden');
+        return;
+    }
+    document.getElementById('compareContent').classList.remove('hidden');
+    document.getElementById('compareEmpty').classList.add('hidden');
+
+    // Radar
+    destroyChart('compareRadar');
+    chartInstances['compareRadar'] = new Chart(document.getElementById('compareRadar'), {
+        type: 'radar',
+        data: {
+            labels: DIMENSIONS.map(d => d.label),
+            datasets: compareList.map((idx, i) => {
+                const p = PLATFORMS[idx];
+                return { label: p.n, data: DIMENSIONS.map(d => p.sc[d.key]), backgroundColor: COLORS[i] + '18', borderColor: COLORS[i], pointBackgroundColor: COLORS[i], pointRadius: 4, borderWidth: 2 };
+            })
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 55, max: 100, ticks: { stepSize: 10 } } }, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true } } } }
+    });
+
+    // Table
+    const thead = document.getElementById('compareTableHead');
+    const tbody = document.getElementById('compareTableBody');
+    thead.innerHTML = '<tr class="bg-gray-100 text-xs uppercase tracking-wider text-gray-600"><th class="px-3 py-2 text-left">Dimension</th><th class="px-3 py-2 text-center">Weight</th>' + compareList.map((idx, i) => `<th class="px-3 py-2 text-center" style="color:${COLORS[i]}">${PLATFORMS[idx].n}</th>`).join('') + '<th class="px-3 py-2 text-center">Best</th></tr>';
+    
+    let rows = DIMENSIONS.map(dim => {
+        const vals = compareList.map(idx => PLATFORMS[idx].sc[dim.key]);
+        const best = Math.max(...vals);
+        return `<tr class="border-b hover:bg-gray-50"><td class="px-3 py-2 font-semibold text-sm"><i class="fas fa-${dim.icon} mr-1.5" style="color:${dim.color}"></i>${dim.label}</td><td class="px-3 py-2 text-center text-xs text-gray-400">${(dim.weight*100)}%</td>` +
+            vals.map(v => `<td class="px-3 py-2 text-center"><span class="score-pill tier-${tierOf(v)} ${v===best?'ring-2 ring-offset-1 ring-green-400':''}">${v}</span></td>`).join('') +
+            `<td class="px-3 py-2 text-center font-bold text-green-600">${best}</td></tr>`;
+    }).join('');
+    // Composite row
+    rows += `<tr class="bg-gray-50 font-bold border-t-2"><td class="px-3 py-3">Composite Score</td><td class="px-3 py-3 text-center text-xs">100%</td>` + compareList.map(idx => `<td class="px-3 py-3 text-center text-lg">${PLATFORMS[idx].s}</td>`).join('') + `<td class="px-3 py-3 text-center text-lg text-green-600">${Math.max(...compareList.map(i=>PLATFORMS[i].s))}</td></tr>`;
+    tbody.innerHTML = rows;
+
+    // Strengths/Weaknesses
+    const swc = document.getElementById('compareSWContainer');
+    swc.innerHTML = compareList.map((idx, i) => {
+        const p = PLATFORMS[idx];
+        return `<div class="border rounded-xl p-4" style="border-color:${COLORS[i]}">
+            <h4 class="font-bold mb-3" style="color:${COLORS[i]}">${p.n}</h4>
+            <div class="mb-3"><p class="text-xs font-semibold text-green-600 uppercase mb-1">Strengths</p><ul class="text-xs text-gray-600 space-y-1">${(p.st||[]).map(s=>`<li><i class="fas fa-check text-green-500 mr-1"></i>${s}</li>`).join('')}</ul></div>
+            <div><p class="text-xs font-semibold text-red-600 uppercase mb-1">Weaknesses</p><ul class="text-xs text-gray-600 space-y-1">${(p.wk||[]).map(w=>`<li><i class="fas fa-exclamation-triangle text-red-400 mr-1"></i>${w}</li>`).join('')}</ul></div>
+        </div>`;
+    }).join('');
+}
+
+// ===========================
+// RANKINGS TAB
+// ===========================
+let rankSort = { col: 'rank', asc: true };
+function initRankings() {
+    // Populate categories
+    const cats = [...new Set(PLATFORMS.map(p => p.c))].sort();
+    document.getElementById('rankCategory').innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    renderRankings();
+}
+
+function renderRankings() {
+    const search = (document.getElementById('rankSearch').value || '').toLowerCase();
+    const cat = document.getElementById('rankCategory').value;
+    let data = PLATFORMS.filter(p => {
+        const matchSearch = !search || p.n.toLowerCase().includes(search) || p.c.toLowerCase().includes(search);
+        const matchCat = !cat || p.c === cat;
+        return matchSearch && matchCat;
+    });
+
+    const body = document.getElementById('rankingsBody');
+    body.innerHTML = data.map(p => {
+        const dimCells = DIMENSIONS.map(d => {
+            const v = p.sc[d.key];
+            return `<td class="px-2 py-2 text-center"><span class="text-xs font-semibold" style="color:${tierColor(v)}">${v}</span></td>`;
+        }).join('');
+        return `<tr class="border-b hover:bg-purple-50/30 transition">
+            <td class="px-3 py-2 font-bold text-gray-500">${p.r}</td>
+            <td class="px-3 py-2 font-semibold"><a href="${p.u}" target="_blank" class="hover:text-purple-600 transition">${p.n}</a></td>
+            <td class="px-3 py-2 text-xs text-gray-500">${p.c}</td>
+            <td class="px-3 py-2 text-center"><span class="score-pill tier-${tierOf(p.s)}">${p.s}</span></td>
+            <td class="px-3 py-2"><div class="bg-gray-200 rounded-full h-2.5 w-full"><div class="rounded-full h-2.5 transition-all" style="width:${p.s}%;background:${tierColor(p.s)}"></div></div></td>
+            ${dimCells}
+            <td class="px-3 py-2 text-center">
+                <button onclick="openModal(${p.r-1})" class="text-purple-500 hover:text-purple-700 text-xs" title="Details"><i class="fas fa-eye"></i></button>
+                <button onclick="addToCompare(${p.r-1})" class="text-blue-500 hover:text-blue-700 text-xs ml-2" title="Compare"><i class="fas fa-exchange-alt"></i></button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function addToCompare(idx) {
+    if (!compareList.includes(idx) && compareList.length < 4) {
+        compareList.push(idx);
+        renderCompare();
+        // Switch to compare tab
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-tab="compare"]').classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById('tab-compare').classList.remove('hidden');
+    }
+}
+
+document.getElementById('rankSearch').addEventListener('input', renderRankings);
+document.getElementById('rankCategory').addEventListener('change', renderRankings);
+
+// ===========================
+// ANALYTICS TAB
+// ===========================
+function initAnalytics() {
+    // Avg per dimension
+    const dimAvgs = DIMENSIONS.map(d => {
+        const avg = PLATFORMS.reduce((sum, p) => sum + p.sc[d.key], 0) / PLATFORMS.length;
+        return { ...d, avg: Math.round(avg * 10) / 10 };
+    });
+    destroyChart('analyticsDimBar');
+    chartInstances['analyticsDimBar'] = new Chart(document.getElementById('analyticsDimBar'), {
+        type: 'bar',
+        data: {
+            labels: dimAvgs.map(d => d.label),
+            datasets: [{ data: dimAvgs.map(d => d.avg), backgroundColor: dimAvgs.map(d => d.color + '99'), borderColor: dimAvgs.map(d => d.color), borderWidth: 2, borderRadius: 6 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min: 65, max: 85 } } }
+    });
+
+    // Histogram
+    const bins = {};
+    for (let i = 58; i <= 96; i += 2) bins[i] = 0;
+    PLATFORMS.forEach(p => { const bin = Math.floor(p.s / 2) * 2; if (bins[bin] !== undefined) bins[bin]++; });
+    destroyChart('analyticsHist');
+    chartInstances['analyticsHist'] = new Chart(document.getElementById('analyticsHist'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(bins).map(k => `${k}-${+k+1}`),
+            datasets: [{ data: Object.values(bins), backgroundColor: Object.keys(bins).map(k => tierColor(+k) + '88'), borderColor: Object.keys(bins).map(k => tierColor(+k)), borderWidth: 1, borderRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+
+    // Spread (min/max/avg)
+    const mins = DIMENSIONS.map(d => Math.min(...PLATFORMS.map(p => p.sc[d.key])));
+    const maxs = DIMENSIONS.map(d => Math.max(...PLATFORMS.map(p => p.sc[d.key])));
+    const avgs = DIMENSIONS.map(d => Math.round(PLATFORMS.reduce((s, p) => s + p.sc[d.key], 0) / PLATFORMS.length * 10) / 10);
+    destroyChart('analyticsSpread');
+    chartInstances['analyticsSpread'] = new Chart(document.getElementById('analyticsSpread'), {
+        type: 'bar',
+        data: {
+            labels: DIMENSIONS.map(d => d.short),
+            datasets: [
+                { label: 'Max', data: maxs, backgroundColor: '#22c55e88', borderColor: '#22c55e', borderWidth: 1 },
+                { label: 'Avg', data: avgs, backgroundColor: '#3b82f688', borderColor: '#3b82f6', borderWidth: 1 },
+                { label: 'Min', data: mins, backgroundColor: '#ef444488', borderColor: '#ef4444', borderWidth: 1 }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 50, max: 100 } }, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true } } } }
+    });
+
+    // Tier radar
+    const tierGroups = { excellent: [], good: [], adequate: [], developing: [] };
+    PLATFORMS.forEach(p => tierGroups[tierOf(p.s)].push(p));
+    const tierAvg = tier => DIMENSIONS.map(d => {
+        const grp = tierGroups[tier];
+        return grp.length ? Math.round(grp.reduce((s, p) => s + p.sc[d.key], 0) / grp.length * 10) / 10 : 0;
+    });
+    destroyChart('analyticsTierRadar');
+    chartInstances['analyticsTierRadar'] = new Chart(document.getElementById('analyticsTierRadar'), {
+        type: 'radar',
+        data: {
+            labels: DIMENSIONS.map(d => d.label),
+            datasets: [
+                { label: 'Excellent', data: tierAvg('excellent'), borderColor: '#22c55e', backgroundColor: '#22c55e18', pointBackgroundColor: '#22c55e', borderWidth: 2 },
+                { label: 'Good', data: tierAvg('good'), borderColor: '#3b82f6', backgroundColor: '#3b82f618', pointBackgroundColor: '#3b82f6', borderWidth: 2 },
+                { label: 'Adequate', data: tierAvg('adequate'), borderColor: '#eab308', backgroundColor: '#eab30818', pointBackgroundColor: '#eab308', borderWidth: 2 },
+                { label: 'Developing', data: tierAvg('developing'), borderColor: '#ef4444', backgroundColor: '#ef444418', pointBackgroundColor: '#ef4444', borderWidth: 2 }
+            ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 55, max: 100, ticks: { stepSize: 10 } } }, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true } } } }
+    });
+
+    // Insights
+    const bestDim = dimAvgs.reduce((a, b) => a.avg > b.avg ? a : b);
+    const worstDim = dimAvgs.reduce((a, b) => a.avg < b.avg ? a : b);
+    const topPlatform = PLATFORMS[0];
+    const avgScore = Math.round(PLATFORMS.reduce((s, p) => s + p.s, 0) / PLATFORMS.length * 10) / 10;
+    const above80 = PLATFORMS.filter(p => p.s >= 80).length;
+    const insights = [
+        { icon: 'crown', color: '#f59e0b', title: 'Top Performer', text: `${topPlatform.n} leads with ${topPlatform.s}/100, excelling in ${DIMENSIONS.reduce((a,b)=>topPlatform.sc[b.key]>topPlatform.sc[a.key]?b.key:a.key)} (${Math.max(...DIMENSIONS.map(d=>topPlatform.sc[d.key]))}).` },
+        { icon: 'chart-line', color: '#3b82f6', title: 'Ecosystem Average', text: `Average score across 56 platforms is ${avgScore}. ${above80} platforms (${Math.round(above80/56*100)}%) score above 80.` },
+        { icon: 'arrow-up', color: '#22c55e', title: 'Strongest Dimension', text: `${bestDim.label} is the highest-scoring dimension at ${bestDim.avg} avg across all platforms.` },
+        { icon: 'arrow-down', color: '#ef4444', title: 'Improvement Area', text: `${worstDim.label} is the lowest-scoring dimension at ${worstDim.avg} avg — the biggest opportunity for improvement.` },
+        { icon: 'layer-group', color: '#8b5cf6', title: 'Tier Distribution', text: `${tierGroups.excellent.length} Excellent, ${tierGroups.good.length} Good, ${tierGroups.adequate.length} Adequate, ${tierGroups.developing.length} Developing platforms.` },
+        { icon: 'shield-alt', color: '#14b8a6', title: 'Compliance', text: `Framework aligns with WHO, CDC, ISO 27799:2025, and FDA AI/ML standards. Security averages ${dimAvgs.find(d=>d.key==='security_compliance').avg}.` }
+    ];
+    document.getElementById('insightsContainer').innerHTML = insights.map(ins => `
+        <div class="border rounded-xl p-4 hover:shadow-md transition">
+            <div class="flex items-center gap-2 mb-2"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:${ins.color}18"><i class="fas fa-${ins.icon}" style="color:${ins.color}"></i></div><h4 class="font-bold text-sm">${ins.title}</h4></div>
+            <p class="text-xs text-gray-600 leading-relaxed">${ins.text}</p>
+        </div>`).join('');
+}
+
+// ===========================
+// MODAL
+// ===========================
+function openModal(idx) {
+    const p = PLATFORMS[idx];
+    const m = document.getElementById('modalContent');
+    m.innerHTML = `
+        <div class="flex items-center gap-3 mb-4">
+            <span class="w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-white text-lg" style="background:${tierColor(p.s)}">#${p.r}</span>
+            <div><h2 class="text-xl font-extrabold">${p.n}</h2><p class="text-sm text-gray-500">${p.c}</p></div>
+            <span class="ml-auto score-pill tier-${tierOf(p.s)} text-lg px-4 py-1">${p.s}</span>
+        </div>
+        <p class="text-sm text-gray-600 mb-4">${p.d || ''}</p>
+        <div class="mb-5" style="height:260px; position:relative;"><canvas id="modalRadar"></canvas></div>
+        <div class="grid grid-cols-2 gap-2 mb-5">${DIMENSIONS.map(d => {
+            const v = p.sc[d.key];
+            return `<div class="flex items-center gap-2 text-xs"><span class="w-16 font-semibold text-gray-500">${d.short}</span><div class="flex-1 bg-gray-200 rounded-full h-2"><div class="rounded-full h-2" style="width:${v}%;background:${tierColor(v)}"></div></div><span class="w-8 text-right font-bold" style="color:${tierColor(v)}">${v}</span></div>`;
+        }).join('')}</div>
+        <div class="grid grid-cols-2 gap-4">
+            <div><p class="text-xs font-bold text-green-600 uppercase mb-1.5">Strengths</p><ul class="text-xs text-gray-600 space-y-1">${(p.st||[]).map(s=>`<li><i class="fas fa-check-circle text-green-500 mr-1"></i>${s}</li>`).join('')}</ul></div>
+            <div><p class="text-xs font-bold text-red-600 uppercase mb-1.5">Weaknesses</p><ul class="text-xs text-gray-600 space-y-1">${(p.wk||[]).map(w=>`<li><i class="fas fa-exclamation-circle text-red-400 mr-1"></i>${w}</li>`).join('')}</ul></div>
+        </div>
+        <div class="mt-4 pt-4 border-t flex justify-between items-center">
+            <a href="${p.u}" target="_blank" class="text-purple-600 text-sm font-semibold hover:underline"><i class="fas fa-external-link-alt mr-1"></i>Visit Platform</a>
+            <button onclick="addToCompare(${idx});closeModal()" class="bg-purple-600 text-white text-sm px-4 py-2 rounded-lg font-semibold hover:bg-purple-700"><i class="fas fa-exchange-alt mr-1"></i>Compare</button>
+        </div>`;
+    document.getElementById('modalOverlay').classList.remove('hidden');
+    setTimeout(() => {
+        destroyChart('modalRadar');
+        chartInstances['modalRadar'] = new Chart(document.getElementById('modalRadar'), {
+            type: 'radar',
+            data: { labels: DIMENSIONS.map(d => d.label), datasets: [{ label: p.n, data: DIMENSIONS.map(d => p.sc[d.key]), backgroundColor: tierColor(p.s) + '18', borderColor: tierColor(p.s), pointBackgroundColor: tierColor(p.s), pointRadius: 4, borderWidth: 2 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 55, max: 100, ticks: { stepSize: 10 } } }, plugins: { legend: { display: false } } }
+        });
+    }, 50);
+}
+function closeModal() { document.getElementById('modalOverlay').classList.add('hidden'); }
+
+// ===========================
+// INIT
+// ===========================
+initOverview();
+initHeatmap();
+initCompare();
+initRankings();
+initAnalytics();
+</script>
+</body>
+</html>
