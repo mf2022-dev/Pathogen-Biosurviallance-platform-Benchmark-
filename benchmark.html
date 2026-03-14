@@ -805,7 +805,7 @@ function initAnalytics() {
     const avgScore = Math.round(PLATFORMS.reduce((s, p) => s + p.s, 0) / PLATFORMS.length * 10) / 10;
     const above80 = PLATFORMS.filter(p => p.s >= 80).length;
     const insights = [
-        { icon: 'crown', color: '#f59e0b', title: 'Top Performer', text: `${topPlatform.n} leads with ${topPlatform.s}/100, excelling in ${DIMENSIONS.reduce((a,b)=>topPlatform.sc[b.key]>topPlatform.sc[a.key]?b.key:a.key)} (${Math.max(...DIMENSIONS.map(d=>topPlatform.sc[d.key]))}).` },
+        { icon: 'crown', color: '#f59e0b', title: 'Top Performer', text: `${topPlatform.n} leads with ${topPlatform.s}/100, excelling in ${DIMENSIONS.reduce((a,b)=>topPlatform.sc[b.key]>topPlatform.sc[a.key]?b:a).label} (${Math.max(...DIMENSIONS.map(d=>topPlatform.sc[d.key]))}).` },
         { icon: 'chart-line', color: '#3b82f6', title: 'Ecosystem Average', text: `Average score across 56 platforms is ${avgScore}. ${above80} platforms (${Math.round(above80/56*100)}%) score above 80.` },
         { icon: 'arrow-up', color: '#22c55e', title: 'Strongest Dimension', text: `${bestDim.label} is the highest-scoring dimension at ${bestDim.avg} avg across all platforms.` },
         { icon: 'arrow-down', color: '#ef4444', title: 'Improvement Area', text: `${worstDim.label} is the lowest-scoring dimension at ${worstDim.avg} avg — the biggest opportunity for improvement.` },
