@@ -451,7 +451,8 @@
       "weaknesses": [
         "Unstructured data",
         "Signal-to-noise"
-      ]
+      ],
+      "description": "Automated real-time disease outbreak monitoring and visualization from diverse online sources"
     },
     {
       "rank": 12,
@@ -479,7 +480,8 @@
       "weaknesses": [
         "Limited tools",
         "Manual curation"
-      ]
+      ],
+      "description": "International society for infectious diseases early-warning system for emerging disease outbreaks"
     },
     {
       "rank": 13,
@@ -507,7 +509,8 @@
       "weaknesses": [
         "Complex deployment",
         "Technical expertise needed"
-      ]
+      ],
+      "description": "Open-source enterprise laboratory information system for public health laboratories"
     },
     {
       "rank": 14,
@@ -535,7 +538,8 @@
       "weaknesses": [
         "Desktop-based",
         "Limited web"
-      ]
+      ],
+      "description": "Desktop application for antimicrobial resistance data management and analysis"
     },
     {
       "rank": 15,
@@ -563,7 +567,8 @@
       "weaknesses": [
         "US-focused",
         "Limited analytics"
-      ]
+      ],
+      "description": "CDC open-source data pipeline for routing public health data from healthcare to agencies"
     },
     {
       "rank": 16,
@@ -591,7 +596,8 @@
       "weaknesses": [
         "Commercial",
         "High cost"
-      ]
+      ],
+      "description": "Integrated software platform for microbial whole-genome typing and epidemiological analysis"
     },
     {
       "rank": 17,
@@ -619,7 +625,8 @@
       "weaknesses": [
         "Limited genera",
         "Complex UI"
-      ]
+      ],
+      "description": "Web-based platform for bacterial genomic epidemiology with MLST and cgMLST analysis"
     },
     {
       "rank": 18,
@@ -646,7 +653,8 @@
       "weaknesses": [
         "Regional focus",
         "Setup complexity"
-      ]
+      ],
+      "description": "Integrated Rapid Infectious Disease Analysis platform for genomic epidemiology workflows"
     },
     {
       "rank": 19,
@@ -674,7 +682,8 @@
       "weaknesses": [
         "UK-specific",
         "Limited access"
-      ]
+      ],
+      "description": "UK Health Security Agency bioinformatics pipeline for national pathogen sequencing"
     },
     {
       "rank": 20,
@@ -702,7 +711,8 @@
       "weaknesses": [
         "Aggregated only",
         "Reporting delays"
-      ]
+      ],
+      "description": "WHO Global Antimicrobial Resistance and Use Surveillance System for standardized AMR data"
     },
     {
       "rank": 21,
@@ -729,7 +739,8 @@
       "weaknesses": [
         "US focus",
         "Restricted access"
-      ]
+      ],
+      "description": "CDC molecular subtyping network for foodborne disease surveillance using WGS"
     },
     {
       "rank": 22,
@@ -757,7 +768,8 @@
       "weaknesses": [
         "Visualization only",
         "Pre-processed data needed"
-      ]
+      ],
+      "description": "Interactive visualization tool for real-time phylogenomic analysis from Nextstrain"
     },
     {
       "rank": 23,
@@ -785,7 +797,8 @@
       "weaknesses": [
         "Google Cloud dependency",
         "Learning curve"
-      ]
+      ],
+      "description": "Broad Institute cloud bioinformatics platform for large-scale genomic analysis workflows"
     },
     {
       "rank": 24,
@@ -813,7 +826,8 @@
       "weaknesses": [
         "SARS-CoV-2 specific",
         "Limited analysis"
-      ]
+      ],
+      "description": "Real-time tracking and visualization of SARS-CoV-2 variants and mutations globally"
     },
     {
       "rank": 25,
@@ -841,7 +855,8 @@
       "weaknesses": [
         "SARS-CoV-2 only",
         "Classification lag"
-      ]
+      ],
+      "description": "Phylogenetic Assignment of Named Global Outbreak Lineages for SARS-CoV-2 classification"
     },
     {
       "rank": 26,
@@ -869,7 +884,8 @@
       "weaknesses": [
         "Limited pathogens",
         "Basic analysis"
-      ]
+      ],
+      "description": "Web-based tool for viral sequence analysis including clade assignment and quality control"
     },
     {
       "rank": 27,
@@ -896,7 +912,8 @@
       "weaknesses": [
         "Regional only",
         "Variable quality"
-      ]
+      ],
+      "description": "Regional surveillance analytics platform for multi-jurisdictional disease monitoring"
     },
     {
       "rank": 28,
@@ -923,7 +940,8 @@
       "weaknesses": [
         "UK-specific",
         "COVID origins"
-      ]
+      ],
+      "description": "COVID-19 Genomics UK consortium for national SARS-CoV-2 genomic surveillance"
     },
     {
       "rank": 29,
@@ -951,7 +969,8 @@
       "weaknesses": [
         "Influenza/SARS-CoV-2 only",
         "Limited scalability"
-      ]
+      ],
+      "description": "Influenza-centric bioinformatics platform for genome-based surveillance and outbreak detection"
     },
     {
       "rank": 30,
@@ -979,7 +998,8 @@
       "weaknesses": [
         "EU-focused",
         "Developing"
-      ]
+      ],
+      "description": "ECDC Genomic Epidemiology for COVID-19 surveillance coordination across EU/EEA"
     },
     {
       "rank": 31,
@@ -1007,7 +1027,8 @@
       "weaknesses": [
         "R knowledge required",
         "Fragmented"
-      ]
+      ],
+      "description": "Suite of R packages for infectious disease epidemiology analytics and outbreak response"
     },
     {
       "rank": 32,
@@ -1035,7 +1056,8 @@
       "weaknesses": [
         "US state-focused",
         "Legacy arch"
-      ]
+      ],
+      "description": "State-level electronic disease surveillance system for notifiable condition reporting"
     },
     {
       "rank": 33,
@@ -1063,7 +1085,8 @@
       "weaknesses": [
         "Limited genomic",
         "Outbreak-specific"
-      ]
+      ],
+      "description": "WHO field outbreak investigation tool for contact tracing and transmission chain analysis"
     },
     {
       "rank": 34,
@@ -1091,7 +1114,8 @@
       "weaknesses": [
         "Animals only",
         "Inconsistencies"
-      ]
+      ],
+      "description": "FAO Global Animal Disease Information System for transboundary disease intelligence"
     },
     {
       "rank": 35,
@@ -1119,7 +1143,8 @@
       "weaknesses": [
         "Windows only",
         "Dated interface"
-      ]
+      ],
+      "description": "CDC suite for epidemiologic data collection analysis and visualization in field settings"
     },
     {
       "rank": 36,
@@ -1147,7 +1172,8 @@
       "weaknesses": [
         "Animals only",
         "Delays"
-      ]
+      ],
+      "description": "World Organisation for Animal Health information system for animal disease reporting"
     },
     {
       "rank": 37,
@@ -1175,7 +1201,8 @@
       "weaknesses": [
         "US regulatory",
         "Limited public"
-      ]
+      ],
+      "description": "FDA network of labs using WGS for foodborne pathogen identification and tracking"
     },
     {
       "rank": 38,
@@ -1203,7 +1230,8 @@
       "weaknesses": [
         "Middleware only",
         "Requires ecosystem"
-      ]
+      ],
+      "description": "Open Health Information Mediator for interoperable health information exchange"
     },
     {
       "rank": 39,
@@ -1230,7 +1258,8 @@
       "weaknesses": [
         "R dependency",
         "Limited non-R"
-      ]
+      ],
+      "description": "Situation reporting tool for standardized public health emergency communications"
     },
     {
       "rank": 40,
@@ -1257,7 +1286,8 @@
       "weaknesses": [
         "Commercial",
         "Limited PH"
-      ]
+      ],
+      "description": "Clinical surveillance system for hospital-based infection detection and alerting"
     },
     {
       "rank": 41,
@@ -1284,7 +1314,8 @@
       "weaknesses": [
         "Limited deployment",
         "Regional"
-      ]
+      ],
+      "description": "Electronic Integrated Disease Surveillance System for multi-hazard event monitoring"
     },
     {
       "rank": 42,
@@ -1311,7 +1342,8 @@
       "weaknesses": [
         "Canada-specific",
         "Research focus"
-      ]
+      ],
+      "description": "Canadian Partnership for Tomorrow's Health population cohort platform"
     },
     {
       "rank": 43,
@@ -1339,7 +1371,8 @@
       "weaknesses": [
         "Desktop only",
         "Dated UI"
-      ]
+      ],
+      "description": "Software for spatial temporal and space-time scan statistics for cluster detection"
     },
     {
       "rank": 44,
@@ -1367,7 +1400,8 @@
       "weaknesses": [
         "Not health-specific",
         "Steep learning curve"
-      ]
+      ],
+      "description": "Open-source GIS application adapted for public health spatial analysis workflows"
     },
     {
       "rank": 45,
@@ -1394,7 +1428,8 @@
       "weaknesses": [
         "Influenza only",
         "Basic tools"
-      ]
+      ],
+      "description": "WHO global influenza virological surveillance tool tracking circulating strains"
     },
     {
       "rank": 46,
@@ -1421,7 +1456,8 @@
       "weaknesses": [
         "Restricted access",
         "Limited public"
-      ]
+      ],
+      "description": "WHO Epidemic Intelligence from Open Sources for early detection of public health events"
     },
     {
       "rank": 47,
@@ -1448,7 +1484,8 @@
       "weaknesses": [
         "EU only",
         "Reporting lag"
-      ]
+      ],
+      "description": "European Centre for Disease Prevention and Control data hub for EU surveillance"
     },
     {
       "rank": 48,
@@ -1474,7 +1511,8 @@
       "weaknesses": [
         "Commercial",
         "Limited transparency"
-      ]
+      ],
+      "description": "Automated Biosurveillance Intelligence System for pattern-based outbreak detection"
     },
     {
       "rank": 49,
@@ -1501,7 +1539,8 @@
       "weaknesses": [
         "Limited analysis",
         "Aggregation only"
-      ]
+      ],
+      "description": "Open-source API providing COVID-19 and disease statistics data for developers"
     },
     {
       "rank": 50,
@@ -1528,7 +1567,8 @@
       "weaknesses": [
         "Developing",
         "Limited resources"
-      ]
+      ],
+      "description": "Africa CDC Regional Integrated Surveillance and Laboratory Network platform"
     },
     {
       "rank": 51,
@@ -1555,7 +1595,8 @@
       "weaknesses": [
         "Territory-specific",
         "Limited scope"
-      ]
+      ],
+      "description": "Puerto Rico territorial genomic and disease surveillance information portal"
     },
     {
       "rank": 52,
@@ -1582,7 +1623,8 @@
       "weaknesses": [
         "CLI tool",
         "SARS-CoV-2 focused"
-      ]
+      ],
+      "description": "Cluster Investigation and Virus Epidemiology Tool for local outbreak analysis"
     },
     {
       "rank": 53,
@@ -1609,7 +1651,8 @@
       "weaknesses": [
         "Very niche",
         "Limited scope"
-      ]
+      ],
+      "description": "National surveillance system for prion diseases including CJD monitoring"
     },
     {
       "rank": 54,
@@ -1636,7 +1679,8 @@
       "weaknesses": [
         "Regional only",
         "Resource constraints"
-      ]
+      ],
+      "description": "West African laboratory network system for regional quality-assured diagnostics"
     },
     {
       "rank": 55,
@@ -1663,7 +1707,8 @@
       "weaknesses": [
         "Not surveillance-specific",
         "Needs customization"
-      ]
+      ],
+      "description": "Open-source medical record system adapted for disease surveillance in LMICs"
     },
     {
       "rank": 56,
@@ -1692,7 +1737,8 @@
         "Template only",
         "Requires dev",
         "Limited features"
-      ]
+      ],
+      "description": "Reference template for building custom pathogen surveillance dashboards"
     },
     {
       "rank": 57,
