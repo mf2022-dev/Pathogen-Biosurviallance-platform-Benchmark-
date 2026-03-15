@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Regional Recommendation Briefs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#0a0e1a;--card:#1a2235;--border:#2a3650;--t1:#e5e7eb;--t2:#9ca3af;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .tab-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t2);cursor:pointer;transition:all .2s}
+        .tab-btn:hover{border-color:rgba(59,130,246,.5);color:var(--t1)}
+        .tab-btn.active{background:rgba(6,182,212,.15);border-color:var(--cyan);color:var(--cyan)}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .region-card{background:rgba(26,34,53,.6);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s;cursor:pointer}
+        .region-card:hover{border-color:rgba(6,182,212,.4);transform:translateY(-2px);box-shadow:0 8px 32px rgba(6,182,212,.1)}
+        .pri-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+        .pri-critical{background:rgba(239,68,68,.2);color:#ef4444}
+        .pri-high{background:rgba(245,158,11,.2);color:#f59e0b}
+        .pri-medium{background:rgba(6,182,212,.2);color:#06b6d4}
+        .pri-low{background:rgba(16,185,129,.2);color:#10b981}
+        .gap-bar{height:6px;border-radius:3px;background:rgba(42,54,80,.5)}
+        .gap-fill{height:100%;border-radius:3px;transition:width 1.2s ease-out}
+        .timeline-item{position:relative;padding-left:24px}
+        .timeline-item::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:var(--border)}
+        .timeline-item::after{content:'';position:absolute;left:4px;top:6px;width:10px;height:10px;border-radius:50%;border:2px solid var(--cyan);background:var(--bg)}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-bio-cyan font-normal text-sm ml-1">Regional Recommendation Briefs</span></h1>
+                <p class="text-xs text-gray-500">Deliverable H — Phase 3 | 8 Core Regions + 169 Platforms | Investment-Linked Recommendations</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../../phase1/executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../../phase2/investment_roadmap/index.html" class="hover:text-bio-cyan"><i class="fas fa-dollar-sign mr-1"></i>Investment</a>
+            <a href="../adversary_dossier/index.html" class="hover:text-bio-cyan"><i class="fas fa-crosshairs mr-1"></i>Adversary</a>
+        </nav>
+    </div>
+</header>
+
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(6,182,212,.06),rgba(59,130,246,.04),rgba(16,185,129,.04))">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">8</div><div class="text-[10px] text-gray-500 uppercase">Core Regions</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-blue-400">169</div><div class="text-[10px] text-gray-500 uppercase">Mapped Platforms</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400">96</div><div class="text-[10px] text-gray-500 uppercase">Recommendations</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400">$31.6B</div><div class="text-[10px] text-gray-500 uppercase">Linked Investment</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-purple-400">15</div><div class="text-[10px] text-gray-500 uppercase">Gap Domains</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-white">12</div><div class="text-[10px] text-gray-500 uppercase">Capability Dims</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>PSEF v3.0.0 | 1,690 Data Points</div><div>Assessment Date: Mar 2026 | Horizon 2026-2036</div></div>
+    </div>
+</div>
+
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+        <button class="tab-btn active" onclick="switchTab('overview')"><i class="fas fa-globe mr-1"></i>Regional Overview</button>
+        <button class="tab-btn" onclick="switchTab('fvey')"><i class="fas fa-eye mr-1"></i>Five Eyes</button>
+        <button class="tab-btn" onclick="switchTab('nato')"><i class="fas fa-shield-alt mr-1"></i>NATO / Europe</button>
+        <button class="tab-btn" onclick="switchTab('indopacific')"><i class="fas fa-water mr-1"></i>Indo-Pacific</button>
+        <button class="tab-btn" onclick="switchTab('africa')"><i class="fas fa-globe-africa mr-1"></i>Africa</button>
+        <button class="tab-btn" onclick="switchTab('mena')"><i class="fas fa-mosque mr-1"></i>MENA</button>
+        <button class="tab-btn" onclick="switchTab('latam')"><i class="fas fa-mountain mr-1"></i>Latin America</button>
+        <button class="tab-btn" onclick="switchTab('sasia')"><i class="fas fa-om mr-1"></i>South Asia</button>
+        <button class="tab-btn" onclick="switchTab('eurasia')"><i class="fas fa-snowflake mr-1"></i>Central Asia</button>
+        <button class="tab-btn" onclick="switchTab('compare')"><i class="fas fa-balance-scale mr-1"></i>Comparative</button>
+        <button class="tab-btn" onclick="switchTab('baseline')"><i class="fas fa-database mr-1"></i>Platform Map (169)</button>
+    </div>
+</div>
+
+<main class="max-w-[1700px] mx-auto px-6 py-6">
+
+<!-- OVERVIEW TAB -->
+<div id="overview" class="tab-content active space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="region-cards"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-radar text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Regional Readiness Comparison</h2></div><div style="height:400px"><canvas id="regional-radar"></canvas></div></div>
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Investment Allocation by Region ($B)</h2></div><div style="height:400px"><canvas id="investment-bar"></canvas></div></div>
+    </div>
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-exclamation-circle text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Top Cross-Regional Gaps</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="cross-gaps"></div></div>
+</div>
+
+<!-- REGION TABS -->
+<div id="fvey" class="tab-content space-y-6"><div id="fvey-content"></div></div>
+<div id="nato" class="tab-content space-y-6"><div id="nato-content"></div></div>
+<div id="indopacific" class="tab-content space-y-6"><div id="indopacific-content"></div></div>
+<div id="africa" class="tab-content space-y-6"><div id="africa-content"></div></div>
+<div id="mena" class="tab-content space-y-6"><div id="mena-content"></div></div>
+<div id="latam" class="tab-content space-y-6"><div id="latam-content"></div></div>
+<div id="sasia" class="tab-content space-y-6"><div id="sasia-content"></div></div>
+<div id="eurasia" class="tab-content space-y-6"><div id="eurasia-content"></div></div>
+
+<!-- COMPARE TAB -->
+<div id="compare" class="tab-content space-y-6">
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-th text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Capability Heatmap by Region</h2></div><div class="overflow-x-auto" id="region-heatmap"></div></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Gap Severity by Region</h2></div><div style="height:350px"><canvas id="gap-bar"></canvas></div></div>
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-dollar-sign text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Cost vs Readiness Improvement</h2></div><div style="height:350px"><canvas id="cost-impact"></canvas></div></div>
+    </div>
+</div>
+
+<!-- BASELINE TAB -->
+<div id="baseline" class="tab-content space-y-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3" id="baseline-stats"></div>
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-map-marked-alt text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Platform Distribution by Region & Layer</h2></div><div id="platform-map"></div></div>
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-layer-group text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Global Dimension Averages (169 Platforms)</h2></div><div style="height:300px"><canvas id="dim-bar"></canvas></div></div>
+</div>
+
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1700px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable H: Regional Recommendation Briefs</div>
+        <div>8 Regions | 169 Platforms | 96 Recommendations | $31.6B Linked | PSEF v3.0.0</div>
+    </div>
+</footer>
+
+<script>
+/* ─── CAPABILITY DIMENSIONS ─── */
+const CAPS = ['Early Warning','Genomic Surveillance','Data Sharing','MCM Pipeline','Bio-Agent Detection','Lab Network','AI/ML Forecasting','Supply Chain','Workforce','Interoperability','Command & Control','Intel Sharing'];
+
+/* ─── REGIONS ─── */
+const REGIONS = [
+{id:'fvey',name:'Five Eyes',icon:'fa-eye',color:'#3b82f6',members:'US, UK, Canada, Australia, New Zealand',
+ readiness:88,platforms:42,investment:8.2,
+ scores:{ew:92,gs:90,ds:85,mcm:88,detect:90,lab:92,ai:85,supply:82,work:80,interop:88,c2:90,intel:95},
+ gaps:[
+  {domain:'AI/ML Forecasting',severity:65,detail:'No unified allied AI model validation framework; each nation trains models independently'},
+  {domain:'Supply Chain',severity:58,detail:'MCM manufacturing concentrated in US; UK/AUS lack sovereign mRNA production'},
+  {domain:'Data Sharing',severity:52,detail:'Classification barriers between IC and public health; FVEY-Health data protocol missing'},
+  {domain:'Workforce',severity:48,detail:'Biodefense workforce aging; STEM pipeline insufficient for AI-bio convergence'}
+ ],
+ topPlatforms:[
+  {name:'Nextstrain',score:95,layer:'L2 Genomic'},{name:'outbreak.info',score:90,layer:'L1 Surveillance'},
+  {name:'BioSense/ESSENCE',score:87.2,layer:'L1 Surveillance'},{name:'NWSS',score:86.2,layer:'L1 Surveillance'},
+  {name:'GEIS',score:85,layer:'L3 Defense'},{name:'DARPA P3',score:84,layer:'L3 Defense'},
+  {name:'UK Dstl',score:82.5,layer:'L3 Defense'},{name:'BioFire Defense',score:82,layer:'L4 Hardware'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'Establish FVEY Bio-Data Exchange Protocol',cost:180,impact:95,detail:'Standardize biosurveillance data formats and sharing timelines across Five Eyes nations. Target: <4hr latency for Category A events.'},
+  {phase:'immediate',title:'Joint AI Model Validation Consortium',cost:120,impact:88,detail:'Create shared AI model testing framework to validate pandemic prediction models across allied datasets.'},
+  {phase:'immediate',title:'Dual-Use Research Monitoring Network',cost:220,impact:92,detail:'Pool FVEY intelligence on synthetic biology publications. Target: 95% coverage, 72hr alerts.'},
+  {phase:'near_term',title:'AUKUS Bio-Manufacturing Hub',cost:850,impact:85,detail:'Establish distributed mRNA manufacturing in Australia with UK tech transfer. 60-day surge capacity.'},
+  {phase:'near_term',title:'Integrated Wastewater Genomic Network',cost:340,impact:82,detail:'Connect US NWSS, UK COG-UK, AUS environmental monitoring into single dashboard.'},
+  {phase:'long_term',title:'Autonomous Bio-Sentinel Network',cost:1200,impact:78,detail:'Deploy AI-powered environmental sampling stations across FVEY territories. Real-time pathogen detection.'}
+ ]},
+{id:'nato',name:'NATO / Europe',icon:'fa-shield-alt',color:'#10b981',members:'31 NATO members + EU partners',
+ readiness:78,platforms:22,investment:6.8,
+ scores:{ew:82,gs:80,ds:72,mcm:75,detect:78,lab:80,ai:72,supply:68,work:74,interop:65,c2:75,intel:72},
+ gaps:[
+  {domain:'Interoperability',severity:78,detail:'GDPR conflicts with health data sharing; no unified bio-data STANAG across 31 members'},
+  {domain:'Data Sharing',severity:72,detail:'National data sovereignty concerns block cross-border genomic surveillance'},
+  {domain:'Supply Chain',severity:68,detail:'EU MCM dependency on non-allied manufacturing; 12-18mo supply chain vulnerabilities'},
+  {domain:'AI/ML Forecasting',severity:62,detail:'Fragmented AI development; no shared training datasets or validation protocols'},
+  {domain:'Lab Network',severity:55,detail:'BSL-4 capacity concentrated in 6 nations; Eastern flank has minimal high-containment labs'}
+ ],
+ topPlatforms:[
+  {name:'SORMAS',score:90,layer:'L1 Surveillance'},{name:'Microreact',score:87.5,layer:'L2 Genomic'},
+  {name:'Pathoplexus',score:85.6,layer:'L2 Genomic'},{name:'EnteroBase',score:82.5,layer:'L2 Genomic'},
+  {name:'UK Dstl',score:82.5,layer:'L3 Defense'},{name:'NATO JCBRN COE',score:79.5,layer:'L3 Defense'},
+  {name:'Bundeswehr CBRN',score:78,layer:'L3 Defense'},{name:'DGA NRBC',score:77,layer:'L3 Defense'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'NATO STANAG for Biosurveillance Data',cost:120,impact:88,detail:'Develop and ratify standardized biosurveillance data protocol. Target: 20+ members adopt within 2yr.'},
+  {phase:'immediate',title:'GDPR Health Emergency Exemption Protocol',cost:45,impact:82,detail:'Negotiate pre-authorized GDPR exemption for designated biological emergencies across EU.'},
+  {phase:'near_term',title:'Eastern Flank BSL-3 Network',cost:680,impact:80,detail:'Build 8 modular BSL-3 labs across Baltic/Eastern European nations. NATO Article 3 justification.'},
+  {phase:'near_term',title:'EU-NATO Joint MCM Stockpile',cost:920,impact:85,detail:'Create pre-positioned medical countermeasure reserves at 5 NATO hub locations.'},
+  {phase:'near_term',title:'Allied Pathogen Genomics Backbone',cost:450,impact:82,detail:'Connect national reference labs into unified European pathogen genomics network via Pathoplexus.'},
+  {phase:'long_term',title:'NATO Bio-Threat Intelligence Fusion Cell',cost:280,impact:78,detail:'Permanent NATO intelligence cell for bio-threat monitoring, co-located with SHAPE.'}
+ ]},
+{id:'indopacific',name:'Indo-Pacific',icon:'fa-water',color:'#f59e0b',members:'AUKUS, Quad, ASEAN, Pacific Islands',
+ readiness:62,platforms:15,investment:5.4,
+ scores:{ew:68,gs:62,ds:55,mcm:58,detect:65,lab:55,work:52,interop:48,c2:58,intel:62,ai:60,supply:50},
+ gaps:[
+  {domain:'Data Sharing',severity:82,detail:'No regional bio-data sharing framework; ASEAN nations lack interoperable systems'},
+  {domain:'Lab Network',severity:78,detail:'Pacific Islands have zero BSL-3 capability; ASEAN average 2 per nation'},
+  {domain:'Supply Chain',severity:75,detail:'MCM logistics chain vulnerable to South China Sea disruption scenarios'},
+  {domain:'Genomic Surveillance',severity:72,detail:'Sequencing capacity concentrated in Australia/Japan; Southeast Asia gap critical'},
+  {domain:'Workforce',severity:70,detail:'Severe shortage of trained biosurveillance workforce across ASEAN nations'},
+  {domain:'Interoperability',severity:68,detail:'Language barriers, data format differences, and political fragmentation'}
+ ],
+ topPlatforms:[
+  {name:'Australia DSTG CBRN',score:79,layer:'L3 Defense'},{name:'Korea-US Joint Portal',score:78.5,layer:'L1 Surveillance'},
+  {name:'Japan NIID/JSDF',score:78,layer:'L3 Defense'},{name:'APGI',score:75.8,layer:'L2 Genomic'},
+  {name:'KIDA Korea',score:74.5,layer:'L5 Policy'},{name:'JUPITR',score:74,layer:'L1 Surveillance'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'Quad Biosurveillance Data Compact',cost:95,impact:85,detail:'US-Japan-India-Australia agreement for real-time bio-event sharing. Template for ASEAN expansion.'},
+  {phase:'immediate',title:'Pacific Islands Genomic Hub',cost:180,impact:78,detail:'Deploy Oxford Nanopore-based sequencing at 6 Pacific Island health ministries.'},
+  {phase:'near_term',title:'ASEAN One Health Network',cost:420,impact:82,detail:'Build integrated human-animal-environmental surveillance across 10 ASEAN nations.'},
+  {phase:'near_term',title:'AUKUS Bio-Defense Framework',cost:650,impact:80,detail:'Trilateral biodefense technology sharing agreement with joint R&D centers.'},
+  {phase:'near_term',title:'Regional MCM Distribution Network',cost:380,impact:75,detail:'Pre-positioned medical countermeasures at 8 Indo-Pacific logistics hubs.'},
+  {phase:'long_term',title:'AI-Powered Regional Early Warning',cost:520,impact:72,detail:'Deploy ML-based pathogen surveillance covering Indonesia, Philippines, Vietnam, Thailand.'}
+ ]},
+{id:'africa',name:'Africa',icon:'fa-globe-africa',color:'#a855f7',members:'55 AU member states',
+ readiness:35,platforms:6,investment:4.2,
+ scores:{ew:35,gs:28,ds:30,mcm:22,detect:25,lab:20,ai:18,supply:15,work:30,interop:22,c2:28,intel:20},
+ gaps:[
+  {domain:'Lab Network',severity:92,detail:'Only 4 BSL-3 labs for 1.4B people; zero indigenous BSL-4 capability'},
+  {domain:'Genomic Surveillance',severity:90,detail:'<2% of global sequencing capacity despite 17% of world population'},
+  {domain:'Supply Chain',severity:88,detail:'98% MCM import dependency; zero continental mRNA manufacturing'},
+  {domain:'AI/ML Forecasting',severity:85,detail:'Limited computational infrastructure; data science workforce near zero'},
+  {domain:'Data Sharing',severity:82,detail:'No continental bio-data backbone; 54 separate national systems with minimal integration'},
+  {domain:'Workforce',severity:80,detail:'1 epidemiologist per 500,000 population (WHO recommends 1 per 200,000)'},
+  {domain:'Early Warning',severity:78,detail:'Event detection latency averages 14 days vs 2 days in Five Eyes nations'}
+ ],
+ topPlatforms:[
+  {name:'Africa CDC AGARI',score:79,layer:'L2 Genomic'},{name:'Africa CDC ARES',score:66,layer:'L1 Surveillance'},
+  {name:'DHIS2 (deployed)',score:89,layer:'Global'},{name:'SORMAS (deployed)',score:90,layer:'Global'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'African Cross-Border Data Backbone',cost:450,impact:82,detail:'Connect 30 African nations to unified biosurveillance platform. Build on DHIS2 + Africa CDC.'},
+  {phase:'immediate',title:'Rapid Genomic Sequencing Deployment',cost:280,impact:85,detail:'Deploy 50 Oxford Nanopore MinION units to regional hubs. Train 200 bioinformaticians.'},
+  {phase:'near_term',title:'Continental BSL-3 Network',cost:680,impact:78,detail:'Build 12 regional BSL-3 reference labs. Partner with Africa CDC AGARI. Target: every sub-region.'},
+  {phase:'near_term',title:'African MCM Manufacturing Initiative',cost:1200,impact:80,detail:'Establish 3 continental mRNA manufacturing sites (South Africa, Kenya, Morocco). WHO mRNA hub linkage.'},
+  {phase:'near_term',title:'One Health Workforce Academy',cost:320,impact:75,detail:'Train 5,000 epidemiologists and 1,000 genomic scientists across 5 regional training centers.'},
+  {phase:'long_term',title:'Autonomous Wastewater Surveillance Network',cost:420,impact:70,detail:'Deploy low-cost wastewater monitoring in 100 African cities. AI-powered pathogen detection.'}
+ ]},
+{id:'mena',name:'Middle East & North Africa',icon:'fa-mosque',color:'#ef4444',members:'GCC, Israel, North Africa, Levant',
+ readiness:52,platforms:8,investment:2.8,
+ scores:{ew:55,gs:48,ds:42,mcm:50,detect:52,lab:55,ai:45,supply:48,work:45,interop:35,c2:50,intel:48},
+ gaps:[
+  {domain:'Interoperability',severity:82,detail:'Political fragmentation prevents data sharing between Israel, GCC, and North Africa'},
+  {domain:'Data Sharing',severity:78,detail:'Conflict zones (Yemen, Syria, Iraq) create surveillance black holes'},
+  {domain:'Genomic Surveillance',severity:72,detail:'Sequencing concentrated in Israel and UAE; rest of region severely underserved'},
+  {domain:'AI/ML Forecasting',severity:68,detail:'Limited AI capability outside Israel; Gulf states investing but early stage'},
+  {domain:'Workforce',severity:65,detail:'Brain drain depletes trained workforce; conflict disrupts training pipelines'}
+ ],
+ topPlatforms:[
+  {name:'IIBR',score:83,layer:'L3 Defense'},{name:'Solu',score:82,layer:'L2 Genomic'},
+  {name:'Hesn Saudi Arabia',score:80,layer:'L1 Surveillance'},{name:'HHIS/HEWS',score:77.5,layer:'L1 Surveillance'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'GCC Unified Bio-Surveillance Platform',cost:120,impact:78,detail:'Connect 6 Gulf Cooperation Council nations to shared biosurveillance dashboard.'},
+  {phase:'immediate',title:'Conflict Zone Mobile Surveillance Units',cost:85,impact:82,detail:'Deploy 20 mobile genomic surveillance units for Yemen, Syria, Iraq, Libya.'},
+  {phase:'near_term',title:'Israel-GCC Biodefense Tech Transfer',cost:280,impact:75,detail:'Leverage Abraham Accords for biodefense technology sharing. IIBR partnership with Gulf labs.'},
+  {phase:'near_term',title:'North Africa Genomic Corridor',cost:350,impact:72,detail:'Build sequencing capacity in Morocco, Tunisia, Egypt. Connect to Mediterranean surveillance.'},
+  {phase:'long_term',title:'Regional Mass-Gathering Health Intel',cost:180,impact:70,detail:'Permanent biosurveillance system for Hajj, regional sporting events, and tourism corridors.'}
+ ]},
+{id:'latam',name:'Latin America & Caribbean',icon:'fa-mountain',color:'#f97316',members:'33 CELAC members, PAHO coverage',
+ readiness:42,platforms:5,investment:2.2,
+ scores:{ew:48,gs:38,ds:40,mcm:35,detect:38,lab:42,ai:30,supply:32,work:40,interop:38,c2:42,intel:35},
+ gaps:[
+  {domain:'Genomic Surveillance',severity:82,detail:'Brazil has 60% of regional capacity; Caribbean islands have near-zero sequencing'},
+  {domain:'Supply Chain',severity:78,detail:'100% MCM import dependency; no regional mRNA manufacturing capability'},
+  {domain:'AI/ML Forecasting',severity:75,detail:'Limited computational infrastructure; AI talent concentrated in Brazil/Mexico'},
+  {domain:'Lab Network',severity:72,detail:'BSL-3 labs in only 8 of 33 nations; Caribbean has zero high-containment capability'},
+  {domain:'Data Sharing',severity:68,detail:'PAHO coordination improving but 33 separate national systems remain siloed'}
+ ],
+ topPlatforms:[
+  {name:'DHIS2 (deployed)',score:89,layer:'Global'},{name:'SORMAS (deployed)',score:90,layer:'Global'},
+  {name:'GLASS-WHO (reporting)',score:81,layer:'Global'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'PAHO Genomic Sequencing Network',cost:180,impact:80,detail:'Deploy 30 sequencing units across PAHO member states. Priority: Caribbean, Central America.'},
+  {phase:'immediate',title:'Arboviral Surveillance Enhancement',cost:95,impact:85,detail:'Expand dengue/Zika/chikungunya monitoring with genomic component. Leverage ArboNET expertise.'},
+  {phase:'near_term',title:'Regional BSL-3 Hub Network',cost:420,impact:75,detail:'Build 6 BSL-3 reference labs: Brazil, Mexico, Colombia, Peru, Chile, Dominican Republic.'},
+  {phase:'near_term',title:'Latin American MCM Consortium',cost:680,impact:72,detail:'Establish regional MCM R&D and manufacturing. Build on Brazilian Fiocruz capacity.'},
+  {phase:'long_term',title:'Amazon Basin One Health Sentinel',cost:350,impact:68,detail:'Deploy environmental surveillance across Amazon rainforest for spillover detection.'}
+ ]},
+{id:'sasia',name:'South Asia',icon:'fa-om',color:'#ec4899',members:'India, Pakistan, Bangladesh, Sri Lanka, Nepal',
+ readiness:45,platforms:6,investment:3.2,
+ scores:{ew:52,gs:45,ds:38,mcm:48,detect:42,lab:45,ai:42,supply:35,work:38,interop:32,c2:40,intel:35},
+ gaps:[
+  {domain:'Data Sharing',severity:80,detail:'India-Pakistan tensions prevent cross-border bio-data exchange; SAARC health protocols weak'},
+  {domain:'Interoperability',severity:78,detail:'Multiple incompatible national systems; India IDSP, Pakistan DEWS operate in isolation'},
+  {domain:'Supply Chain',severity:72,detail:'India is major vaccine producer but distribution to neighbors inconsistent'},
+  {domain:'Lab Network',severity:68,detail:'India has growing BSL-3/4 capacity; neighbors have minimal high-containment labs'},
+  {domain:'AI/ML Forecasting',severity:62,detail:'India AI talent growing but biodefense AI applications underdeveloped'},
+  {domain:'Workforce',severity:60,detail:'1.8B people with insufficient epidemiological workforce density'}
+ ],
+ topPlatforms:[
+  {name:'India DRDO Biodefense',score:75,layer:'L3 Defense'},{name:'DHIS2 (deployed)',score:89,layer:'Global'},
+  {name:'IDSP India',score:76,layer:'L1 Surveillance'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'Quad Health Security Initiative',cost:150,impact:82,detail:'US-India-Japan-Australia health security package. Genomic capacity building for India + neighbors.'},
+  {phase:'immediate',title:'South Asian AMR Surveillance Network',cost:120,impact:78,detail:'Connect India, Bangladesh, Nepal, Sri Lanka AMR monitoring via GLASS-compatible systems.'},
+  {phase:'near_term',title:'Indian Biosurveillance Modernization',cost:480,impact:80,detail:'Upgrade IDSP to real-time genomic-integrated platform. Deploy to all 28 states + 8 UTs.'},
+  {phase:'near_term',title:'Bangladesh-Nepal Genomic Corridor',cost:220,impact:72,detail:'Build sequencing capacity in Dhaka and Kathmandu. Cross-border pathogen monitoring.'},
+  {phase:'long_term',title:'South Asian MCM Distribution Hub',cost:580,impact:68,detail:'Leverage India vaccine manufacturing for regional MCM distribution network.'}
+ ]},
+{id:'eurasia',name:'Central Asia & Caucasus',icon:'fa-snowflake',color:'#64748b',members:'Kazakhstan, Uzbekistan, Georgia, Armenia + partners',
+ readiness:32,platforms:3,investment:1.8,
+ scores:{ew:35,gs:28,ds:25,mcm:22,detect:32,lab:30,ai:15,supply:18,work:25,interop:22,c2:30,intel:20},
+ gaps:[
+  {domain:'Lab Network',severity:88,detail:'Soviet-era infrastructure degraded; only Kazakhstan has partial BSL-3 capability'},
+  {domain:'Data Sharing',severity:85,detail:'Russian influence complicates Western data sharing; China expanding biological presence'},
+  {domain:'Genomic Surveillance',severity:82,detail:'Near-zero indigenous sequencing capacity; samples sent to Russia or China for analysis'},
+  {domain:'Supply Chain',severity:80,detail:'Complete MCM dependency on Russia or China; zero regional manufacturing'},
+  {domain:'Workforce',severity:78,detail:'Brain drain to Russia/Europe depletes trained scientists; training programs minimal'},
+  {domain:'AI/ML Forecasting',severity:75,detail:'No AI capability for biosurveillance; internet infrastructure limitations'}
+ ],
+ topPlatforms:[
+  {name:'DHIS2 (deployed)',score:89,layer:'Global'},{name:'GLASS-WHO (reporting)',score:81,layer:'Global'}
+ ],
+ recommendations:[
+  {phase:'immediate',title:'CTR Biological Engagement Expansion',cost:120,impact:80,detail:'Expand Cooperative Threat Reduction programs to all 5 Central Asian nations. Secure Soviet-era materials.'},
+  {phase:'immediate',title:'Mobile Genomic Surveillance Kits',cost:65,impact:75,detail:'Deploy 15 portable sequencing systems to regional health ministries. USAID partnership.'},
+  {phase:'near_term',title:'Caucasus-Central Asia BSL-2+ Network',cost:280,impact:72,detail:'Build 6 enhanced BSL-2 labs with capability upgrade path. Georgian Lugar Center as model.'},
+  {phase:'near_term',title:'Regional Epidemiologist Training Program',cost:180,impact:70,detail:'Train 500 epidemiologists across 8 nations. Partnership with Kazakhstan National Lab.'},
+  {phase:'long_term',title:'Central Asian Bio-Data Independence',cost:350,impact:68,detail:'Establish regional bio-data infrastructure independent of Russia/China. Cloud-based on allied infrastructure.'}
+ ]}
+];
+
+/* ─── CROSS-REGIONAL GAP DATA ─── */
+const CROSS_GAPS = [
+    {title:'Global Genomic Sequencing Inequity',severity:'critical',regions:['Africa','LATAM','Central Asia','South Asia'],detail:'80% of global sequencing capacity in 10 nations. 4B+ people lack local genomic capability. Creates massive detection blind spots.'},
+    {title:'MCM Manufacturing Concentration',severity:'critical',regions:['All except Five Eyes'],detail:'90%+ of mRNA manufacturing in US/EU. Global South completely dependent on imports. 60-day delivery delays in crisis scenarios.'},
+    {title:'Bio-Data Sovereignty Fragmentation',severity:'critical',regions:['NATO','Indo-Pacific','MENA','South Asia'],detail:'200+ separate national systems with incompatible formats. Average cross-border data latency: 14+ days vs <4hr target.'},
+    {title:'AI/ML Capability Divide',severity:'high',regions:['Africa','LATAM','Central Asia','MENA'],detail:'Allied AI advantage restricted to FVEY nations. No shared training datasets. Adversary AI-bio convergence accelerating.'},
+    {title:'BSL-3/4 Lab Deserts',severity:'high',regions:['Africa','Pacific Islands','Caribbean','Central Asia'],detail:'3B+ people live >500km from nearest BSL-3 lab. Field diagnostics cannot substitute for containment capability.'},
+    {title:'One Health Integration Failure',severity:'high',regions:['All regions'],detail:'Animal-human-environmental surveillance remain siloed. Zoonotic spillover detection averages 21 days globally.'},
+    {title:'Workforce Pipeline Crisis',severity:'high',regions:['Africa','Central Asia','MENA','South Asia'],detail:'Global deficit of 50,000+ trained biosurveillance professionals. Training programs produce <2,000/year.'},
+    {title:'Wastewater Surveillance Gaps',severity:'medium',regions:['Africa','LATAM','South Asia','Central Asia'],detail:'Only 25 nations have operational wastewater pathogen monitoring. 6B+ people unmonitored.'},
+    {title:'Cyber-Bio Infrastructure Vulnerability',severity:'medium',regions:['All regions'],detail:'85% of bio-data systems lack adequate cyber protection. State-sponsored attacks on health infrastructure increasing.'}
+];
+
+/* ─── PLATFORM BASELINE DATA ─── */
+const PLATFORM_REGIONS = {
+    'Five Eyes':{count:42,avg:79.9,layers:{L1:12,L2:15,L3:10,L4:4,L5:1},top:[{n:'Nextstrain',s:95},{n:'outbreak.info',s:90},{n:'BioSense/ESSENCE',s:87.2},{n:'NWSS',s:86.2},{n:'GEIS',s:85}]},
+    'NATO/Europe':{count:22,avg:78.8,layers:{L1:4,L2:6,L3:8,L4:3,L5:1},top:[{n:'SORMAS',s:90},{n:'Microreact',s:87.5},{n:'Pathoplexus',s:85.6},{n:'EnteroBase',s:82.5},{n:'UK Dstl',s:82.5}]},
+    'Indo-Pacific':{count:15,avg:73.5,layers:{L1:3,L2:4,L3:5,L4:2,L5:1},top:[{n:'Australia DSTG',s:79},{n:'Korea-US Portal',s:78.5},{n:'Japan NIID/JSDF',s:78},{n:'APGI',s:75.8}]},
+    'Africa':{count:6,avg:72.5,layers:{L1:2,L2:2,L3:1,L4:0,L5:1},top:[{n:'Africa CDC AGARI',s:79},{n:'Africa CDC ARES',s:66}]},
+    'MENA':{count:8,avg:78.2,layers:{L1:2,L2:2,L3:2,L4:1,L5:1},top:[{n:'IIBR',s:83},{n:'Solu',s:82},{n:'Hesn',s:80}]},
+    'LATAM':{count:5,avg:74.0,layers:{L1:2,L2:1,L3:1,L4:0,L5:1},top:[{n:'DHIS2 (deployed)',s:89},{n:'GLASS-WHO',s:81}]},
+    'South Asia':{count:6,avg:76.0,layers:{L1:2,L2:1,L3:2,L4:0,L5:1},top:[{n:'India DRDO',s:75},{n:'IDSP',s:76}]},
+    'Central Asia':{count:3,avg:72.0,layers:{L1:1,L2:1,L3:1,L4:0,L5:0},top:[{n:'DHIS2 (deployed)',s:89}]},
+    'Global (shared)':{count:113,avg:78.5,layers:{L1:25,L2:42,L3:18,L4:8,L5:5},top:[{n:'Nextstrain',s:95},{n:'CZ ID',s:89.2},{n:'DHIS2',s:89},{n:'NCBI',s:88.9},{n:'GISAID',s:88.5}]}
+};
+
+/* ─── CHART INSTANCES ─── */
+let charts = {};
+
+/* ─── TAB SWITCH ─── */
+function switchTab(id){
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+    const r = REGIONS.find(x=>x.id===id);
+    if(r) renderRegionBrief(r);
+    if(id==='compare'&&!charts.compareDone) renderCompare();
+    if(id==='baseline'&&!charts.baselineDone) renderBaseline();
+}
+
+/* ─── HELPERS ─── */
+function priColor(p){return p==='critical'?'#ef4444':p==='high'?'#f59e0b':p==='medium'?'#06b6d4':'#10b981';}
+function phaseLabel(p){return p==='immediate'?'0-12 mo':p==='near_term'?'1-3 yr':'3-10 yr';}
+function phaseColor(p){return p==='immediate'?'#ef4444':p==='near_term'?'#f59e0b':'#a855f7';}
+function fmtM(n){return n>=1000?'$'+(n/1000).toFixed(1)+'B':'$'+n+'M';}
+function scoreColor(s){return s>=80?'#10b981':s>=60?'#3b82f6':s>=40?'#f59e0b':'#ef4444';}
+
+/* ─── RENDER OVERVIEW ─── */
+function renderOverview(){
+    // Region cards
+    document.getElementById('region-cards').innerHTML = REGIONS.map(r=>{
+        const totalInv = r.recommendations.reduce((s,x)=>s+x.cost,0);
+        const gapCount = r.gaps.length;
+        return `<div class="region-card" onclick="switchTab('${r.id}');document.querySelectorAll('.tab-btn').forEach(b=>{if(b.textContent.includes('${r.name.split('/')[0].trim().substring(0,6)}'))b.click()})">
+            <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:${r.color}20"><i class="fas ${r.icon}" style="color:${r.color}"></i></div>
+                <div><div class="text-sm font-bold" style="color:${r.color}">${r.name}</div><div class="text-[10px] text-gray-500">${r.members.substring(0,40)}${r.members.length>40?'...':''}</div></div></div>
+            <div class="grid grid-cols-3 gap-2 mb-3">
+                <div class="text-center"><div class="text-xl font-black" style="color:${scoreColor(r.readiness)}">${r.readiness}</div><div class="text-[9px] text-gray-500">Readiness</div></div>
+                <div class="text-center"><div class="text-xl font-black text-bio-cyan">${r.platforms}</div><div class="text-[9px] text-gray-500">Platforms</div></div>
+                <div class="text-center"><div class="text-xl font-black text-amber-400">${gapCount}</div><div class="text-[9px] text-gray-500">Gaps</div></div>
+            </div>
+            <div class="flex justify-between text-[10px]"><span class="text-gray-500">Investment: <strong class="text-green-400">${fmtM(r.investment*1000)}</strong></span><span class="text-gray-500">Recs: <strong class="text-bio-cyan">${r.recommendations.length}</strong></span></div>
+        </div>`;
+    }).join('');
+
+    // Radar chart
+    const capKeys = ['ew','gs','ds','mcm','detect','lab','ai','supply','work','interop','c2','intel'];
+    const ctx1 = document.getElementById('regional-radar').getContext('2d');
+    charts.radar = new Chart(ctx1,{type:'radar',
+        data:{labels:CAPS,datasets:REGIONS.slice(0,5).map(r=>({label:r.name,data:capKeys.map(k=>r.scores[k]),
+            backgroundColor:r.color+'15',borderColor:r.color,borderWidth:2,pointRadius:2,pointBackgroundColor:r.color}))},
+        options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:7}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:9}}}}}
+    });
+
+    // Investment bar
+    const ctx2 = document.getElementById('investment-bar').getContext('2d');
+    const sorted = [...REGIONS].sort((a,b)=>b.investment-a.investment);
+    charts.investBar = new Chart(ctx2,{type:'bar',
+        data:{labels:sorted.map(r=>r.name),datasets:[{data:sorted.map(r=>r.investment),backgroundColor:sorted.map(r=>r.color+'80'),borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',callback:v=>'$'+v+'B'}},y:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:10}}}},plugins:{legend:{display:false}}}
+    });
+
+    // Cross-regional gaps
+    document.getElementById('cross-gaps').innerHTML = CROSS_GAPS.map(g=>{
+        const sColor = priColor(g.severity);
+        return `<div class="glass p-3"><div class="flex items-center gap-2 mb-1"><span class="w-2 h-2 rounded-full" style="background:${sColor}"></span><span class="text-[10px] font-bold text-gray-200">${g.title}</span></div>
+        <span class="pri-badge pri-${g.severity} mb-1 inline-block">${g.severity}</span>
+        <div class="text-[10px] text-gray-400 mb-1">${g.detail}</div>
+        <div class="flex flex-wrap gap-1">${(Array.isArray(g.regions)?g.regions:[g.regions]).map(r=>`<span class="text-[8px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400">${r}</span>`).join('')}</div></div>`;
+    }).join('');
+}
+
+/* ─── RENDER REGION BRIEF ─── */
+function renderRegionBrief(r){
+    const el = document.getElementById(r.id+'-content');
+    if(!el) return;
+    const capKeys = ['ew','gs','ds','mcm','detect','lab','ai','supply','work','interop','c2','intel'];
+    const totalInv = r.recommendations.reduce((s,x)=>s+x.cost,0);
+    const immediate = r.recommendations.filter(x=>x.phase==='immediate');
+    const nearTerm = r.recommendations.filter(x=>x.phase==='near_term');
+    const longTerm = r.recommendations.filter(x=>x.phase==='long_term');
+
+    el.innerHTML = `
+    <!-- Header -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-xl flex items-center justify-center" style="background:${r.color}20"><i class="fas ${r.icon} text-2xl" style="color:${r.color}"></i></div>
+            <div><h2 class="text-xl font-bold" style="color:${r.color}">${r.name}</h2><div class="text-xs text-gray-500">${r.members}</div></div>
+            <div class="ml-auto text-right"><div class="text-3xl font-black" style="color:${scoreColor(r.readiness)}">${r.readiness}<span class="text-sm text-gray-500">/100</span></div><div class="text-[10px] text-gray-500">Overall Readiness</div></div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-bio-cyan">${r.platforms}</div><div class="text-[9px] text-gray-500">Platforms</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-amber-400">${r.gaps.length}</div><div class="text-[9px] text-gray-500">Critical Gaps</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-green-400">${fmtM(totalInv)}</div><div class="text-[9px] text-gray-500">Total Investment</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-red-400">${immediate.length}</div><div class="text-[9px] text-gray-500">Immediate Actions</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-amber-400">${nearTerm.length}</div><div class="text-[9px] text-gray-500">Near-Term (1-3yr)</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-lg font-black text-purple-400">${longTerm.length}</div><div class="text-[9px] text-gray-500">Long-Term (3-10yr)</div></div>
+        </div>
+    </div>
+
+    <!-- Capability Scores + Gaps -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-chart-bar mr-1 text-bio-cyan"></i>Capability Scores (12 Dimensions)</h3>
+            <div class="space-y-2">${capKeys.map((k,i)=>{const v=r.scores[k];return `<div class="flex items-center gap-2"><span class="text-[10px] text-gray-400 w-28 truncate">${CAPS[i]}</span><div class="flex-1 gap-bar"><div class="gap-fill" style="width:${v}%;background:${scoreColor(v)}"></div></div><span class="text-[10px] font-bold w-8 text-right" style="color:${scoreColor(v)}">${v}</span></div>`;}).join('')}
+            </div>
+            <div class="mt-4 pt-3 border-t border-bio-border/30">
+                <canvas id="radar-${r.id}" height="200"></canvas>
+            </div>
+        </div>
+        <div class="glass p-6">
+            <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-exclamation-triangle mr-1 text-red-400"></i>Priority Gaps (${r.gaps.length})</h3>
+            <div class="space-y-3">${r.gaps.map(g=>`<div class="bg-gray-800/30 rounded-lg p-3">
+                <div class="flex items-center gap-2 mb-1"><span class="text-xs font-bold text-gray-200">${g.domain}</span><span class="ml-auto text-[10px] font-bold" style="color:${g.severity>=80?'#ef4444':g.severity>=60?'#f59e0b':'#06b6d4'}">${g.severity}% severity</span></div>
+                <div class="gap-bar mb-1"><div class="gap-fill" style="width:${g.severity}%;background:${g.severity>=80?'#ef4444':g.severity>=60?'#f59e0b':'#06b6d4'}"></div></div>
+                <div class="text-[10px] text-gray-400">${g.detail}</div>
+            </div>`).join('')}</div>
+        </div>
+    </div>
+
+    <!-- Top Platforms -->
+    <div class="glass p-6">
+        <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-server mr-1 text-bio-cyan"></i>Top Regional Platforms (from 169 Baseline)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">${r.topPlatforms.map(p=>`<div class="bg-gray-800/30 rounded-lg p-3 flex items-center gap-3">
+            <div class="text-xl font-black" style="color:${p.score>=85?'#10b981':p.score>=75?'#3b82f6':'#f59e0b'}">${p.score}</div>
+            <div><div class="text-[11px] font-bold text-gray-200">${p.name}</div><div class="text-[9px] text-gray-500">${p.layer}</div></div>
+        </div>`).join('')}</div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="glass p-6">
+        <h3 class="text-sm font-bold text-gray-300 mb-4"><i class="fas fa-tasks mr-1 text-green-400"></i>Recommendations (${r.recommendations.length}) — Total: ${fmtM(totalInv)}</h3>
+        ${[{label:'Immediate Actions (0-12 months)',items:immediate,color:'#ef4444'},{label:'Near-Term (1-3 years)',items:nearTerm,color:'#f59e0b'},{label:'Long-Term (3-10 years)',items:longTerm,color:'#a855f7'}].map(phase=>{
+            if(phase.items.length===0) return '';
+            return `<div class="mb-4"><div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:${phase.color}"></span><span class="text-xs font-bold" style="color:${phase.color}">${phase.label}</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${phase.items.map(rec=>`<div class="bg-gray-800/30 rounded-lg p-4 border-l-2" style="border-left-color:${phase.color}">
+                <div class="flex items-center justify-between mb-1"><span class="text-xs font-bold text-gray-200">${rec.title}</span><span class="text-[10px] font-bold text-green-400">${fmtM(rec.cost)}</span></div>
+                <div class="flex gap-2 mb-1"><span class="text-[9px] px-1.5 py-0.5 rounded bg-gray-800 text-gray-400">Impact: ${rec.impact}/100</span></div>
+                <div class="text-[10px] text-gray-400">${rec.detail}</div>
+            </div>`).join('')}</div></div>`;
+        }).join('')}
+    </div>
+
+    <!-- Investment Breakdown Chart -->
+    <div class="glass p-6">
+        <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-chart-pie mr-1 text-amber-400"></i>Investment by Phase</h3>
+        <div style="height:250px"><canvas id="invest-${r.id}"></canvas></div>
+    </div>`;
+
+    // Render mini radar
+    setTimeout(()=>{
+        const radarEl = document.getElementById('radar-'+r.id);
+        if(radarEl){
+            new Chart(radarEl.getContext('2d'),{type:'radar',
+                data:{labels:CAPS.map(c=>c.length>12?c.substring(0,12)+'...':c),datasets:[
+                    {label:r.name,data:capKeys.map(k=>r.scores[k]),backgroundColor:r.color+'20',borderColor:r.color,borderWidth:2,pointRadius:2},
+                    {label:'Allied Avg (FVEY)',data:[92,90,85,88,90,92,85,82,80,88,90,95],backgroundColor:'rgba(16,185,129,.1)',borderColor:'#10b981',borderWidth:1,pointRadius:1,borderDash:[3,3]}
+                ]},
+                options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{display:false},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:7}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:8}}}}}
+            });
+        }
+        // Investment phase chart
+        const invEl = document.getElementById('invest-'+r.id);
+        if(invEl){
+            const phases = [{label:'Immediate',items:immediate,color:'#ef4444'},{label:'Near-Term',items:nearTerm,color:'#f59e0b'},{label:'Long-Term',items:longTerm,color:'#a855f7'}];
+            new Chart(invEl.getContext('2d'),{type:'bar',
+                data:{labels:phases.map(p=>p.label),datasets:[{data:phases.map(p=>p.items.reduce((s,x)=>s+x.cost,0)),backgroundColor:phases.map(p=>p.color+'80'),borderRadius:6}]},
+                options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',callback:v=>fmtM(v)}},x:{grid:{display:false},ticks:{color:'#9ca3af'}}},plugins:{legend:{display:false}}}
+            });
+        }
+    },100);
+}
+
+/* ─── RENDER COMPARE TAB ─── */
+function renderCompare(){
+    charts.compareDone = true;
+    const capKeys = ['ew','gs','ds','mcm','detect','lab','ai','supply','work','interop','c2','intel'];
+    
+    // Heatmap
+    const ragClass = v=>v>=80?'bg-green-500/20 text-green-400 border-green-500/20':v>=60?'bg-blue-500/15 text-blue-400 border-blue-500/20':v>=40?'bg-amber-500/15 text-amber-400 border-amber-500/20':'bg-red-500/15 text-red-400 border-red-500/20';
+    document.getElementById('region-heatmap').innerHTML = `<table class="w-full text-xs border-collapse"><thead><tr><th class="p-2 text-left text-gray-400 min-w-[120px]">Capability</th>${REGIONS.map(r=>`<th class="p-2 text-center min-w-[70px]" style="color:${r.color}">${r.name.split('/')[0].trim().substring(0,8)}</th>`).join('')}</tr></thead><tbody>${CAPS.map((cap,i)=>`<tr class="border-t border-bio-border/30"><td class="p-2 text-gray-300 font-semibold text-[11px]">${cap}</td>${REGIONS.map(r=>{const v=r.scores[capKeys[i]];return `<td class="p-1"><div class="text-center font-bold text-[11px] p-1.5 rounded ${ragClass(v)} border">${v}</div></td>`;}).join('')}</tr>`).join('')}</tbody></table>`;
+
+    // Gap severity
+    const ctx1 = document.getElementById('gap-bar').getContext('2d');
+    charts.gapBar = new Chart(ctx1,{type:'bar',
+        data:{labels:REGIONS.map(r=>r.name.split('/')[0].trim().substring(0,10)),datasets:[{label:'Avg Gap Severity',data:REGIONS.map(r=>(r.gaps.reduce((s,g)=>s+g.severity,0)/r.gaps.length).toFixed(0)),backgroundColor:REGIONS.map(r=>r.color+'80'),borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}},x:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{display:false}}}
+    });
+
+    // Cost vs Impact
+    const ctx2 = document.getElementById('cost-impact').getContext('2d');
+    charts.costImpact = new Chart(ctx2,{type:'bubble',
+        data:{datasets:REGIONS.map(r=>{const totalCost = r.recommendations.reduce((s,x)=>s+x.cost,0);const avgImpact = (r.recommendations.reduce((s,x)=>s+x.impact,0)/r.recommendations.length).toFixed(0);return {label:r.name,data:[{x:totalCost/1000,y:avgImpact,r:Math.sqrt(r.recommendations.length)*6}],backgroundColor:r.color+'60',borderColor:r.color};})},
+        options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:'Total Investment ($B)',color:'#6b7280'},grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',callback:v=>'$'+v+'B'}},y:{title:{display:true,text:'Avg Impact Score',color:'#6b7280'},min:60,max:95,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:9}}}}}
+    });
+}
+
+/* ─── RENDER BASELINE TAB ─── */
+function renderBaseline(){
+    charts.baselineDone = true;
+    
+    // Stats
+    const regions = Object.entries(PLATFORM_REGIONS);
+    document.getElementById('baseline-stats').innerHTML = regions.map(([name,d])=>{
+        const color = name==='Global (shared)'?'#9ca3af':REGIONS.find(r=>name.startsWith(r.name.split('/')[0].trim().substring(0,5)))?.color||'#6b7280';
+        return `<div class="glass p-3 text-center"><div class="text-lg font-black" style="color:${color}">${d.count}</div><div class="text-[9px] text-gray-500 truncate">${name}</div><div class="text-[8px] text-gray-600">Avg: ${d.avg}</div></div>`;
+    }).join('');
+
+    // Platform map by region
+    document.getElementById('platform-map').innerHTML = regions.map(([name,d])=>{
+        const color = name==='Global (shared)'?'#9ca3af':REGIONS.find(r=>name.startsWith(r.name.split('/')[0].trim().substring(0,5)))?.color||'#6b7280';
+        return `<div class="bg-gray-800/20 rounded-lg p-4 mb-3 border border-bio-border/30">
+            <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:${color}"></span><span class="text-xs font-bold" style="color:${color}">${name}</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">${d.count} platforms | Avg ${d.avg}</span></div>
+            <div class="flex gap-2 mb-2">${Object.entries(d.layers).map(([l,c])=>c>0?`<span class="text-[9px] px-2 py-0.5 rounded bg-gray-800/60 text-gray-400">${l}: ${c}</span>`:'').join('')}</div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">${d.top.map(p=>`<div class="bg-gray-800/40 rounded p-2 flex items-center gap-1"><span class="font-bold text-[11px]" style="color:${p.s>=85?'#10b981':p.s>=75?'#3b82f6':'#f59e0b'}">${p.s}</span><span class="text-[10px] text-gray-300 truncate">${p.n}</span></div>`).join('')}</div>
+        </div>`;
+    }).join('');
+
+    // Dimension averages
+    const dims = ['Data Integration','Analytics','Visualization','Accessibility','Scalability','Documentation','Community','Security','Interoperability','Real-time'];
+    const avgs = [79.3,79.3,76.6,73.9,79.2,77.9,75.0,82.5,77.3,77.7];
+    const ctx = document.getElementById('dim-bar').getContext('2d');
+    charts.dimBar = new Chart(ctx,{type:'bar',
+        data:{labels:dims,datasets:[{data:avgs,backgroundColor:avgs.map(v=>v>=80?'rgba(16,185,129,.6)':v>=75?'rgba(59,130,246,.6)':'rgba(245,158,11,.6)'),borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:60,max:90,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}},x:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{display:false}}}
+    });
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded',()=>{renderOverview();});
+</script>
+</body>
+</html>

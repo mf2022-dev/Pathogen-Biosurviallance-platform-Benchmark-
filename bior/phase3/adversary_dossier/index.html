@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Adversary Capability Dossier</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#0a0e1a;--card:#1a2235;--border:#2a3650;--t1:#e5e7eb;--t2:#9ca3af;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+        .tab-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t2);cursor:pointer;transition:all .2s}
+        .tab-btn:hover{border-color:rgba(59,130,246,.5);color:var(--t1)}
+        .tab-btn.active{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red)}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .threat-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+        .t-critical{background:rgba(239,68,68,.2);color:#ef4444}.t-high{background:rgba(245,158,11,.2);color:#f59e0b}.t-medium{background:rgba(6,182,212,.2);color:#06b6d4}.t-low{background:rgba(16,185,129,.2);color:#10b981}
+        .conf-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px}
+        .conf-h{background:rgba(16,185,129,.15);color:#10b981}.conf-m{background:rgba(245,158,11,.15);color:#f59e0b}.conf-l{background:rgba(239,68,68,.15);color:#ef4444}
+        .dossier-card{background:rgba(26,34,53,.6);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s;cursor:pointer}
+        .dossier-card:hover{border-color:rgba(239,68,68,.3);transform:translateY(-2px)}
+        .dossier-card.expanded .card-detail{display:block}
+        .card-detail{display:none}
+        #tooltip{position:fixed;z-index:9999;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;max-width:400px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div id="tooltip"></div>
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-500 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-red-400 font-normal text-sm ml-1">Adversary Capability Dossier</span></h1>
+                <p class="text-xs text-gray-500">Deliverable G — Phase 3 | 4 Adversary States + 5 Assessed Nations × 12 Capability Dimensions</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../../phase1/executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../../phase2/allied_posture/index.html" class="hover:text-bio-cyan"><i class="fas fa-handshake mr-1"></i>Allied Posture</a>
+            <a href="../regional_briefs/index.html" class="hover:text-bio-cyan"><i class="fas fa-globe mr-1"></i>Regional Briefs</a>
+        </nav>
+    </div>
+</header>
+
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(239,68,68,.06),rgba(245,158,11,.04),rgba(168,85,247,.04))">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-red-400">4</div><div class="text-[10px] text-gray-500 uppercase">Adversary States</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400">5</div><div class="text-[10px] text-gray-500 uppercase">Assessed States</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">12</div><div class="text-[10px] text-gray-500 uppercase">Capability Dims</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-purple-400">108</div><div class="text-[10px] text-gray-500 uppercase">Assessments</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-white">22</div><div class="text-[10px] text-gray-500 uppercase">Key Findings</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400">78.2</div><div class="text-[10px] text-gray-500 uppercase">Allied Avg</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-red-400">52.3</div><div class="text-[10px] text-gray-500 uppercase">Adversary Avg</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>Classification: UNCLASSIFIED // FOUO</div><div>Assessment Date: Mar 2026</div></div>
+    </div>
+</div>
+
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+        <button class="tab-btn active" onclick="switchTab('overview')"><i class="fas fa-crosshairs mr-1"></i>Threat Overview</button>
+        <button class="tab-btn" onclick="switchTab('russia')"><i class="fas fa-flag mr-1"></i>Russia</button>
+        <button class="tab-btn" onclick="switchTab('china')"><i class="fas fa-flag mr-1"></i>China</button>
+        <button class="tab-btn" onclick="switchTab('dprk')"><i class="fas fa-flag mr-1"></i>DPRK</button>
+        <button class="tab-btn" onclick="switchTab('iran')"><i class="fas fa-flag mr-1"></i>Iran</button>
+        <button class="tab-btn" onclick="switchTab('compare')"><i class="fas fa-balance-scale mr-1"></i>Comparative Analysis</button>
+        <button class="tab-btn" onclick="switchTab('baseline')"><i class="fas fa-database mr-1"></i>Platform Intelligence (169)</button>
+    </div>
+</div>
+
+<main class="max-w-[1700px] mx-auto px-6 py-6">
+
+<!-- OVERVIEW TAB -->
+<div id="overview" class="tab-content active space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="adversary-cards"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-spider text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Adversary Capability Radar vs Allied Average</h2></div><div style="height:400px"><canvas id="adv-radar"></canvas></div></div>
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Adversary Comparative Rankings</h2></div><div style="height:400px"><canvas id="adv-bar"></canvas></div></div>
+    </div>
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-exclamation-triangle text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Key Intelligence Findings (22)</h2></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="findings-grid"></div></div>
+</div>
+
+<!-- RUSSIA TAB -->
+<div id="russia" class="tab-content space-y-6"><div id="russia-content"></div></div>
+<!-- CHINA TAB -->
+<div id="china" class="tab-content space-y-6"><div id="china-content"></div></div>
+<!-- DPRK TAB -->
+<div id="dprk" class="tab-content space-y-6"><div id="dprk-content"></div></div>
+<!-- IRAN TAB -->
+<div id="iran" class="tab-content space-y-6"><div id="iran-content"></div></div>
+
+<!-- COMPARE TAB -->
+<div id="compare" class="tab-content space-y-6">
+    <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-th text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Adversary × Capability Heatmap</h2></div><div class="overflow-x-auto" id="adv-heatmap"></div></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-crosshairs text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Allied Advantage by Dimension</h2></div><div style="height:350px"><canvas id="advantage-bar"></canvas></div></div>
+        <div class="glass p-6"><div class="flex items-center gap-2 mb-4"><i class="fas fa-shield-alt text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Strategic Countermeasures</h2></div><div id="countermeasures"></div></div>
+    </div>
+</div>
+
+<!-- BASELINE TAB -->
+<div id="baseline" class="tab-content space-y-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-bio-cyan">169</div><div class="text-[10px] text-gray-500">Total</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-green-400">3</div><div class="text-[10px] text-gray-500">Excellent</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-blue-400">74</div><div class="text-[10px] text-gray-500">Good</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-amber-400">77</div><div class="text-[10px] text-gray-500">Adequate</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-red-400">15</div><div class="text-[10px] text-gray-500">Developing</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-purple-400">5</div><div class="text-[10px] text-gray-500">Layers</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-pink-400">1,690</div><div class="text-[10px] text-gray-500">Data Points</div></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-shield-alt text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Defense & Intelligence Platforms by Nation</h2></div>
+        <div class="space-y-4">
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#ef4444"></span><span class="text-xs font-bold" style="color:#ef4444">Russia</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">2 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">76</span><span class="text-[10px] text-gray-300 truncate">VECTOR (State Research Center of Virology)</span></div><div class="text-[9px] text-gray-500 truncate">Russian National Virology &amp; Biodefense</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">72</span><span class="text-[10px] text-gray-300 truncate">Russia 48th CBRN Institute (Sergiev Posad-6)</span></div><div class="text-[9px] text-gray-500 truncate">Russian Military Biological Defense</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#f59e0b"></span><span class="text-xs font-bold" style="color:#f59e0b">China</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">2 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">77</span><span class="text-[10px] text-gray-300 truncate">China CISDCP</span></div><div class="text-[9px] text-gray-500 truncate">Chinese National Disease Surveillance Network</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">74</span><span class="text-[10px] text-gray-300 truncate">China AMMS (Academy of Military Medical Sciences)</span></div><div class="text-[9px] text-gray-500 truncate">Chinese Military Medical &amp; Biodefense Research</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#a855f7"></span><span class="text-xs font-bold" style="color:#a855f7">DPRK</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">4 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78.5</span><span class="text-[10px] text-gray-300 truncate">Korea-US Joint Biosurveillance Portal</span></div><div class="text-[9px] text-gray-500 truncate">Allied Joint Biosurveillance System</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">74.5</span><span class="text-[10px] text-gray-300 truncate">KIDA Biosecurity Analysis (Korea)</span></div><div class="text-[9px] text-gray-500 truncate">Korean Defense Biodefense Analysis</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">74</span><span class="text-[10px] text-gray-300 truncate">JUPITR</span></div><div class="text-[9px] text-gray-500 truncate">US Forces Korea Biosurveillance</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-red-400 text-[11px]">55</span><span class="text-[10px] text-gray-300 truncate">North Korea Bio Program (Assessed)</span></div><div class="text-[9px] text-gray-500 truncate">Assessed State Biological Weapons Capability</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#06b6d4"></span><span class="text-xs font-bold" style="color:#06b6d4">Iran</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">0 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#3b82f6"></span><span class="text-xs font-bold" style="color:#3b82f6">Allied (US)</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">33 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87.2</span><span class="text-[10px] text-gray-300 truncate">BioSense / ESSENCE</span></div><div class="text-[9px] text-gray-500 truncate">Syndromic Surveillance</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.2</span><span class="text-[10px] text-gray-300 truncate">NWSS</span></div><div class="text-[9px] text-gray-500 truncate">Wastewater Surveillance</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85</span><span class="text-[10px] text-gray-300 truncate">GEIS (Global Emerging Infections Surveillance)</span></div><div class="text-[9px] text-gray-500 truncate">DoD Global Disease Surveillance Network</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">DARPA P3 (Pandemic Prevention Platform)</span></div><div class="text-[9px] text-gray-500 truncate">Military Pandemic Countermeasure R&amp;D</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">USAMRIID Biosurveillance</span></div><div class="text-[9px] text-gray-500 truncate">Military Biodefense Research &amp; Surveillance</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.6</span><span class="text-[10px] text-gray-300 truncate">CDC TGS</span></div><div class="text-[9px] text-gray-500 truncate">Traveler Genomic Surveillance</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#10b981"></span><span class="text-xs font-bold" style="color:#10b981">Allied (UK)</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">2 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.5</span><span class="text-[10px] text-gray-300 truncate">UK Dstl (Porton Down)</span></div><div class="text-[9px] text-gray-500 truncate">UK Military Biodefense Research</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">77</span><span class="text-[10px] text-gray-300 truncate">COG-UK</span></div><div class="text-[9px] text-gray-500 truncate">National Genomic Consortium</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#60a5fa"></span><span class="text-xs font-bold" style="color:#60a5fa">Allied (Israel)</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">2 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">IIBR (Israel Institute for Biological Research)</span></div><div class="text-[9px] text-gray-500 truncate">Israeli National Biodefense Research</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82</span><span class="text-[10px] text-gray-300 truncate">Solu</span></div><div class="text-[9px] text-gray-500 truncate">Cloud Genomic Pathogen Surveillance</div></div>
+                </div>
+            </div>
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2"><span class="w-3 h-3 rounded-full" style="background:#9ca3af"></span><span class="text-xs font-bold" style="color:#9ca3af">Allied (Others)</span><span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">7 platforms</span></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79.5</span><span class="text-[10px] text-gray-300 truncate">NATO JCBRN Defence COE</span></div><div class="text-[9px] text-gray-500 truncate">NATO CBRN Knowledge &amp; Capability Hub</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79.5</span><span class="text-[10px] text-gray-300 truncate">DRDC Suffield (Canada)</span></div><div class="text-[9px] text-gray-500 truncate">Canadian Military CBRN Defense Research</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79</span><span class="text-[10px] text-gray-300 truncate">Australia DSTG CBRN</span></div><div class="text-[9px] text-gray-500 truncate">Australian Military CBRN Defense Research</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78</span><span class="text-[10px] text-gray-300 truncate">Bundeswehr CBRN Defence</span></div><div class="text-[9px] text-gray-500 truncate">German Military CBRN Defense</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78</span><span class="text-[10px] text-gray-300 truncate">Japan NIID / JSDF CBRN</span></div><div class="text-[9px] text-gray-500 truncate">Japanese National &amp; Military Biodefense</div></div>
+                    <div class="bg-gray-800/40 rounded p-2"><div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">77</span><span class="text-[10px] text-gray-300 truncate">DGA Maîtrise NRBC</span></div><div class="text-[9px] text-gray-500 truncate">French Military CBRN Defense</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-layer-group text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Layer Distribution (PSEF v3.0.0)</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50"><div class="text-xs font-bold text-gray-300 mb-1">L2 Genomic</div><div class="text-xl font-black text-bio-cyan">57</div><div class="text-[10px] text-gray-500">Avg: 79.5 | 60-95</div><div class="text-[10px] text-green-400 mt-1">Top: Nextstrain (95)</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50"><div class="text-xs font-bold text-gray-300 mb-1">L1 Surveillance</div><div class="text-xl font-black text-bio-cyan">63</div><div class="text-[10px] text-gray-500">Avg: 78.0 | 62-90</div><div class="text-[10px] text-green-400 mt-1">Top: outbreak.info (90)</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50"><div class="text-xs font-bold text-gray-300 mb-1">L3 Defense</div><div class="text-xl font-black text-bio-cyan">35</div><div class="text-[10px] text-gray-500">Avg: 78.4 | 55-84</div><div class="text-[10px] text-green-400 mt-1">Top: DARPA P3 (Pandemic Prevention Platform) (84)</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50"><div class="text-xs font-bold text-gray-300 mb-1">L4 Hardware</div><div class="text-xl font-black text-bio-cyan">9</div><div class="text-[10px] text-gray-500">Avg: 77.2 | 74.5-82</div><div class="text-[10px] text-green-400 mt-1">Top: BioFire Defense (FilmArray) (82)</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50"><div class="text-xs font-bold text-gray-300 mb-1">L5 Policy</div><div class="text-xl font-black text-bio-cyan">5</div><div class="text-[10px] text-gray-500">Avg: 78.5 | 74-83</div><div class="text-[10px] text-green-400 mt-1">Top: GHS Index (83)</div></div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1700px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable G: Adversary Capability Dossier</div>
+        <div>4 Adversary + 5 Assessed States | 12 Dimensions | 169 Baseline Platforms | PSEF v3.0.0</div>
+    </div>
+</footer>
+
+<script>
+const CAPS = [{id:'early_warning',name:'Early Warning',short:'EW'},{id:'genomic',name:'Genomic Surveillance',short:'Genomic'},{id:'bioweapons',name:'BW Program Status',short:'BW'},{id:'mcm',name:'MCM / Vaccine R&D',short:'MCM'},{id:'detection',name:'Bio-Agent Detection',short:'Detect'},{id:'lab_network',name:'Lab Network (BSL-3/4)',short:'Labs'},{id:'ai_forecast',name:'AI/ML Capability',short:'AI/ML'},{id:'offensive',name:'Offensive Potential',short:'Offensive'},{id:'workforce',name:'Workforce',short:'Workforce'},{id:'intel',name:'Intelligence Collection',short:'Intel'},{id:'cyber_bio',name:'Cyber-Bio Convergence',short:'CyberBio'},{id:'transparency',name:'Transparency / Compliance',short:'Transparency'}];
+
+const ADVERSARIES = [
+    {id:'russia',name:'Russia',flag:'🇷🇺',color:'#ef4444',threatLevel:'critical',confidence:'medium',
+     readiness:62,bwStatus:'Suspected residual capability (BWC signatory, Novichok precedent)',
+     scores:{early_warning:68,genomic:72,bioweapons:85,mcm:75,detection:78,lab_network:72,ai_forecast:70,offensive:88,workforce:65,intel:80,cyber_bio:75,transparency:12},
+     keyFindings:['VECTOR (Koltsovo) retains extensive pathogen collections including smallpox','48th Central Research Institute (Sergiev Posad-6) — primary military biodefense center','Novichok program demonstrated willingness to use chemical agents operationally','Limited genomic data sharing post-COVID despite initially contributing to GISAID','Cyber capabilities could target allied biosurveillance infrastructure','AI/ML military medical research active at AMMS analogue institutions'],
+     knownFacilities:['VECTOR (Koltsovo) — BSL-4, 5,000+ staff','48th CBRN Institute (Sergiev Posad-6)','Centre for Virology (Zagorsk-6)','Biopreparat legacy sites (15+ facilities)','Gamaleya Institute (vaccine R&D)'],
+     narrative:'Russia retains the most extensive state biological research infrastructure from the Soviet Biopreparat program. While officially disbanded in 1992, multiple facilities maintain dual-use capabilities. The 2018 Novichok incidents demonstrated operational willingness to deploy chemical agents. Post-COVID transparency declined significantly, with limited genomic data sharing. Key concern: residual offensive capability and extensive pathogen collections at VECTOR.'},
+    {id:'china',name:'China',flag:'🇨🇳',color:'#f59e0b',threatLevel:'critical',confidence:'medium',
+     readiness:72,bwStatus:'Dual-use concerns; massive investment in BSL-3/4 infrastructure',
+     scores:{early_warning:75,genomic:82,bioweapons:72,mcm:80,detection:78,lab_network:85,ai_forecast:85,offensive:68,workforce:78,intel:75,cyber_bio:82,transparency:8},
+     keyFindings:['BGI Genomics — world largest genomic sequencing capacity with military connections','Wuhan BSL-4 (WIV) — first Chinese BSL-4, origin controversy implications','Academy of Military Medical Sciences (AMMS) — 8,000+ researchers, dual-use research','50+ new BSL-3 labs constructed 2020-2025 (largest build-out globally)','DeepSeek and Baidu AI models applied to pathogen prediction','National Genomics Data Center restricts international data sharing'],
+     knownFacilities:['Wuhan Institute of Virology — BSL-4','AMMS Beijing — Military medical complex','BGI Genomics (Shenzhen) — Largest sequencing center globally','Chinese CDC (Beijing) — National reference','50+ new BSL-3 facilities nationwide'],
+     narrative:'China represents the fastest-growing biodefense and biosurveillance capability globally. The post-COVID BSL-3 construction boom (50+ new facilities) is unprecedented. BGI Genomics provides world-leading sequencing capacity with documented military connections. AMMS employs 8,000+ researchers in dual-use biological research. Key concern: lack of transparency, restricted data sharing, and the convergence of civilian/military biotech programs.'},
+    {id:'dprk',name:'North Korea (DPRK)',flag:'🇰🇵',color:'#a855f7',threatLevel:'high',confidence:'low',
+     readiness:28,bwStatus:'Suspected active BW program (not BWC signatory)',
+     scores:{early_warning:18,genomic:22,bioweapons:68,mcm:15,detection:25,lab_network:28,ai_forecast:12,offensive:72,workforce:22,intel:35,cyber_bio:45,transparency:2},
+     keyFindings:['Not a signatory to the Biological Weapons Convention','Multiple defector testimonies describe active BW agent stockpiles','Known facilities at Pyongyang Biological Technical Institute','Limited indigenous capability — relies on stolen/transferred technology','Cyber capabilities could target allied biosurveillance systems','Public health infrastructure near non-existent (no genomic capability)'],
+     knownFacilities:['Pyongyang Biological Technical Institute','Korean Peoples Army Medical University','Bureau 121 (cyber operations)','Suspected underground facilities (locations unverified)'],
+     narrative:'DPRK is the most opaque adversary for biological assessment. Multiple defectors have described active biological weapons programs, but intelligence confidence is low. The country is not a BWC signatory and refuses all biological inspections. While indigenous scientific capability is limited, the regime has demonstrated willingness to use chemical weapons (Kim Jong-nam assassination, VX agent). Key concern: weaponization intent despite limited capability, and cyber-bio convergence.'},
+    {id:'iran',name:'Iran',flag:'🇮🇷',color:'#06b6d4',threatLevel:'high',confidence:'medium',
+     readiness:42,bwStatus:'BWC signatory; suspected dual-use research',
+     scores:{early_warning:48,genomic:45,bioweapons:52,mcm:55,detection:42,lab_network:48,ai_forecast:38,offensive:48,workforce:40,intel:45,cyber_bio:52,transparency:15},
+     keyFindings:['Pasteur Institute of Iran — primary reference laboratory with dual-use potential','Iran-Iraq War experience with chemical weapons shaped biodefense doctrine','IRGC involvement in biological research programs','COVID-19 response revealed significant capability gaps in surveillance','Cyberattack on Israeli water system (2020) demonstrated cyber-physical capabilities','University research programs with potential dual-use applications'],
+     knownFacilities:['Pasteur Institute of Iran','Razi Vaccine and Serum Research Institute','Tehran University Medical Complex','IRGC-affiliated laboratories'],
+     narrative:'Iran presents a moderate biological threat with dual-use research concerns. The Pasteur Institute provides legitimate reference laboratory capability that could be repurposed. IRGC involvement in biological research adds military dimension. The COVID pandemic exposed significant surveillance capability gaps but also motivated investment. Key concern: IRGC biological programs and the intersection of pharmaceutical/defense research.'}
+];
+
+const ASSESSED = [
+    {name:'Pakistan',readiness:35,threat:'medium',scores:{early_warning:38,genomic:32,bioweapons:45,mcm:30,detection:28,lab_network:35,ai_forecast:25,offensive:42,workforce:28,intel:38,cyber_bio:35,transparency:20}},
+    {name:'Syria',readiness:22,threat:'high',scores:{early_warning:15,genomic:12,bioweapons:55,mcm:10,detection:15,lab_network:18,ai_forecast:8,offensive:58,workforce:12,intel:25,cyber_bio:18,transparency:5}},
+    {name:'Myanmar',readiness:18,threat:'medium',scores:{early_warning:20,genomic:15,bioweapons:25,mcm:12,detection:15,lab_network:18,ai_forecast:10,offensive:22,workforce:15,intel:18,cyber_bio:12,transparency:10}},
+    {name:'Cuba',readiness:38,threat:'medium',scores:{early_warning:42,genomic:38,bioweapons:35,mcm:45,detection:30,lab_network:42,ai_forecast:28,offensive:30,workforce:45,intel:35,cyber_bio:22,transparency:15}},
+    {name:'Venezuela',readiness:20,threat:'low',scores:{early_warning:22,genomic:15,bioweapons:18,mcm:15,detection:18,lab_network:20,ai_forecast:12,offensive:15,workforce:18,intel:20,cyber_bio:15,transparency:12}}
+];
+
+const FINDINGS = [
+    {title:'Russian VECTOR Retains Smallpox',severity:'critical',confidence:'high',country:'Russia',detail:'VECTOR (Koltsovo) maintains one of two WHO-authorized smallpox repositories. Facility security assessments are overdue.'},
+    {title:'China BSL-3 Build-Out (50+ New Labs)',severity:'critical',confidence:'high',country:'China',detail:'China constructed 50+ new BSL-3 laboratories 2020-2025, the largest biosafety expansion in history. Many lack international oversight.'},
+    {title:'BGI Military Genomics Connection',severity:'critical',confidence:'medium',country:'China',detail:'BGI Genomics, the world largest sequencer, has documented connections to PLA-affiliated institutions and receives military funding.'},
+    {title:'DPRK Active BW Program (Defector Reports)',severity:'critical',confidence:'low',country:'DPRK',detail:'Multiple defectors describe agent stockpiles including anthrax, plague, and smallpox. No independent verification possible.'},
+    {title:'AMMS Dual-Use Research (8,000 Researchers)',severity:'high',confidence:'medium',country:'China',detail:'China Academy of Military Medical Sciences employs 8,000+ researchers in programs spanning vaccines, genomics, and biodefense.'},
+    {title:'Russian Cyber Targeting of Health Systems',severity:'high',confidence:'high',country:'Russia',detail:'Russian APT groups have targeted vaccine research facilities, genomic databases, and health infrastructure in allied nations.'},
+    {title:'Iran IRGC Biological Programs',severity:'high',confidence:'medium',country:'Iran',detail:'Islamic Revolutionary Guard Corps maintains biological research programs separate from civilian institutions.'},
+    {title:'China AI-Bio Convergence (DeepSeek)',severity:'high',confidence:'medium',country:'China',detail:'Chinese AI models are being applied to pathogen prediction, drug discovery, and genomic analysis with potential dual-use applications.'},
+    {title:'Russian Genomic Data Withdrawal Post-COVID',severity:'high',confidence:'high',country:'Russia',detail:'Russia significantly reduced genomic data sharing after initial COVID contributions, raising concerns about defensive biological activities.'},
+    {title:'DPRK Cyber Capabilities (Bureau 121)',severity:'high',confidence:'high',country:'DPRK',detail:'DPRK Bureau 121 has demonstrated ability to conduct sophisticated cyber operations that could target allied biosurveillance.'},
+    {title:'Syrian Chemical Weapons Precedent',severity:'high',confidence:'high',country:'Syria',detail:'Documented chemical weapons use in Syrian civil war demonstrates regional willingness to deploy unconventional agents.'},
+    {title:'China National Genomics Data Restrictions',severity:'medium',confidence:'high',country:'China',detail:'China restricts international sharing of human genomic data through 2023 regulations, limiting allied intelligence collection.'},
+    {title:'Russian Biopreparat Legacy Sites',severity:'medium',confidence:'medium',country:'Russia',detail:'15+ former Biopreparat facilities maintain varying levels of activity. Full accounting of biological materials incomplete.'},
+    {title:'Iran Pasteur Institute Dual-Use',severity:'medium',confidence:'medium',country:'Iran',detail:'Pasteur Institute of Iran serves legitimate public health functions but infrastructure has dual-use potential.'},
+    {title:'Pakistan Nuclear-Bio Nexus',severity:'medium',confidence:'low',country:'Pakistan',detail:'Pakistan nuclear program infrastructure overlaps with potential biological research capabilities. Monitoring limited.'},
+    {title:'Chinese Overseas Lab Assistance',severity:'medium',confidence:'medium',country:'China',detail:'China building/upgrading BSL-3 labs in 20+ countries, creating potential intelligence access and influence networks.'},
+    {title:'DPRK Kim Jong-nam Assassination (VX)',severity:'medium',confidence:'high',country:'DPRK',detail:'2017 VX nerve agent assassination demonstrated DPRK willingness to use chemical/biological agents operationally.'},
+    {title:'Russian Novichok Operational Use',severity:'medium',confidence:'high',country:'Russia',detail:'Salisbury (2018) and Navalny (2020) attacks demonstrate Russian capability and willingness for chemical agent deployment.'},
+    {title:'Cuba Biotech Export Capability',severity:'medium',confidence:'medium',country:'Cuba',detail:'Cuba has sophisticated biotech sector (Finlay Institute) with export relationships to adversary states.'},
+    {title:'Iran-Iraq War CW Legacy',severity:'low',confidence:'high',country:'Iran',detail:'Iran chemical weapons experience during Iran-Iraq War shaped current biodefense doctrine and dual-use awareness.'},
+    {title:'Venezuelan Health System Collapse',severity:'low',confidence:'high',country:'Venezuela',detail:'Venezuelan public health collapse creates pathogen surveillance black hole in South America.'},
+    {title:'Myanmar Biosurveillance Gap',severity:'low',confidence:'medium',country:'Myanmar',detail:'Post-coup Myanmar has near-zero biosurveillance capability, creating regional detection blind spot.'}
+];
+
+const COUNTERMEASURES = [
+    {area:'Intelligence Collection',priority:'critical',actions:['Expand HUMINT networks at VECTOR, AMMS, WIV','Increase SIGINT coverage of military biolab communications','Deploy AI-powered open-source intelligence for bio-research monitoring','Establish Five Eyes bioforensic attribution capability']},
+    {area:'Defensive Posture',priority:'critical',actions:['Accelerate allied MCM manufacturing to reduce adversary leverage','Pre-position biodefense assets in Indo-Pacific (AUKUS)','Harden biosurveillance IT infrastructure against cyber attack','Expand BioWatch coverage to allied capitals']},
+    {area:'Diplomatic Engagement',priority:'high',actions:['Strengthen BWC verification mechanisms','Press for China genomic data sharing reciprocity','Maintain biological engagement programs with Russia (where possible)','Expand Cooperative Threat Reduction to new partner nations']},
+    {area:'Technology Advantage',priority:'high',actions:['Maintain allied AI/ML superiority for biosurveillance','Accelerate field sequencing deployment (Oxford Nanopore)','Fund CRISPR-based rapid diagnostics for field use','Develop autonomous pathogen surveillance network']},
+    {area:'Workforce & Training',priority:'medium',actions:['Train 500+ allied bioforensic specialists','Expand biosecurity education in allied universities','Create cross-alliance biodefense practitioner exchange','Fund LMIC partner nation capability building']}
+];
+
+let chartInstances = {};
+function switchTab(id){
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+    if(['russia','china','dprk','iran'].includes(id)) renderCountryTab(id);
+    if(id==='compare'&&!chartInstances.compareDone) renderCompare();
+}
+
+function threatColor(t){return t==='critical'?'#ef4444':t==='high'?'#f59e0b':t==='medium'?'#06b6d4':'#10b981';}
+function confClass(c){return c==='high'?'conf-h':c==='medium'?'conf-m':'conf-l';}
+
+function renderOverview(){
+    document.getElementById('adversary-cards').innerHTML = ADVERSARIES.map(a=>{
+        const avg = (Object.values(a.scores).reduce((s,v)=>s+v,0)/12).toFixed(0);
+        return `<div class="dossier-card" onclick="switchTab('${a.id}');document.querySelector('.tab-btn[onclick*=\"'+a.id+'\"]')?.classList.add('active')">
+            <div class="text-center mb-3"><div class="text-4xl mb-1">${a.flag}</div><div class="text-lg font-bold" style="color:${a.color}">${a.name}</div></div>
+            <div class="text-center mb-3"><div class="text-3xl font-black" style="color:${threatColor(a.threatLevel)}">${avg}</div><div class="text-[10px] text-gray-500">Overall Capability Score</div></div>
+            <div class="flex justify-center gap-2 mb-2"><span class="threat-badge t-${a.threatLevel}">${a.threatLevel} threat</span><span class="conf-badge ${confClass(a.confidence)}">${a.confidence} conf.</span></div>
+            <div class="text-[10px] text-gray-500 text-center">${a.bwStatus.substring(0,80)}...</div>
+        </div>`;
+    }).join('');
+
+    // Radar
+    const alliedAvg = CAPS.map(c=>78);
+    const ctx1 = document.getElementById('adv-radar').getContext('2d');
+    chartInstances.radar = new Chart(ctx1,{type:'radar',
+        data:{labels:CAPS.map(c=>c.short),datasets:[
+            {label:'Allied Avg',data:alliedAvg,backgroundColor:'rgba(16,185,129,.1)',borderColor:'#10b981',borderWidth:2,pointRadius:3,pointBackgroundColor:'#10b981'},
+            ...ADVERSARIES.map(a=>({label:a.name,data:CAPS.map(c=>a.scores[c.id]),backgroundColor:a.color+'10',borderColor:a.color,borderWidth:2,pointRadius:3,pointBackgroundColor:a.color}))
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:9}}}}}
+    });
+
+    // Bar
+    const sorted = [...ADVERSARIES,...ASSESSED.map(a=>({...a,color:'#6b7280'}))].sort((a,b)=>b.readiness-a.readiness);
+    const ctx2 = document.getElementById('adv-bar').getContext('2d');
+    chartInstances.advBar = new Chart(ctx2,{type:'bar',
+        data:{labels:sorted.map(s=>s.name),datasets:[{data:sorted.map(s=>s.readiness),backgroundColor:sorted.map(s=>s.color?s.color+'80':'#6b728080'),borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{min:0,max:100,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}},y:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:10}}}},plugins:{legend:{display:false}}}
+    });
+
+    // Findings
+    document.getElementById('findings-grid').innerHTML = FINDINGS.map(f=>{
+        const sColor = f.severity==='critical'?'#ef4444':f.severity==='high'?'#f59e0b':f.severity==='medium'?'#06b6d4':'#10b981';
+        return `<div class="glass p-3"><div class="flex items-center gap-2 mb-1"><span class="w-2 h-2 rounded-full" style="background:${sColor}"></span><span class="text-[10px] font-bold text-gray-200">${f.title}</span></div><div class="flex gap-1 mb-1"><span class="threat-badge t-${f.severity}">${f.severity}</span><span class="conf-badge ${confClass(f.confidence)}">${f.confidence}</span><span class="text-[9px] text-gray-500">${f.country}</span></div><div class="text-[10px] text-gray-400">${f.detail}</div></div>`;
+    }).join('');
+}
+
+function renderCountryTab(id){
+    const a = ADVERSARIES.find(x=>x.id===id);
+    if(!a) return;
+    const avg = (Object.values(a.scores).reduce((s,v)=>s+v,0)/12).toFixed(1);
+    const sorted = CAPS.map(c=>({cap:c,score:a.scores[c.id]})).sort((x,y)=>y.score-x.score);
+    const findings = FINDINGS.filter(f=>f.country===a.name);
+
+    document.getElementById(id+'-content').innerHTML = `
+    <div class="glass p-6">
+        <div class="flex items-center gap-4 mb-4"><span class="text-4xl">${a.flag}</span>
+            <div><h2 class="text-xl font-bold" style="color:${a.color}">${a.name}</h2><div class="text-xs text-gray-500">${a.bwStatus}</div></div>
+            <div class="ml-auto flex gap-2"><span class="threat-badge t-${a.threatLevel}">${a.threatLevel} threat</span><span class="conf-badge ${confClass(a.confidence)}">${a.confidence} confidence</span></div>
+        </div>
+        <p class="text-xs text-gray-400 leading-relaxed mb-4">${a.narrative}</p>
+        <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-2xl font-black" style="color:${a.color}">${avg}</div><div class="text-[10px] text-gray-500">Avg Score</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-2xl font-black text-red-400">${a.readiness}</div><div class="text-[10px] text-gray-500">Readiness</div></div>
+            <div class="bg-gray-800/30 rounded-lg p-3 text-center"><div class="text-2xl font-black text-amber-400">${findings.length}</div><div class="text-[10px] text-gray-500">Key Findings</div></div>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-chart-bar mr-1"></i>Capability Scores (12 dimensions)</h3>
+            <div class="space-y-2">${sorted.map(s=>`<div class="flex items-center gap-2"><span class="text-[10px] text-gray-400 w-24">${s.cap.short}</span><div class="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden"><div class="h-full rounded-full bar-fill" style="width:${s.score}%;background:${s.score>=70?'#10b981':s.score>=50?'#f59e0b':s.score>=30?'#ef4444':'#6b7280'}"></div></div><span class="text-[10px] font-bold w-8 text-right" style="color:${s.score>=70?'#10b981':s.score>=50?'#f59e0b':'#ef4444'}">${s.score}</span></div>`).join('')}
+            </div>
+        </div>
+        <div class="glass p-6">
+            <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-building mr-1"></i>Known Facilities</h3>
+            <div class="space-y-2">${a.knownFacilities.map(f=>`<div class="flex items-start gap-2 p-2 rounded bg-gray-800/30"><i class="fas fa-map-marker-alt text-red-400/60 mt-0.5"></i><span class="text-[10px] text-gray-400">${f}</span></div>`).join('')}</div>
+        </div>
+    </div>
+    <div class="glass p-6">
+        <h3 class="text-sm font-bold text-gray-300 mb-3"><i class="fas fa-exclamation-triangle text-red-400 mr-1"></i>Intelligence Findings (${findings.length})</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${findings.map(f=>`<div class="bg-gray-800/30 rounded-lg p-3"><div class="flex items-center gap-2 mb-1"><span class="threat-badge t-${f.severity}">${f.severity}</span><span class="conf-badge ${confClass(f.confidence)}">${f.confidence}</span></div><div class="text-xs font-bold text-gray-200 mb-1">${f.title}</div><div class="text-[10px] text-gray-400">${f.detail}</div></div>`).join('')}</div>
+    </div>`;
+}
+
+function renderCompare(){
+    chartInstances.compareDone = true;
+    const hmEl = document.getElementById('adv-heatmap');
+    const ragClass = v=>v>=70?'bg-green-500/20 text-green-400 border-green-500/20':v>=50?'bg-amber-500/15 text-amber-400 border-amber-500/20':v>=30?'bg-red-500/15 text-red-400 border-red-500/20':'bg-gray-800 text-gray-600 border-gray-700';
+    hmEl.innerHTML = `<table class="w-full text-xs border-collapse"><thead><tr><th class="p-2 text-left text-gray-400 min-w-[120px]">Capability</th>${[...ADVERSARIES,...ASSESSED].map(a=>`<th class="p-2 text-center min-w-[65px]" style="color:${a.color||'#6b7280'}">${a.name.split(' ')[0]}</th>`).join('')}<th class="p-2 text-center text-green-400 min-w-[65px]">Allied</th></tr></thead><tbody>${CAPS.map(cap=>`<tr class="border-t border-bio-border/30">${[`<td class="p-2 text-gray-300 font-semibold">${cap.name}</td>`,...[...ADVERSARIES,...ASSESSED].map(a=>{const v=a.scores[cap.id];return `<td class="p-1"><div class="text-center font-bold text-[11px] p-1.5 rounded ${ragClass(v)} border">${v}</div></td>`;}),`<td class="p-1"><div class="text-center font-bold text-[11px] p-1.5 rounded bg-green-500/15 text-green-400 border border-green-500/20">78</div></td>`].join('')}</tr>`).join('')}</tbody></table>`;
+
+    // Advantage bar
+    const advAvg = CAPS.map(c=>(ADVERSARIES.reduce((s,a)=>s+a.scores[c.id],0)/ADVERSARIES.length).toFixed(0));
+    const ctx = document.getElementById('advantage-bar').getContext('2d');
+    chartInstances.advantage = new Chart(ctx,{type:'bar',
+        data:{labels:CAPS.map(c=>c.short),datasets:[
+            {label:'Allied Avg',data:CAPS.map(()=>78),backgroundColor:'rgba(16,185,129,.4)',borderRadius:4},
+            {label:'Adversary Avg',data:advAvg,backgroundColor:'rgba(239,68,68,.4)',borderRadius:4}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}},x:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+
+    // Countermeasures
+    document.getElementById('countermeasures').innerHTML = COUNTERMEASURES.map(cm=>`
+        <div class="mb-3 p-3 rounded-lg bg-gray-800/30">
+            <div class="flex items-center gap-2 mb-1"><span class="threat-badge t-${cm.priority}">${cm.priority}</span><span class="text-xs font-bold text-gray-200">${cm.area}</span></div>
+            ${cm.actions.map(a=>`<div class="text-[10px] text-gray-400">• ${a}</div>`).join('')}
+        </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded',()=>{renderOverview();});
+</script>
+</body>
+</html>
