@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Capability Gap Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root { --bg-primary:#0a0e1a; --bg-card:#1a2235; --border:#2a3650; --text-primary:#e5e7eb; --text-secondary:#9ca3af; }
+        *{font-family:'Inter',sans-serif;} body{background:var(--bg-primary);color:var(--text-primary);}
+        .glass-card{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass-card:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+        .pulse-dot{animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+        .rag-cell{width:100%;text-align:center;font-weight:700;font-size:11px;padding:6px 2px;border-radius:6px;cursor:pointer;transition:all .2s}
+        .rag-cell:hover{transform:scale(1.05);z-index:5;position:relative}
+        .rag-r{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+        .rag-a{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.25)}
+        .rag-g{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.25)}
+        .rag-b{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.25)}
+        .domain-row{transition:all .2s;cursor:pointer}.domain-row:hover{background:rgba(59,130,246,.06)}
+        .domain-row.selected{background:rgba(6,182,212,.1);border-left:3px solid #06b6d4}
+        .filter-btn{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .2s}
+        .filter-btn:hover{border-color:rgba(59,130,246,.5);color:var(--text-primary)}
+        .filter-btn.active{background:rgba(59,130,246,.15);border-color:#3b82f6;color:#3b82f6}
+        #tooltip{position:fixed;z-index:9999;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;max-width:360px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+        .priority-tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em}
+        .priority-critical{background:rgba(239,68,68,.2);color:#ef4444}.priority-high{background:rgba(245,158,11,.2);color:#f59e0b}.priority-medium{background:rgba(59,130,246,.2);color:#3b82f6}.priority-low{background:rgba(16,185,129,.2);color:#10b981}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-blue':'#3b82f6','bio-cyan':'#06b6d4','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div id="tooltip"></div>
+
+<!-- HEADER -->
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-bio-cyan font-normal text-sm ml-1">Capability Gap Analysis</span></h1>
+                <p class="text-xs text-gray-500">Deliverable B — 15 Domains x 8 Regions</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../threat_map/index.html" class="hover:text-bio-cyan"><i class="fas fa-globe mr-1"></i>Threat Map</a>
+            <a href="../interop_assessment/index.html" class="hover:text-bio-cyan"><i class="fas fa-network-wired mr-1"></i>Interop</a>
+            <a href="../comparison_engine/index.html" class="hover:text-bio-cyan"><i class="fas fa-balance-scale mr-1"></i>Compare</a>
+        </nav>
+    </div>
+</header>
+
+<!-- SUMMARY STRIP -->
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(239,68,68,.06),rgba(245,158,11,.06),rgba(16,185,129,.06))">
+    <div class="max-w-[1600px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-red-400" id="sum-critical">4</div><div class="text-[10px] text-gray-500 uppercase">Critical Gaps</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400" id="sum-high">6</div><div class="text-[10px] text-gray-500 uppercase">High Priority</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400" id="sum-adequate">5</div><div class="text-[10px] text-gray-500 uppercase">Adequate</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">15</div><div class="text-[10px] text-gray-500 uppercase">Domains</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-blue">8</div><div class="text-[10px] text-gray-500 uppercase">Regions</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-purple-400">120</div><div class="text-[10px] text-gray-500 uppercase">Assessments</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>Horizon: 3-10 years</div><div>Baseline: PSEF v3.0.0</div></div>
+    </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1600px] mx-auto px-6 py-2 flex flex-wrap items-center gap-3">
+        <span class="text-xs text-gray-500 mr-1">Priority:</span>
+        <button class="filter-btn active" onclick="filterPriority('all')">All</button>
+        <button class="filter-btn" onclick="filterPriority('critical')"><span class="w-2 h-2 rounded-full bg-red-500 inline-block mr-1"></span>Critical</button>
+        <button class="filter-btn" onclick="filterPriority('high')"><span class="w-2 h-2 rounded-full bg-amber-500 inline-block mr-1"></span>High</button>
+        <button class="filter-btn" onclick="filterPriority('adequate')"><span class="w-2 h-2 rounded-full bg-green-500 inline-block mr-1"></span>Adequate</button>
+        <span class="text-gray-700 mx-2">|</span>
+        <span class="text-xs text-gray-500 mr-1">Region:</span>
+        <select id="region-filter" class="bg-gray-800/50 border border-bio-border rounded-lg px-3 py-1 text-xs text-gray-300 focus:border-bio-cyan focus:outline-none" onchange="filterRegion(this.value)">
+            <option value="all">All Regions</option>
+        </select>
+    </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="max-w-[1600px] mx-auto px-6 py-6 space-y-6">
+
+    <!-- ROW 1: Gap Heatmap (full width) -->
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-th text-bio-cyan"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Capability Gap Matrix — 15 Domains x 8 Regions</h2>
+            </div>
+            <div class="flex items-center gap-3 text-[10px]">
+                <span class="rag-cell rag-b" style="width:auto;padding:3px 8px">85+ Excellent</span>
+                <span class="rag-cell rag-g" style="width:auto;padding:3px 8px">70-84 Adequate</span>
+                <span class="rag-cell rag-a" style="width:auto;padding:3px 8px">50-69 Gap</span>
+                <span class="rag-cell rag-r" style="width:auto;padding:3px 8px">&lt;50 Critical</span>
+            </div>
+        </div>
+        <div class="overflow-x-auto" id="gap-heatmap"></div>
+    </div>
+
+    <!-- ROW 2: Domain Deep Dive + Regional Summary -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Domain List -->
+        <div class="glass-card p-6 lg:col-span-1">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-list text-amber-400"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Gap Domains (15)</h2>
+            </div>
+            <div class="space-y-1 scrollbar-thin max-h-[600px] overflow-y-auto" id="domain-list"></div>
+        </div>
+
+        <!-- Domain Detail + Chart -->
+        <div class="glass-card p-6 lg:col-span-2">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-search-plus text-bio-cyan"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan" id="detail-title">Select a Domain for Deep Dive</h2>
+            </div>
+            <div id="domain-detail">
+                <div class="text-center text-gray-600 py-12">
+                    <i class="fas fa-crosshairs text-4xl mb-3 block"></i>
+                    <p>Click any domain from the list or heatmap cell to view detailed analysis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Regional Readiness Radar -->
+        <div class="glass-card p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-spider text-purple-400"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Regional Capability Profiles</h2>
+            </div>
+            <div style="height:350px"><canvas id="regional-radar"></canvas></div>
+        </div>
+
+        <!-- Gap Priority Ranking -->
+        <div class="glass-card p-6">
+            <div class="flex items-center gap-2 mb-4">
+                <i class="fas fa-sort-amount-down text-red-400"></i>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Gap Severity Ranking</h2>
+            </div>
+            <div style="height:350px"><canvas id="gap-ranking-chart"></canvas></div>
+        </div>
+    </div>
+
+    <!-- ROW 4: Recommendations -->
+    <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-clipboard-check text-bio-green"></i>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-bio-green">Strategic Recommendations — Phased Investment</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="recommendations"></div>
+    </div>
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1600px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable B: Capability Gap Analysis</div>
+        <div>15 Domains x 8 Regions = 120 Assessments | Baseline 2026-03-14</div>
+    </div>
+</footer>
+
+<script>
+const REGIONS = [
+    { id:'us', name:'United States', short:'US', icon:'🇺🇸', tier:1 },
+    { id:'fvey', name:'Five Eyes', short:'FVEY', icon:'👁️', tier:1 },
+    { id:'nato', name:'NATO/EU', short:'NATO', icon:'🇪🇺', tier:2 },
+    { id:'il', name:'Israel', short:'IL', icon:'🇮🇱', tier:1 },
+    { id:'ea', name:'East Asia Allies', short:'E.Asia', icon:'🌏', tier:2 },
+    { id:'me', name:'Middle East/Gulf', short:'M.East', icon:'🕌', tier:3 },
+    { id:'af', name:'Africa', short:'Africa', icon:'🌍', tier:4 },
+    { id:'adv', name:'Russia + China', short:'ADV', icon:'⚠️', tier:'adv' }
+];
+
+const DOMAINS = [
+    { id:'ew', name:'Early Warning & Event Detection', key_q:'Can we detect a novel outbreak within 24 hours?', icon:'fa-bell',
+      scores:{us:92,fvey:88,nato:80,il:85,ea:78,me:65,af:48,adv:75},
+      priority:'adequate', phase:'maintain',
+      detail:'Five Eyes nations lead with integrated EIOS, HealthMap, and syndromic surveillance (BioSense/ESSENCE). NATO/EU expanding through ECDC. Major gap in Africa and Middle East.',
+      recommendations:['Expand EIOS access to non-WHO member entities','Deploy AI-powered NLP event detection in 15+ additional languages','Create 24/7 allied early warning watch floor'],
+      platforms:['BioSense/ESSENCE','HealthMap','EIOS','ProMED'] },
+    { id:'gs', name:'Genomic Sequencing & Pathogen ID', key_q:'Can we sequence an unknown pathogen in-field?', icon:'fa-dna',
+      scores:{us:90,fvey:92,nato:82,il:82,ea:82,me:60,af:42,adv:78},
+      priority:'adequate', phase:'maintain',
+      detail:'Nextstrain/GISAID network mature. UK COG-UK demonstrated gold standard during COVID. Africa CDC AGARI expanding but coverage remains <10% of continent. Field sequencing (MinION) deployed but not standardized.',
+      recommendations:['Standardize field sequencing protocols across NATO','Fund AGARI expansion to cover 30 African nations by 2030','Create shared classified sequencing pipeline for defense'],
+      platforms:['Nextstrain','GISAID','COG-UK','NCBI Pathogen Detection'] },
+    { id:'ds', name:'Cross-Border Data Sharing', key_q:'Can allies share surveillance data during a crisis?', icon:'fa-exchange-alt',
+      scores:{us:78,fvey:72,nato:55,il:65,ea:48,me:35,af:30,adv:20},
+      priority:'critical', phase:'quick_win',
+      detail:'CRITICAL GAP. Even within Five Eyes, real-time data sharing is inconsistent. NATO has no standardized biosurveillance data protocol. GDPR/privacy constraints impede EU sharing. Africa CDC has minimal cross-border data infrastructure. Adversary states share nothing with allies.',
+      recommendations:['Establish Five Eyes BioSurveillance Data Exchange Protocol (BSDEP)','Create NATO STANAG for biosurveillance data sharing','Fund African cross-border data backbone through WHO IHR'],
+      platforms:['ReportStream','HealthMap','EIOS'] },
+    { id:'mcm', name:'MCM Development Speed', key_q:'Pathogen ID to vaccine/therapeutic in 60-100 days?', icon:'fa-syringe',
+      scores:{us:88,fvey:82,nato:75,il:90,ea:72,me:45,af:25,adv:78},
+      priority:'high', phase:'build',
+      detail:'DARPA P3 targets 60-day pandemic halt. Israel IIBR demonstrated rapid MCM development. EU HERA improving procurement speed. Africa entirely dependent on external MCM supply chains. Adversaries (Russia/China) have independent MCM pipelines.',
+      recommendations:['Accelerate DARPA P3 platform validation','Establish allied MCM manufacturing network (US, UK, India, Australia)','Pre-position MCM stockpiles in 5 strategic locations'],
+      platforms:['DARPA P3','BARDA','IIBR'] },
+    { id:'bd', name:'Biological Agent Detection', key_q:'Can we detect deliberate release in urban environment?', icon:'fa-biohazard',
+      scores:{us:90,fvey:85,nato:78,il:88,ea:75,me:58,af:32,adv:82},
+      priority:'adequate', phase:'maintain',
+      detail:'BioWatch network operational in 30+ US cities. BioFire FilmArray deployed across Five Eyes military. NATO has point detection but no unified network. Africa has virtually no deliberate release detection capability.',
+      recommendations:['Expand BioWatch-equivalent to 5 allied capital cities','Standardize NATO biological detection alarm protocols','Deploy mobile detection units to 10 African urban centers'],
+      platforms:['BioWatch','BioFire Defense','JBPDS','IBADS'] },
+    { id:'ln', name:'Laboratory Network Capacity', key_q:'Enough BSL-3/4 labs in the right locations?', icon:'fa-flask',
+      scores:{us:92,fvey:88,nato:82,il:85,ea:80,me:62,af:38,adv:80},
+      priority:'adequate', phase:'maintain',
+      detail:'NATO Tier 1-2 nations have adequate BSL-4 capacity. Gap exists in Africa (only 2 operational BSL-4 labs on the continent), Middle East, and Pacific Islands. Russia (VECTOR) and China (WIV) maintain large BSL-4 networks.',
+      recommendations:['Fund construction of 3 additional BSL-4 labs in Africa by 2032','Create mobile BSL-3 rapid deployment capability','Establish allied lab network mutual support agreements'],
+      platforms:['GLASS (WHO)','WHONET','OpenELIS'] },
+    { id:'ww', name:'Wastewater & Environmental Surveillance', key_q:'Community spread detection before clinical cases?', icon:'fa-water',
+      scores:{us:78,fvey:75,nato:68,il:72,ea:62,me:40,af:22,adv:58},
+      priority:'high', phase:'build',
+      detail:'Demonstrated value during COVID but no global standard exists. US/UK/Australia have mature programs. EU patchy. Africa and Middle East have minimal wastewater surveillance. No integration with clinical surveillance in most countries.',
+      recommendations:['Create WHO global wastewater surveillance standard','Fund wastewater sentinel sites in 20 African and Asian cities','Integrate wastewater data into BioSense/ESSENCE pipeline'],
+      platforms:['WastewaterSCAN','Biobot Analytics'] },
+    { id:'amr', name:'AMR Surveillance & Response', key_q:'Real-time global antimicrobial resistance tracking?', icon:'fa-pills',
+      scores:{us:82,fvey:80,nato:78,il:75,ea:78,me:55,af:42,adv:62},
+      priority:'high', phase:'build',
+      detail:'WHO GLASS framework provides structure but coverage outside OECD is patchy. Five Eyes nations have strong national AMR programs. Gap acute in Africa, Middle East, and South Asia where AMR burden is highest.',
+      recommendations:['Expand GLASS coverage to 150+ countries','Create real-time AMR alert system for pan-resistant organisms','Fund AMR laboratory capacity in 30 priority LMIC nations'],
+      platforms:['GLASS (WHO)','WHONET','CARD-RGI','AMRFinderPlus'] },
+    { id:'ai', name:'AI/ML Forecasting & Prediction', key_q:'Can we predict next spillover or pandemic trajectory?', icon:'fa-brain',
+      scores:{us:85,fvey:78,nato:72,il:78,ea:80,me:50,af:30,adv:82},
+      priority:'high', phase:'build',
+      detail:'Rapidly growing but validation frameworks immature. US (DARPA NOW, Google Earth Engine AI) and China (AMMS AI) leading. South Korea advanced in digital health AI. Africa and Middle East far behind. No standardized model validation protocol exists.',
+      recommendations:['Establish allied AI/ML model validation consortium','Create shared pandemic forecasting platform for Five Eyes','Fund AI training programs for 100+ LMIC epidemiologists'],
+      platforms:['DARPA NOW','Google Earth Engine AI','EPIWATCH'] },
+    { id:'sc', name:'Supply Chain & MCM Logistics', key_q:'MCM manufacturing and distribution at global scale?', icon:'fa-truck',
+      scores:{us:82,fvey:75,nato:72,il:78,ea:68,me:48,af:25,adv:72},
+      priority:'high', phase:'build',
+      detail:'COVID exposed critical supply chain vulnerabilities. US has BARDA Strategic National Stockpile. EU HERA improving MCM procurement. Africa entirely dependent on external supply. Cold chain infrastructure inadequate in most LMICs.',
+      recommendations:['Create allied MCM supply chain war-gaming exercise','Pre-position vaccine fill-finish capacity in 3 African locations','Establish 72-hour MCM deployment capability to any allied nation'],
+      platforms:['BARDA','EU HERA'] },
+    { id:'bs', name:'Biosecurity & Dual-Use Oversight', key_q:'Detect misuse of synthetic biology / gene editing?', icon:'fa-shield-alt',
+      scores:{us:80,fvey:75,nato:70,il:82,ea:65,me:42,af:28,adv:55},
+      priority:'critical', phase:'quick_win',
+      detail:'Synthetic biology regulation lags technology by 5-10 years. US Federal Select Agent Program provides domestic oversight but no international equivalent. CRISPR/gene drive capabilities proliferating faster than oversight frameworks. China\'s military-civilian fusion strategy raises dual-use concerns.',
+      recommendations:['Create international synthetic biology oversight framework','Establish Five Eyes dual-use research monitoring network','Fund biosecurity curriculum in 50+ university programs globally'],
+      platforms:['Federal Select Agent Program','NucleoStar'] },
+    { id:'wf', name:'Workforce & Training Readiness', key_q:'Enough trained biodefense personnel globally?', icon:'fa-user-graduate',
+      scores:{us:78,fvey:72,nato:68,il:75,ea:65,me:42,af:25,adv:65},
+      priority:'high', phase:'build',
+      detail:'Severe shortage of BSL-3/4 trained personnel globally. US and UK have pipeline but retirement wave approaching. Africa has <500 BSL-3 trained technicians for 1.4 billion people. Training standardization lacking across NATO.',
+      recommendations:['Create NATO biosurveillance workforce training academy','Fund 1,000 BSL-3 training positions in Africa and Asia','Establish cross-border credentialing for lab professionals'],
+      platforms:[] },
+    { id:'cm', name:'Communication & Public Health Messaging', key_q:'Coordinated risk communication across nations?', icon:'fa-bullhorn',
+      scores:{us:75,fvey:72,nato:70,il:72,ea:70,me:55,af:45,adv:50},
+      priority:'adequate', phase:'maintain',
+      detail:'Post-COVID improvements across most allied nations. WHO risk communication framework exists but implementation varies. Social media misinformation remains a challenge. Adversary disinformation campaigns actively undermine public health messaging.',
+      recommendations:['Create allied rapid communication protocol for bio events','Deploy AI-powered misinformation detection across social platforms','Establish shared public health messaging playbooks in 20+ languages'],
+      platforms:[] },
+    { id:'oh', name:'One Health Integration', key_q:'Human, animal, environmental systems connected?', icon:'fa-paw',
+      scores:{us:68,fvey:65,nato:58,il:62,ea:55,me:38,af:35,adv:48},
+      priority:'critical', phase:'quick_win',
+      detail:'CRITICAL GAP. Human, animal, and environmental surveillance systems remain disconnected in virtually all countries. FAO EMPRES-i, OIE WAHIS, and WHO systems do not interoperate. 75% of emerging infectious diseases are zoonotic, yet <10% of countries have integrated One Health surveillance.',
+      recommendations:['Create Five Eyes One Health data integration pilot','Fund FAO-OIE-WHO Tripartite data exchange platform','Establish 10 One Health sentinel sites in zoonotic hotspots'],
+      platforms:['EMPRES-i (FAO)','WAHIS (WOAH)'] },
+    { id:'bf', name:'Bioforensics & Attribution', key_q:'Natural vs. accidental vs. deliberate determination?', icon:'fa-fingerprint',
+      scores:{us:88,fvey:78,nato:62,il:82,ea:58,me:35,af:18,adv:72},
+      priority:'critical', phase:'quick_win',
+      detail:'CRITICAL GAP outside Five Eyes. Only US (NBFAC), UK (Dstl), and Israel have operational bioforensic attribution capability. NATO has doctrine but no shared capability. Africa and Middle East have zero attribution capacity. Critical for distinguishing natural from deliberate outbreaks.',
+      recommendations:['Establish NATO Bioforensic Attribution Center','Create Five Eyes shared bioforensic database','Fund bioforensic training programs for 10 allied partner nations'],
+      platforms:['NBFAC','Dstl Porton Down'] }
+];
+
+let currentPriorityFilter = 'all';
+let currentRegionFilter = 'all';
+let selectedDomain = null;
+
+function init() {
+    populateRegionFilter();
+    renderHeatmap();
+    renderDomainList();
+    renderRegionalRadar();
+    renderGapRanking();
+    renderRecommendations();
+}
+
+function populateRegionFilter() {
+    const sel = document.getElementById('region-filter');
+    REGIONS.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id; opt.textContent = `${r.icon} ${r.name}`;
+        sel.appendChild(opt);
+    });
+}
+
+function ragClass(val) { return val >= 85 ? 'rag-b' : val >= 70 ? 'rag-g' : val >= 50 ? 'rag-a' : 'rag-r'; }
+function ragLabel(val) { return val >= 85 ? 'Excellent' : val >= 70 ? 'Adequate' : val >= 50 ? 'Gap' : 'Critical'; }
+
+function renderHeatmap() {
+    const el = document.getElementById('gap-heatmap');
+    const filtered = currentPriorityFilter === 'all' ? DOMAINS :
+        DOMAINS.filter(d => d.priority === currentPriorityFilter);
+
+    el.innerHTML = `
+    <table class="w-full text-xs border-collapse">
+        <thead>
+            <tr>
+                <th class="text-left p-2 text-gray-400 font-semibold min-w-[200px] sticky left-0 bg-bio-card z-10">#</th>
+                <th class="text-left p-2 text-gray-400 font-semibold min-w-[200px] sticky left-0 bg-bio-card z-10">Domain</th>
+                ${REGIONS.map(r => `<th class="text-center p-2 text-gray-400 font-semibold min-w-[70px]">${r.icon}<br>${r.short}</th>`).join('')}
+                <th class="text-center p-2 text-gray-400 font-semibold min-w-[60px]">Avg</th>
+                <th class="text-center p-2 text-gray-400 font-semibold min-w-[70px]">Priority</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${filtered.map((d, i) => {
+                const vals = REGIONS.map(r => d.scores[r.id]);
+                const avg = (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(0);
+                const isSelected = selectedDomain && selectedDomain.id === d.id;
+                return `
+                <tr class="domain-row border-t border-bio-border/30 ${isSelected ? 'selected' : ''}" onclick="selectDomain('${d.id}')">
+                    <td class="p-2 text-gray-600 sticky left-0 bg-bio-card z-10">${i+1}</td>
+                    <td class="p-2 font-semibold text-gray-300 sticky left-0 bg-bio-card z-10">
+                        <i class="fas ${d.icon} mr-1 text-gray-500"></i>${d.name}
+                    </td>
+                    ${REGIONS.map(r => {
+                        const val = d.scores[r.id];
+                        return `<td class="p-1"><div class="rag-cell ${ragClass(val)}" title="${r.name}: ${val} (${ragLabel(val)})"
+                            onmouseover="showTip(event,'${d.name}','${r.name}: ${val}/100 — ${ragLabel(val)}')"
+                            onmouseout="hideTip()">${val}</div></td>`;
+                    }).join('')}
+                    <td class="p-2 text-center font-bold ${avg >= 70 ? 'text-green-400' : avg >= 55 ? 'text-amber-400' : 'text-red-400'}">${avg}</td>
+                    <td class="p-2 text-center"><span class="priority-tag priority-${d.priority}">${d.priority}</span></td>
+                </tr>`;
+            }).join('')}
+        </tbody>
+    </table>`;
+}
+
+function renderDomainList() {
+    const el = document.getElementById('domain-list');
+    const filtered = currentPriorityFilter === 'all' ? DOMAINS :
+        DOMAINS.filter(d => d.priority === currentPriorityFilter);
+
+    el.innerHTML = filtered.map(d => {
+        const vals = Object.values(d.scores);
+        const avg = (vals.reduce((a,b)=>a+b,0) / vals.length).toFixed(0);
+        const minVal = Math.min(...vals);
+        const isSelected = selectedDomain && selectedDomain.id === d.id;
+        return `
+        <div class="domain-row p-3 rounded-lg ${isSelected ? 'selected' : ''}" onclick="selectDomain('${d.id}')">
+            <div class="flex items-center gap-2 mb-1">
+                <i class="fas ${d.icon} text-gray-500 w-4"></i>
+                <span class="text-xs font-semibold flex-1 truncate">${d.name}</span>
+                <span class="priority-tag priority-${d.priority}">${d.priority}</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+                <div class="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full bar-fill" style="width:${avg}%;background:${avg >= 70 ? '#10b981' : avg >= 55 ? '#f59e0b' : '#ef4444'}"></div>
+                </div>
+                <span class="text-[10px] font-bold w-8 text-right" style="color:${avg >= 70 ? '#10b981' : avg >= 55 ? '#f59e0b' : '#ef4444'}">${avg}</span>
+            </div>
+            <div class="text-[10px] text-gray-600 mt-1 truncate">${d.key_q}</div>
+        </div>`;
+    }).join('');
+}
+
+function selectDomain(id) {
+    selectedDomain = DOMAINS.find(d => d.id === id);
+    if (!selectedDomain) return;
+    renderDomainDetail(selectedDomain);
+    renderDomainList();
+    renderHeatmap();
+}
+
+function renderDomainDetail(d) {
+    document.getElementById('detail-title').textContent = d.name;
+    const el = document.getElementById('domain-detail');
+    const vals = REGIONS.map(r => ({ region: r, score: d.scores[r.id] }));
+    vals.sort((a,b) => b.score - a.score);
+    const avg = (Object.values(d.scores).reduce((a,b)=>a+b,0) / Object.values(d.scores).length).toFixed(1);
+    const minR = vals[vals.length-1];
+    const maxR = vals[0];
+
+    el.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="flex items-center gap-2 mb-3">
+                    <i class="fas ${d.icon} text-bio-cyan text-lg"></i>
+                    <span class="priority-tag priority-${d.priority}">${d.priority} priority</span>
+                    <span class="text-xs text-gray-500 ml-2">${d.phase === 'quick_win' ? '🚀 Quick Win (0-1yr)' : d.phase === 'build' ? '🔨 Build (1-3yr)' : '🛡️ Maintain'}</span>
+                </div>
+                <div class="text-xs text-gray-500 font-semibold mb-1">${d.key_q}</div>
+                <p class="text-xs text-gray-400 leading-relaxed mb-4">${d.detail}</p>
+
+                <div class="grid grid-cols-3 gap-2 mb-4">
+                    <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                        <div class="text-lg font-bold ${avg >= 70 ? 'text-green-400' : avg >= 55 ? 'text-amber-400' : 'text-red-400'}">${avg}</div>
+                        <div class="text-[10px] text-gray-500">Global Avg</div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                        <div class="text-lg font-bold text-green-400">${maxR.score}</div>
+                        <div class="text-[10px] text-gray-500">${maxR.region.icon} Best</div>
+                    </div>
+                    <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                        <div class="text-lg font-bold text-red-400">${minR.score}</div>
+                        <div class="text-[10px] text-gray-500">${minR.region.icon} Worst</div>
+                    </div>
+                </div>
+
+                <div class="text-xs font-bold text-gray-400 mb-2">Recommendations</div>
+                <div class="space-y-1.5">
+                    ${d.recommendations.map((r,i) => `
+                        <div class="flex items-start gap-2 text-xs text-gray-400">
+                            <span class="w-4 h-4 rounded-full bg-bio-cyan/20 text-bio-cyan flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5">${i+1}</span>
+                            ${r}
+                        </div>`).join('')}
+                </div>
+
+                ${d.platforms.length > 0 ? `
+                <div class="mt-4 text-xs font-bold text-gray-400 mb-2">Key Platforms</div>
+                <div class="flex flex-wrap gap-1">
+                    ${d.platforms.map(p => `<span class="px-2 py-1 rounded bg-gray-800 text-gray-400 text-[10px]">${p}</span>`).join('')}
+                </div>` : ''}
+            </div>
+            <div>
+                <div class="text-xs font-bold text-gray-400 mb-3">Regional Scores</div>
+                <div class="space-y-2">
+                    ${vals.map(v => `
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm w-6">${v.region.icon}</span>
+                        <span class="text-xs text-gray-400 w-16">${v.region.short}</span>
+                        <div class="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full bar-fill" style="width:${v.score}%;background:${v.score >= 85 ? '#3b82f6' : v.score >= 70 ? '#10b981' : v.score >= 50 ? '#f59e0b' : '#ef4444'}"></div>
+                        </div>
+                        <span class="text-xs font-bold w-8 text-right" style="color:${v.score >= 70 ? '#10b981' : v.score >= 50 ? '#f59e0b' : '#ef4444'}">${v.score}</span>
+                    </div>`).join('')}
+                </div>
+                <div class="mt-4" style="height:200px"><canvas id="domain-mini-radar"></canvas></div>
+            </div>
+        </div>
+    `;
+
+    // Mini radar for selected domain
+    setTimeout(() => {
+        const ctx = document.getElementById('domain-mini-radar');
+        if (!ctx) return;
+        new Chart(ctx.getContext('2d'), {
+            type: 'radar',
+            data: {
+                labels: REGIONS.map(r => r.short),
+                datasets: [{ label: d.name, data: REGIONS.map(r => d.scores[r.id]),
+                    backgroundColor: 'rgba(6,182,212,.15)', borderColor: '#06b6d4', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#06b6d4' }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, color: '#4b5563', backdropColor: 'transparent', font:{size:8} }, grid: { color: 'rgba(42,54,80,.4)' }, pointLabels: { color: '#9ca3af', font: {size:10,weight:600} } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }, 100);
+}
+
+function renderRegionalRadar() {
+    const datasets = [
+        { region: REGIONS[0], color: '#10b981' }, // US
+        { region: REGIONS[1], color: '#3b82f6' }, // FVEY
+        { region: REGIONS[6], color: '#f97316' }, // Africa
+        { region: REGIONS[7], color: '#a855f7' }  // Adversary
+    ];
+
+    const ctx = document.getElementById('regional-radar').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: DOMAINS.map(d => d.name.split(' ').slice(0,2).join(' ')),
+            datasets: datasets.map(ds => ({
+                label: ds.region.name,
+                data: DOMAINS.map(d => d.scores[ds.region.id]),
+                backgroundColor: ds.color + '10',
+                borderColor: ds.color,
+                borderWidth: 2, pointRadius: 3, pointBackgroundColor: ds.color
+            }))
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, color: '#4b5563', backdropColor: 'transparent', font:{size:8} }, grid: { color: 'rgba(42,54,80,.3)' }, pointLabels: { color: '#9ca3af', font: {size:8} } } },
+            plugins: { legend: { labels: { color: '#9ca3af', font: {size:10} } } }
+        }
+    });
+}
+
+function renderGapRanking() {
+    const ranked = DOMAINS.map(d => {
+        const vals = Object.values(d.scores);
+        return { ...d, avg: vals.reduce((a,b)=>a+b,0) / vals.length };
+    }).sort((a,b) => a.avg - b.avg);
+
+    const ctx = document.getElementById('gap-ranking-chart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ranked.map(d => d.name.split(' ').slice(0,3).join(' ')),
+            datasets: [{
+                data: ranked.map(d => d.avg.toFixed(1)),
+                backgroundColor: ranked.map(d => d.avg >= 70 ? '#10b98160' : d.avg >= 55 ? '#f59e0b60' : '#ef444460'),
+                borderColor: ranked.map(d => d.avg >= 70 ? '#10b981' : d.avg >= 55 ? '#f59e0b' : '#ef4444'),
+                borderWidth: 1, borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+            scales: {
+                x: { min: 30, max: 90, grid: { color: 'rgba(42,54,80,.3)' }, ticks: { color: '#6b7280', font:{size:10} } },
+                y: { grid: { display: false }, ticks: { color: '#9ca3af', font: {size:9} } }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+function renderRecommendations() {
+    const phases = [
+        { label: 'Quick Wins (0-1yr)', icon: 'fa-rocket', color: '#ef4444', domains: DOMAINS.filter(d => d.phase === 'quick_win') },
+        { label: 'Build (1-3yr)', icon: 'fa-hammer', color: '#f59e0b', domains: DOMAINS.filter(d => d.phase === 'build') },
+        { label: 'Maintain & Expand', icon: 'fa-shield-alt', color: '#10b981', domains: DOMAINS.filter(d => d.phase === 'maintain') }
+    ];
+
+    const el = document.getElementById('recommendations');
+    el.innerHTML = phases.map(ph => `
+        <div class="space-y-3">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fas ${ph.icon}" style="color:${ph.color}"></i>
+                <h3 class="text-sm font-bold" style="color:${ph.color}">${ph.label}</h3>
+                <span class="text-[10px] text-gray-600 ml-auto">${ph.domains.length} domains</span>
+            </div>
+            ${ph.domains.map(d => `
+                <div class="p-3 rounded-lg border border-bio-border/50 hover:border-bio-border cursor-pointer" onclick="selectDomain('${d.id}')">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas ${d.icon} text-gray-500 text-xs"></i>
+                        <span class="text-xs font-semibold text-gray-300">${d.name}</span>
+                    </div>
+                    <div class="text-[10px] text-gray-500">${d.recommendations[0]}</div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+function filterPriority(priority) {
+    currentPriorityFilter = priority;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderHeatmap();
+    renderDomainList();
+}
+
+function filterRegion(regionId) {
+    currentRegionFilter = regionId;
+    // Could filter to show only one region column highlighted
+    renderHeatmap();
+}
+
+function showTip(e, title, body) {
+    const t = document.getElementById('tooltip');
+    t.innerHTML = `<div class="font-bold text-white">${title}</div><div class="text-gray-400">${body}</div>`;
+    t.style.display = 'block'; t.style.left = (e.clientX+15)+'px'; t.style.top = (e.clientY-10)+'px';
+}
+function hideTip() { document.getElementById('tooltip').style.display = 'none'; }
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

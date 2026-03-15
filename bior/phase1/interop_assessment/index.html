@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Interoperability Assessment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg-primary:#0a0e1a;--bg-card:#1a2235;--border:#2a3650;--text-primary:#e5e7eb;--text-secondary:#9ca3af}
+        *{font-family:'Inter',sans-serif}body{background:var(--bg-primary);color:var(--text-primary)}
+        .glass-card{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;transition:all .3s}
+        .glass-card:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+        .conn-line{stroke-dasharray:6,4;animation:dash 20s linear infinite}@keyframes dash{to{stroke-dashoffset:-200}}
+        .node-pulse{animation:npulse 3s infinite}@keyframes npulse{0%,100%{opacity:.8}50%{opacity:1}}
+        .type-row{transition:all .2s;cursor:pointer}.type-row:hover{background:rgba(59,130,246,.06)}.type-row.selected{background:rgba(6,182,212,.1);border-left:3px solid #06b6d4}
+        .status-connected{color:#10b981}.status-partial{color:#f59e0b}.status-disconnected{color:#ef4444}.status-classified{color:#a855f7}
+        #tooltip{position:fixed;z-index:9999;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;max-width:360px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+        .conn-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700}
+        .conn-full{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+        .conn-partial{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+        .conn-none{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+        .conn-classified{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-blue':'#3b82f6','bio-cyan':'#06b6d4','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div id="tooltip"></div>
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div><h1 class="text-lg font-bold tracking-tight">BioR <span class="text-bio-cyan font-normal text-sm ml-1">Interoperability Assessment</span></h1><p class="text-xs text-gray-500">Deliverable C — 10 Types x 6 Alliances</p></div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../threat_map/index.html" class="hover:text-bio-cyan"><i class="fas fa-globe mr-1"></i>Threat Map</a>
+            <a href="../gap_analysis/index.html" class="hover:text-bio-cyan"><i class="fas fa-search mr-1"></i>Gap Analysis</a>
+            <a href="../comparison_engine/index.html" class="hover:text-bio-cyan"><i class="fas fa-balance-scale mr-1"></i>Compare</a>
+        </nav>
+    </div>
+</header>
+
+<!-- SUMMARY -->
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(6,182,212,.06),rgba(59,130,246,.06),rgba(139,92,246,.06))">
+    <div class="max-w-[1600px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">10</div><div class="text-[10px] text-gray-500 uppercase">Interop Types</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-blue">6</div><div class="text-[10px] text-gray-500 uppercase">Alliances</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400">60</div><div class="text-[10px] text-gray-500 uppercase">Assessments</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-red-400" id="sum-disconn">18</div><div class="text-[10px] text-gray-500 uppercase">Disconnected</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400" id="sum-partial">26</div><div class="text-[10px] text-gray-500 uppercase">Partial</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400" id="sum-full">16</div><div class="text-[10px] text-gray-500 uppercase">Connected</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>Assessment: Forward-looking (3-10yr)</div><div>Baseline: PSEF v3.0.0</div></div>
+    </div>
+</div>
+
+<main class="max-w-[1600px] mx-auto px-6 py-6 space-y-6">
+
+    <!-- Network Diagram -->
+    <div class="glass-card p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2"><i class="fas fa-project-diagram text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Alliance Interoperability Network</h2></div>
+            <div class="flex gap-3 text-[10px]">
+                <span class="conn-badge conn-full"><i class="fas fa-link"></i> Connected</span>
+                <span class="conn-badge conn-partial"><i class="fas fa-unlink"></i> Partial</span>
+                <span class="conn-badge conn-none"><i class="fas fa-times"></i> Disconnected</span>
+                <span class="conn-badge conn-classified"><i class="fas fa-lock"></i> Classified Barrier</span>
+            </div>
+        </div>
+        <div class="flex justify-center" style="height:380px"><svg id="network-svg" viewBox="0 0 800 380" class="w-full h-full"></svg></div>
+    </div>
+
+    <!-- Interop Matrix -->
+    <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-th text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Interoperability Matrix — 10 Types x 6 Alliances</h2></div>
+        <div class="overflow-x-auto" id="interop-matrix"></div>
+    </div>
+
+    <!-- Type Deep Dive + Alliance Comparison -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass-card p-6 lg:col-span-1">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-list text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Interop Types (10)</h2></div>
+            <div class="space-y-1 scrollbar-thin max-h-[500px] overflow-y-auto" id="type-list"></div>
+        </div>
+        <div class="glass-card p-6 lg:col-span-2">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-search-plus text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan" id="type-detail-title">Select an Interoperability Type</h2></div>
+            <div id="type-detail"><div class="text-center text-gray-600 py-12"><i class="fas fa-network-wired text-4xl mb-3 block"></i><p>Click a type to view detailed analysis</p></div></div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass-card p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-radar text-bio-green"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-green">Alliance Capability Profiles</h2></div>
+            <div style="height:350px"><canvas id="alliance-radar"></canvas></div>
+        </div>
+        <div class="glass-card p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Interop Gap Severity</h2></div>
+            <div style="height:350px"><canvas id="gap-bar"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Critical Barriers -->
+    <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-lock text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Critical Interoperability Barriers</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="barriers"></div>
+    </div>
+
+    <!-- Roadmap -->
+    <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-road text-bio-green"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-green">Interoperability Roadmap</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="roadmap"></div>
+    </div>
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1600px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable C: Interoperability Assessment</div>
+        <div>10 Types x 6 Alliances = 60 Assessments | Baseline 2026-03-14</div>
+    </div>
+</footer>
+
+<script>
+const ALLIANCES = [
+    { id:'fvey', name:'Five Eyes', short:'FVEY', color:'#10b981', members:'US, UK, CA, AU, NZ', x:400, y:80 },
+    { id:'nato', name:'NATO CBRN', short:'NATO', color:'#3b82f6', members:'31 states', x:180, y:160 },
+    { id:'eu', name:'EU / HERA', short:'EU', color:'#8b5cf6', members:'27 states', x:620, y:160 },
+    { id:'quad', name:'Quad', short:'QUAD', color:'#f59e0b', members:'US, JP, IN, AU', x:130, y:300 },
+    { id:'who', name:'WHO / IHR', short:'WHO', color:'#06b6d4', members:'196 states', x:400, y:320 },
+    { id:'acdc', name:'Africa CDC / AU', short:'ACDC', color:'#f97316', members:'55 states', x:670, y:300 }
+];
+
+const CONNECTIONS = [
+    { from:'fvey', to:'nato', strength:'strong', score:78 },
+    { from:'fvey', to:'eu', strength:'moderate', score:62 },
+    { from:'fvey', to:'quad', strength:'moderate', score:55 },
+    { from:'fvey', to:'who', strength:'moderate', score:58 },
+    { from:'nato', to:'eu', strength:'strong', score:72 },
+    { from:'nato', to:'who', strength:'partial', score:48 },
+    { from:'eu', to:'who', strength:'moderate', score:60 },
+    { from:'eu', to:'acdc', strength:'partial', score:38 },
+    { from:'quad', to:'who', strength:'partial', score:42 },
+    { from:'who', to:'acdc', strength:'moderate', score:52 },
+    { from:'nato', to:'quad', strength:'weak', score:30 },
+    { from:'fvey', to:'acdc', strength:'weak', score:25 }
+];
+
+const INTEROP_TYPES = [
+    { id:'df', name:'Data Format Standards', icon:'fa-file-code', key_q:'HL7 FHIR, LOINC, SNOMED, ISO 11179 adoption',
+      scores:{fvey:82,nato:65,eu:75,quad:52,who:70,acdc:35},
+      detail:'Five Eyes and EU lead in HL7 FHIR adoption. NATO lacks standardized biosurveillance data formats. WHO IHR framework provides baseline but implementation varies. Africa CDC building from scratch.',
+      barriers:['No NATO STANAG for biosurveillance data formats','FHIR adoption <20% in LMIC nations','Legacy system incompatibilities across EU member states'],
+      recommendations:['Create NATO STANAG for bio data exchange (HL7 FHIR-based)','Fund FHIR implementation in 50 LMIC nations','Harmonize EU member state data schemas'] },
+    { id:'api', name:'Real-Time API Connectivity', icon:'fa-plug', key_q:'Live API connections between platforms',
+      scores:{fvey:75,nato:45,eu:58,quad:38,who:52,acdc:22},
+      detail:'Only Five Eyes has operational real-time API connectivity between biosurveillance platforms. NATO has no live bio-API layer. EU ECDC building TESSy API. WHO EIOS has limited API exposure.',
+      barriers:['No unified API gateway for allied biosurveillance','Latency requirements unmet across intercontinental links','Authentication/authorization fragmented'],
+      recommendations:['Build Five Eyes BioAPI Gateway (real-time federation)','Create NATO bio-data API standard','Deploy WHO-managed global health API hub'] },
+    { id:'gen', name:'Genomic Data Sharing Protocols', icon:'fa-dna', key_q:'GISAID, Nextstrain, NCBI data flow',
+      scores:{fvey:88,nato:72,eu:78,quad:65,who:75,acdc:45},
+      detail:'Strongest interoperability domain. GISAID/Nextstrain/NCBI network provides functional global infrastructure. Five Eyes nations contribute 60%+ of global genomic data. Gap: defense-specific genomic data sharing is classified and siloed.',
+      barriers:['Defense genomic data classified and not shared','Africa contributes <5% of global genomic sequences','GISAID access restrictions limit some nations'],
+      recommendations:['Create classified genomic sharing channel for Five Eyes defense','Expand African sequencing upload capacity 10x','Standardize metadata schema across GISAID/NCBI/ENA'] },
+    { id:'cls', name:'Classification Level Bridging', icon:'fa-lock', key_q:'Classified military → unclassified public health',
+      scores:{fvey:55,nato:40,eu:30,quad:28,who:15,acdc:10},
+      detail:'CRITICAL GAP. No standardized mechanism to move classified biological intelligence to public health responders. Five Eyes has informal channels but no protocol. NATO CBRN doctrine addresses CBRN sharing but not biosurveillance specifically.',
+      barriers:['No declassification protocol for bio-intel','Military and civilian systems on separate networks','Legal frameworks prevent sharing in most nations'],
+      recommendations:['Create Five Eyes BioIntel Declassification Protocol','Establish NATO-civilian bio-bridge officer network','Build secure enclave for cross-classification bio data'] },
+    { id:'legal', name:'Cross-Border Legal Frameworks', icon:'fa-gavel', key_q:'Data sharing agreements, IHR, GDPR compliance',
+      scores:{fvey:72,nato:60,eu:68,quad:45,who:65,acdc:38},
+      detail:'GDPR constrains EU data sharing. IHR provides global baseline but compliance varies. Five Eyes has bilateral arrangements but no multilateral bio-data agreement. Quad health security framework nascent.',
+      barriers:['GDPR vs public health emergency exemptions unclear','IHR compliance self-reported and unverified','No multilateral biosurveillance data sharing agreement'],
+      recommendations:['Draft Five Eyes Biosurveillance Data Sharing Agreement','Clarify GDPR public health emergency exemptions','Strengthen IHR compliance verification mechanism'] },
+    { id:'lang', name:'Language & Terminology Harmonization', icon:'fa-language', key_q:'Multi-language alert ingestion capability',
+      scores:{fvey:70,nato:55,eu:62,quad:48,who:68,acdc:40},
+      detail:'WHO EIOS handles 60+ languages for event detection. EU has multi-language challenge across 24 official languages. Five Eyes English-centric creates blind spots. Africa CDC operates in 4+ languages with no unified terminology.',
+      barriers:['Medical terminology not standardized across languages','NLP accuracy drops significantly for non-English/French/Spanish','SNOMED translations incomplete for most languages'],
+      recommendations:['Expand EIOS NLP to 100+ languages','Create multilingual biosurveillance ontology','Fund SNOMED translation to 30 priority languages'] },
+    { id:'hw', name:'Hardware-to-Software Pipeline', icon:'fa-microchip', key_q:'Field devices → surveillance dashboards',
+      scores:{fvey:68,nato:52,eu:45,quad:35,who:30,acdc:18},
+      detail:'BioFire/FilmArray to BioSense pipeline works in US/Five Eyes. NATO has no standard hardware-to-dashboard integration. Field sequencers (MinION) output not automatically ingested. Mobile detection to command center data flow ad hoc.',
+      barriers:['No standard data format for field bio-detection devices','Bandwidth limitations in field/crisis environments','Device manufacturers use proprietary formats'],
+      recommendations:['Create NATO standard for bio-detection device output format','Build edge computing layer for field-to-cloud data pipeline','Mandate open data format for all defense bio-detection procurement'] },
+    { id:'oh', name:'One Health Data Integration', icon:'fa-paw', key_q:'Human, animal, environmental system connections',
+      scores:{fvey:52,nato:38,eu:45,quad:35,who:55,acdc:30},
+      detail:'CRITICAL GAP. FAO EMPRES-i (animal), OIE WAHIS (animal health), and WHO systems do not interoperate. No nation has fully integrated One Health surveillance. WHO Tripartite (WHO-FAO-OIE) working on framework but years from implementation.',
+      barriers:['Human and veterinary health IT systems completely separate','Environmental monitoring not connected to health surveillance','No shared One Health data standard exists'],
+      recommendations:['Create Five Eyes One Health data integration pilot','Fund WHO-FAO-OIE Tripartite data platform','Establish 10 One Health sentinel sites with integrated systems'] },
+    { id:'al', name:'Allied Coalition Interoperability', icon:'fa-handshake', key_q:'Five Eyes/NATO joint operation bio sharing',
+      scores:{fvey:78,nato:58,eu:50,quad:42,who:48,acdc:25},
+      detail:'Five Eyes has strongest bilateral interop but even here gaps exist during joint operations. NATO CBRN exercises reveal interop failures. EU has ECDC coordination but member state systems vary wildly.',
+      barriers:['Different classification systems across allies','Exercise-revealed interop failures not systematically tracked','Coalition SOPs for bio-sharing don\'t exist'],
+      recommendations:['Create annual allied biosurveillance interop exercise','Develop NATO-EU bio-data sharing SOP','Establish coalition bio-liaison officer positions'] },
+    { id:'cm', name:'Civilian-Military Data Bridge', icon:'fa-exchange-alt', key_q:'DoD → CDC / military → civilian PH systems',
+      scores:{fvey:60,nato:42,eu:35,quad:30,who:25,acdc:15},
+      detail:'CRITICAL GAP. Military and civilian public health systems operate in parallel with minimal data exchange. US DoD-CDC coordination improved post-COVID but still ad hoc. NATO has no standardized civ-mil bio-data bridge.',
+      barriers:['Military networks (SIPRNet/JWICS) physically separated from civilian internet','No bilateral civ-mil data sharing agreements for biosurveillance','Different organizational cultures and data ownership norms'],
+      recommendations:['Establish US DoD-CDC permanent bio-data liaison office','Create NATO civ-mil bio-data exchange protocol','Build secure cross-domain solution for bio-intelligence sharing'] }
+];
+
+let selectedType = null;
+
+function init() {
+    renderNetwork();
+    renderMatrix();
+    renderTypeList();
+    renderAllianceRadar();
+    renderGapBar();
+    renderBarriers();
+    renderRoadmap();
+    updateSummary();
+}
+
+function updateSummary() {
+    let full=0, partial=0, disc=0;
+    INTEROP_TYPES.forEach(t => {
+        Object.values(t.scores).forEach(s => { if(s>=70) full++; else if(s>=45) partial++; else disc++; });
+    });
+    document.getElementById('sum-full').textContent = full;
+    document.getElementById('sum-partial').textContent = partial;
+    document.getElementById('sum-disconn').textContent = disc;
+}
+
+function renderNetwork() {
+    const svg = document.getElementById('network-svg');
+    let content = `<defs><filter id="glow"><feGaussianBlur stdDeviation="3"/></filter></defs>`;
+
+    // Connection lines
+    CONNECTIONS.forEach(c => {
+        const from = ALLIANCES.find(a => a.id === c.from);
+        const to = ALLIANCES.find(a => a.id === c.to);
+        const color = c.score >= 70 ? '#10b981' : c.score >= 45 ? '#f59e0b' : '#ef4444';
+        const width = Math.max(1, c.score / 25);
+        content += `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="${color}" stroke-width="${width}" opacity="0.4" class="conn-line"/>`;
+        const mx = (from.x + to.x) / 2, my = (from.y + to.y) / 2;
+        content += `<text x="${mx}" y="${my-5}" text-anchor="middle" fill="${color}" font-size="10" font-weight="700">${c.score}</text>`;
+    });
+
+    // Alliance nodes
+    ALLIANCES.forEach(a => {
+        const avgScore = (Object.values(INTEROP_TYPES.reduce((acc,t)=>{acc[a.id]=(acc[a.id]||0)+t.scores[a.id]; return acc},{})))[0] / INTEROP_TYPES.length;
+        content += `
+            <circle cx="${a.x}" cy="${a.y}" r="42" fill="${a.color}" opacity="0.08" filter="url(#glow)"/>
+            <circle cx="${a.x}" cy="${a.y}" r="32" fill="rgba(10,14,26,.8)" stroke="${a.color}" stroke-width="2.5" class="node-pulse" style="cursor:pointer"
+                onmouseover="showTip(event,'${a.name}','${a.members}')" onmouseout="hideTip()"/>
+            <text x="${a.x}" y="${a.y-2}" text-anchor="middle" fill="${a.color}" font-size="12" font-weight="800">${a.short}</text>
+            <text x="${a.x}" y="${a.y+12}" text-anchor="middle" fill="#9ca3af" font-size="9">${a.members.split(',').length} members</text>
+        `;
+    });
+
+    svg.innerHTML = content;
+}
+
+function renderMatrix() {
+    const el = document.getElementById('interop-matrix');
+    function cellClass(val) { return val >= 70 ? 'conn-full' : val >= 45 ? 'conn-partial' : 'conn-none'; }
+
+    el.innerHTML = `
+    <table class="w-full text-xs border-collapse">
+        <thead><tr>
+            <th class="text-left p-2 text-gray-400 font-semibold min-w-[200px]">Interoperability Type</th>
+            ${ALLIANCES.map(a => `<th class="text-center p-2 font-semibold min-w-[70px]" style="color:${a.color}">${a.short}</th>`).join('')}
+            <th class="text-center p-2 text-gray-400 font-semibold min-w-[60px]">Avg</th>
+        </tr></thead>
+        <tbody>
+            ${INTEROP_TYPES.map(t => {
+                const vals = ALLIANCES.map(a => t.scores[a.id]);
+                const avg = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(0);
+                const sel = selectedType && selectedType.id === t.id;
+                return `<tr class="type-row border-t border-bio-border/30 ${sel?'selected':''}" onclick="selectType('${t.id}')">
+                    <td class="p-2 font-semibold text-gray-300"><i class="fas ${t.icon} mr-1 text-gray-500"></i>${t.name}</td>
+                    ${ALLIANCES.map(a => `<td class="p-1"><div class="conn-badge ${cellClass(t.scores[a.id])}" style="width:100%;justify-content:center">${t.scores[a.id]}</div></td>`).join('')}
+                    <td class="p-2 text-center font-bold ${avg>=60?'text-green-400':avg>=40?'text-amber-400':'text-red-400'}">${avg}</td>
+                </tr>`;
+            }).join('')}
+        </tbody>
+    </table>`;
+}
+
+function renderTypeList() {
+    const el = document.getElementById('type-list');
+    el.innerHTML = INTEROP_TYPES.map(t => {
+        const vals = Object.values(t.scores);
+        const avg = (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(0);
+        const sel = selectedType && selectedType.id === t.id;
+        return `
+        <div class="type-row p-3 rounded-lg ${sel?'selected':''}" onclick="selectType('${t.id}')">
+            <div class="flex items-center gap-2 mb-1">
+                <i class="fas ${t.icon} text-gray-500 w-4"></i>
+                <span class="text-xs font-semibold flex-1 truncate">${t.name}</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div class="h-full rounded-full bar-fill" style="width:${avg}%;background:${avg>=60?'#10b981':avg>=40?'#f59e0b':'#ef4444'}"></div>
+                </div>
+                <span class="text-[10px] font-bold w-8 text-right" style="color:${avg>=60?'#10b981':avg>=40?'#f59e0b':'#ef4444'}">${avg}</span>
+            </div>
+            <div class="text-[10px] text-gray-600 mt-1 truncate">${t.key_q}</div>
+        </div>`;
+    }).join('');
+}
+
+function selectType(id) {
+    selectedType = INTEROP_TYPES.find(t => t.id === id);
+    if (!selectedType) return;
+    renderTypeDetail(selectedType);
+    renderTypeList();
+    renderMatrix();
+}
+
+function renderTypeDetail(t) {
+    document.getElementById('type-detail-title').textContent = t.name;
+    const el = document.getElementById('type-detail');
+    const vals = ALLIANCES.map(a => ({alliance:a, score:t.scores[a.id]})).sort((a,b)=>b.score-a.score);
+    const avg = (Object.values(t.scores).reduce((a,b)=>a+b,0)/Object.values(t.scores).length).toFixed(1);
+
+    el.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="flex items-center gap-2 mb-3"><i class="fas ${t.icon} text-bio-cyan text-lg"></i></div>
+            <div class="text-xs text-gray-500 font-semibold mb-1">${t.key_q}</div>
+            <p class="text-xs text-gray-400 leading-relaxed mb-4">${t.detail}</p>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                    <div class="text-lg font-bold ${avg>=60?'text-green-400':avg>=40?'text-amber-400':'text-red-400'}">${avg}</div>
+                    <div class="text-[10px] text-gray-500">Global Avg</div>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                    <div class="text-lg font-bold text-green-400">${vals[0].score}</div>
+                    <div class="text-[10px] text-gray-500">${vals[0].alliance.short} Best</div>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-2 text-center">
+                    <div class="text-lg font-bold text-red-400">${vals[vals.length-1].score}</div>
+                    <div class="text-[10px] text-gray-500">${vals[vals.length-1].alliance.short} Worst</div>
+                </div>
+            </div>
+            <div class="text-xs font-bold text-red-400 mb-2">Key Barriers</div>
+            <div class="space-y-1.5 mb-4">${t.barriers.map(b => `<div class="flex items-start gap-2 text-xs text-gray-400"><i class="fas fa-times-circle text-red-400 mt-0.5"></i>${b}</div>`).join('')}</div>
+            <div class="text-xs font-bold text-green-400 mb-2">Recommendations</div>
+            <div class="space-y-1.5">${t.recommendations.map((r,i) => `<div class="flex items-start gap-2 text-xs text-gray-400"><span class="w-4 h-4 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center text-[10px] font-bold flex-shrink-0">${i+1}</span>${r}</div>`).join('')}</div>
+        </div>
+        <div>
+            <div class="text-xs font-bold text-gray-400 mb-3">Alliance Scores</div>
+            <div class="space-y-2.5">${vals.map(v => `
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold w-12" style="color:${v.alliance.color}">${v.alliance.short}</span>
+                    <div class="flex-1 h-3 bg-gray-800 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full bar-fill" style="width:${v.score}%;background:${v.score>=70?'#10b981':v.score>=45?'#f59e0b':'#ef4444'}"></div>
+                    </div>
+                    <span class="text-xs font-bold w-8 text-right" style="color:${v.score>=70?'#10b981':v.score>=45?'#f59e0b':'#ef4444'}">${v.score}</span>
+                </div>`).join('')}</div>
+            <div class="mt-6" style="height:220px"><canvas id="type-mini-chart"></canvas></div>
+        </div>
+    </div>`;
+
+    setTimeout(() => {
+        const ctx = document.getElementById('type-mini-chart');
+        if (!ctx) return;
+        new Chart(ctx.getContext('2d'), {
+            type:'radar',
+            data:{ labels:ALLIANCES.map(a=>a.short), datasets:[{label:t.name,data:ALLIANCES.map(a=>t.scores[a.id]),backgroundColor:'rgba(6,182,212,.15)',borderColor:'#06b6d4',borderWidth:2,pointRadius:4,pointBackgroundColor:'#06b6d4'}]},
+            options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.4)'},pointLabels:{color:'#9ca3af',font:{size:10,weight:600}}}},plugins:{legend:{display:false}}}
+        });
+    }, 100);
+}
+
+function renderAllianceRadar() {
+    const ctx = document.getElementById('alliance-radar').getContext('2d');
+    new Chart(ctx, {
+        type:'radar',
+        data:{
+            labels:INTEROP_TYPES.map(t=>t.name.split(' ').slice(0,2).join(' ')),
+            datasets:ALLIANCES.slice(0,4).map(a => ({
+                label:a.name, data:INTEROP_TYPES.map(t=>t.scores[a.id]),
+                backgroundColor:a.color+'10', borderColor:a.color, borderWidth:2, pointRadius:3, pointBackgroundColor:a.color
+            }))
+        },
+        options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:8}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+}
+
+function renderGapBar() {
+    const ranked = INTEROP_TYPES.map(t => {
+        const vals = Object.values(t.scores);
+        return {...t, avg: vals.reduce((a,b)=>a+b,0)/vals.length};
+    }).sort((a,b)=>a.avg-b.avg);
+
+    const ctx = document.getElementById('gap-bar').getContext('2d');
+    new Chart(ctx, {
+        type:'bar',
+        data:{
+            labels:ranked.map(t=>t.name.split(' ').slice(0,3).join(' ')),
+            datasets:[{data:ranked.map(t=>t.avg.toFixed(1)),backgroundColor:ranked.map(t=>t.avg>=60?'#10b98160':t.avg>=40?'#f59e0b60':'#ef444460'),borderColor:ranked.map(t=>t.avg>=60?'#10b981':t.avg>=40?'#f59e0b':'#ef4444'),borderWidth:1,borderRadius:4}]
+        },
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{min:0,max:80,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:9}}}},plugins:{legend:{display:false}}}
+    });
+}
+
+function renderBarriers() {
+    const barriers = [
+        { title:'Classification Bridge', icon:'fa-lock', severity:'critical', desc:'No standardized mechanism to declassify biological intelligence for civilian health responders. Military and civilian systems on separate physical networks.' },
+        { title:'Civilian-Military Data Gap', icon:'fa-exchange-alt', severity:'critical', desc:'DoD and civilian public health operate parallel surveillance systems with minimal data exchange. No bilateral agreements exist in most nations.' },
+        { title:'One Health Disconnect', icon:'fa-paw', severity:'critical', desc:'Human, animal, and environmental surveillance systems do not interoperate in any country. 75% of emerging diseases are zoonotic yet systems remain siloed.' },
+        { title:'GDPR vs Public Health', icon:'fa-shield-alt', severity:'high', desc:'GDPR constraints unclear during health emergencies. Cross-border data sharing in EU hampered by varying national interpretations.' },
+        { title:'Hardware Data Formats', icon:'fa-microchip', severity:'high', desc:'Field detection devices output proprietary formats. No NATO standard for bio-detection device data output.' },
+        { title:'Language Barriers', icon:'fa-language', severity:'moderate', desc:'NLP accuracy drops significantly outside English/French/Spanish. Medical terminology not standardized across languages.' }
+    ];
+    const el = document.getElementById('barriers');
+    el.innerHTML = barriers.map(b => `
+        <div class="p-4 rounded-lg border ${b.severity==='critical'?'border-red-500/30 bg-red-500/5':b.severity==='high'?'border-amber-500/30 bg-amber-500/5':'border-blue-500/30 bg-blue-500/5'}">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fas ${b.icon} ${b.severity==='critical'?'text-red-400':b.severity==='high'?'text-amber-400':'text-blue-400'}"></i>
+                <span class="text-xs font-bold text-gray-300">${b.title}</span>
+                <span class="ml-auto text-[9px] font-bold uppercase px-2 py-0.5 rounded ${b.severity==='critical'?'bg-red-500/20 text-red-400':b.severity==='high'?'bg-amber-500/20 text-amber-400':'bg-blue-500/20 text-blue-400'}">${b.severity}</span>
+            </div>
+            <p class="text-[11px] text-gray-500 leading-relaxed">${b.desc}</p>
+        </div>`).join('');
+}
+
+function renderRoadmap() {
+    const phases = [
+        { label:'Quick Wins (0-1yr)', color:'#ef4444', icon:'fa-rocket', items:['Five Eyes BioAPI Gateway','NATO bio-data STANAG draft','Classification bridge pilot (US-UK)','One Health sentinel site pilot (3 sites)','Annual allied interop exercise'] },
+        { label:'Build (1-3yr)', color:'#f59e0b', icon:'fa-hammer', items:['NATO-EU bio-data sharing SOP','Multilingual bio ontology (30 languages)','FHIR deployment in 50 LMIC nations','Hardware data format standard','Civ-mil data exchange protocol'] },
+        { label:'Transform (3-10yr)', color:'#10b981', icon:'fa-globe', items:['Global One Health data platform','Full allied coalition interop','100+ language NLP coverage','Cross-domain bio-intel sharing','Africa CDC full integration'] }
+    ];
+    const el = document.getElementById('roadmap');
+    el.innerHTML = phases.map(ph => `
+        <div>
+            <div class="flex items-center gap-2 mb-3"><i class="fas ${ph.icon}" style="color:${ph.color}"></i><h3 class="text-sm font-bold" style="color:${ph.color}">${ph.label}</h3></div>
+            <div class="space-y-2">${ph.items.map(i => `
+                <div class="flex items-center gap-2 text-xs text-gray-400 p-2 rounded border border-bio-border/30 hover:border-bio-border">
+                    <i class="fas fa-chevron-right text-gray-600"></i>${i}
+                </div>`).join('')}</div>
+        </div>`).join('');
+}
+
+function showTip(e,t,b){const tip=document.getElementById('tooltip');tip.innerHTML=`<div class="font-bold text-white">${t}</div><div class="text-gray-400">${b}</div>`;tip.style.display='block';tip.style.left=(e.clientX+15)+'px';tip.style.top=(e.clientY-10)+'px'}
+function hideTip(){document.getElementById('tooltip').style.display='none'}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
