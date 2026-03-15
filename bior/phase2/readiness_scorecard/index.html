@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Technology Readiness Scorecard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#0a0e1a;--card:#1a2235;--border:#2a3650;--t1:#e5e7eb;--t2:#9ca3af;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+        .trl-bar{height:28px;border-radius:6px;display:flex;overflow:hidden;background:rgba(42,54,80,.3)}
+        .trl-fill{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;transition:width 1.2s ease-out}
+        .tech-card{background:rgba(26,34,53,.6);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s;cursor:pointer}
+        .tech-card:hover{border-color:rgba(6,182,212,.4);transform:translateY(-2px)}
+        .tech-card.expanded .card-detail{display:block}
+        .card-detail{display:none}
+        .risk-badge{font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase}
+        .r-low{background:rgba(16,185,129,.2);color:#10b981}.r-medium{background:rgba(245,158,11,.2);color:#f59e0b}.r-high{background:rgba(239,68,68,.2);color:#ef4444}.r-extreme{background:rgba(168,85,247,.2);color:#a855f7}
+        .tab-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t2);cursor:pointer;transition:all .2s}
+        .tab-btn:hover{border-color:rgba(59,130,246,.5);color:var(--t1)}
+        .tab-btn.active{background:rgba(6,182,212,.15);border-color:var(--cyan);color:var(--cyan)}
+        .tab-content{display:none}.tab-content.active{display:block}
+        #tooltip{position:fixed;z-index:9999;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;max-width:400px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div id="tooltip"></div>
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-purple-400 font-normal text-sm ml-1">Technology Readiness Scorecard</span></h1>
+                <p class="text-xs text-gray-500">Deliverable F — Phase 2 | 18 Emerging Technologies × TRL Assessment</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../../phase1/executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../investment_roadmap/index.html" class="hover:text-bio-cyan"><i class="fas fa-road mr-1"></i>Investment</a>
+            <a href="../allied_posture/index.html" class="hover:text-bio-cyan"><i class="fas fa-handshake mr-1"></i>Allied Posture</a>
+        </nav>
+    </div>
+</header>
+
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(168,85,247,.04),rgba(236,72,153,.04),rgba(59,130,246,.04))">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-purple-400">18</div><div class="text-[10px] text-gray-500 uppercase">Technologies</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">6</div><div class="text-[10px] text-gray-500 uppercase">Categories</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400">5</div><div class="text-[10px] text-gray-500 uppercase">TRL 7-9 (Ready)</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400">8</div><div class="text-[10px] text-gray-500 uppercase">TRL 4-6 (Developing)</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-red-400">5</div><div class="text-[10px] text-gray-500 uppercase">TRL 1-3 (Research)</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>Assessment: Mar 2026</div><div>Horizon: 2026-2036</div></div>
+    </div>
+</div>
+
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+        <button class="tab-btn active" onclick="switchTab('scorecard')"><i class="fas fa-clipboard-check mr-1"></i>TRL Scorecard</button>
+        <button class="tab-btn" onclick="switchTab('timeline')"><i class="fas fa-calendar mr-1"></i>Adoption Timeline</button>
+        <button class="tab-btn" onclick="switchTab('risk')"><i class="fas fa-exclamation-triangle mr-1"></i>Risk Assessment</button>
+        <button class="tab-btn" onclick="switchTab('recommend')"><i class="fas fa-lightbulb mr-1"></i>Strategic Recommendations</button>
+        <button class="tab-btn" onclick="switchTab('baseline')"><i class="fas fa-database mr-1"></i>Baseline Platforms (169)</button>
+    </div>
+</div>
+
+<main class="max-w-[1700px] mx-auto px-6 py-6">
+
+<!-- SCORECARD TAB -->
+<div id="scorecard" class="tab-content active space-y-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">TRL Distribution — All 18 Technologies</h2></div>
+            <div style="height:380px"><canvas id="trl-dist"></canvas></div>
+        </div>
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-spider text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Category Readiness Radar</h2></div>
+            <div style="height:380px"><canvas id="cat-radar"></canvas></div>
+        </div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-table text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Full Technology Readiness Matrix</h2></div>
+        <div class="space-y-3" id="trl-matrix"></div>
+    </div>
+</div>
+
+<!-- TIMELINE TAB -->
+<div id="timeline" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-calendar-alt text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Technology Adoption Timeline (2026-2036)</h2></div>
+        <div style="height:450px"><canvas id="adoption-timeline"></canvas></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-rocket text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Adoption Readiness by Year</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="adoption-phases"></div>
+    </div>
+</div>
+
+<!-- RISK TAB -->
+<div id="risk" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-scatter text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Risk vs Impact Matrix (bubble = TRL)</h2></div>
+        <div style="height:420px"><canvas id="risk-impact"></canvas></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-shield-alt text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Dual-Use & Adversary Risk Assessment</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="risk-cards"></div>
+    </div>
+</div>
+
+<!-- RECOMMEND TAB -->
+<div id="recommend" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-bullseye text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Priority Investment Recommendations by Technology</h2></div>
+        <div class="space-y-3" id="invest-recs"></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-flag text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Technology Adoption Roadmap Summary</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="roadmap-summary"></div>
+    </div>
+</div>
+
+
+<!-- ====================== BASELINE PLATFORMS TAB ====================== -->
+<div id="baseline" class="tab-content space-y-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-bio-cyan">169</div><div class="text-[10px] text-gray-500">Total Platforms</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-green-400">3</div><div class="text-[10px] text-gray-500">Excellent</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-blue-400">74</div><div class="text-[10px] text-gray-500">Good</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-amber-400">77</div><div class="text-[10px] text-gray-500">Adequate</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-red-400">15</div><div class="text-[10px] text-gray-500">Developing</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-purple-400">5</div><div class="text-[10px] text-gray-500">Layers</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-white">10</div><div class="text-[10px] text-gray-500">Dimensions</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-pink-400">1,690</div><div class="text-[10px] text-gray-500">Data Points</div></div>
+    </div>
+
+    <!-- Tech Category Platform Mapping -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-microchip text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Platforms by Technology Category</h2></div>
+        <div class="text-xs text-gray-500 mb-4">Baseline platforms mapped to the 6 technology categories assessed in this scorecard. Each category shows the most relevant existing platforms.</div>
+        <div class="space-y-4">
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#a855f7"></span>
+                    <span class="text-xs font-bold" style="color:#a855f7">AI & Machine Learning</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">95</span><span class="text-[10px] text-gray-300 truncate">Nextstrain</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Phylogenetic Analysis & Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Real-time phylogenetic analysis, Open-source with active community</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.5</span><span class="text-[10px] text-gray-300 truncate">GISAID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Largest sequence repo, Rapid data sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85.5</span><span class="text-[10px] text-gray-300 truncate">Airfinity</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AI Health Analytics & Disease Forecasting</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">160+ disease coverage, Proven forecast accuracy (outperformed market consensus)</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85.5</span><span class="text-[10px] text-gray-300 truncate">HealthMap</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Disease Intelligence</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Automated news monitoring, Real-time intelligence</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85</span><span class="text-[10px] text-gray-300 truncate">BlueDot</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AI Epidemic Intelligence</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">AI-powered early detection, First to flag COVID-19</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">Ginkgo Biosecurity</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Integrated Biosurveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Metagenomic wastewater analysis, Airport surveillance program</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.5</span><span class="text-[10px] text-gray-300 truncate">BEACON (BU/HealthMap)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Open-Source AI Epidemic Surveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Open-source & open-access, PandemIQ LLM-powered</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">IIBR (Israel Institute for Biological Research)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Israeli National Biodefense Research</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Top-tier biodefense research, COVID-19 vaccine development</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#06b6d4"></span>
+                    <span class="text-xs font-bold" style="color:#06b6d4">Genomics & Sequencing</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">95</span><span class="text-[10px] text-gray-300 truncate">Nextstrain</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Phylogenetic Analysis & Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Real-time phylogenetic analysis, Open-source with active community</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">90</span><span class="text-[10px] text-gray-300 truncate">outbreak.info</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Epidemiological Data Aggregation</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Comprehensive data aggregation, Strong API</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89.2</span><span class="text-[10px] text-gray-300 truncate">CZ ID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Metagenomic Pathogen Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Automated metagenomic analysis, No-code browser-based</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.9</span><span class="text-[10px] text-gray-300 truncate">NCBI Pathogen Detection</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Pathogen Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Massive genomic database, Automated clustering</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.5</span><span class="text-[10px] text-gray-300 truncate">GISAID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Largest sequence repo, Rapid data sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87.5</span><span class="text-[10px] text-gray-300 truncate">Microreact</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Epidemiology Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Excellent visualization, Easy sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87</span><span class="text-[10px] text-gray-300 truncate">Pathogenwatch</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Pathogen Genomic Analysis</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Automated analysis, AMR prediction</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.5</span><span class="text-[10px] text-gray-300 truncate">Galaxy Project</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Bioinformatics Workflow Platform</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Extensive tool library, Reproducible workflows</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#ef4444"></span>
+                    <span class="text-xs font-bold" style="color:#ef4444">Synthetic Biology</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">95</span><span class="text-[10px] text-gray-300 truncate">Nextstrain</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Phylogenetic Analysis & Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Real-time phylogenetic analysis, Open-source with active community</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85.6</span><span class="text-[10px] text-gray-300 truncate">Pathoplexus</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Open data sharing, Modern architecture</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84.5</span><span class="text-[10px] text-gray-300 truncate">CARD / RGI</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Database & Analysis</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Curated AMR ontology, RGI analysis tool</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">Ginkgo Biosecurity</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Integrated Biosurveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Metagenomic wastewater analysis, Airport surveillance program</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">AMRFinderPlus</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">NCBI-maintained, Comprehensive AMR detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">MalariaGEN</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Malaria Genomic Epidemiology</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Massive genomic datasets, Global malaria focus</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.5</span><span class="text-[10px] text-gray-300 truncate">ResFinder</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Web-based AMR detection, DTU-maintained</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82</span><span class="text-[10px] text-gray-300 truncate">Taxonium</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Phylogenetic Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Millions of sequences, Browser-based</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#f59e0b"></span>
+                    <span class="text-xs font-bold" style="color:#f59e0b">Detection & Sensors</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89.2</span><span class="text-[10px] text-gray-300 truncate">CZ ID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Metagenomic Pathogen Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Automated metagenomic analysis, No-code browser-based</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.9</span><span class="text-[10px] text-gray-300 truncate">NCBI Pathogen Detection</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Pathogen Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Massive genomic database, Automated clustering</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.2</span><span class="text-[10px] text-gray-300 truncate">NWSS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Wastewater Surveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Population-level monitoring, Multi-pathogen detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.6</span><span class="text-[10px] text-gray-300 truncate">CDC TGS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Traveler Genomic Surveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Airport-based surveillance, Novel variant detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.5</span><span class="text-[10px] text-gray-300 truncate">WastewaterSCAN</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Wastewater Epidemiology</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Multi-pathogen monitoring, Public dashboard</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">AMRFinderPlus</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">NCBI-maintained, Comprehensive AMR detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.8</span><span class="text-[10px] text-gray-300 truncate">Biobot Analytics</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Wastewater Epidemiology</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Commercial-grade platform, Multi-pathogen</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.5</span><span class="text-[10px] text-gray-300 truncate">ResFinder</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Web-based AMR detection, DTU-maintained</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#10b981"></span>
+                    <span class="text-xs font-bold" style="color:#10b981">Platform Technologies</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">90</span><span class="text-[10px] text-gray-300 truncate">outbreak.info</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Epidemiological Data Aggregation</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Comprehensive data aggregation, Strong API</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89.2</span><span class="text-[10px] text-gray-300 truncate">CZ ID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Metagenomic Pathogen Detection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Automated metagenomic analysis, No-code browser-based</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89</span><span class="text-[10px] text-gray-300 truncate">DHIS2</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Health Information Management</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">100+ country deployment, Highly customizable</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.5</span><span class="text-[10px] text-gray-300 truncate">GISAID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Largest sequence repo, Rapid data sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87.5</span><span class="text-[10px] text-gray-300 truncate">Microreact</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Epidemiology Visualization</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Excellent visualization, Easy sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.5</span><span class="text-[10px] text-gray-300 truncate">Galaxy Project</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Bioinformatics Workflow Platform</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Extensive tool library, Reproducible workflows</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86</span><span class="text-[10px] text-gray-300 truncate">EpiCollect5</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Mobile Data Collection</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Mobile support, Offline capability</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85.6</span><span class="text-[10px] text-gray-300 truncate">Pathoplexus</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Open data sharing, Modern architecture</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#3b82f6"></span>
+                    <span class="text-xs font-bold" style="color:#3b82f6">Medical Countermeasures</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">12 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">DARPA P3 (Pandemic Prevention Platform)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Pandemic Countermeasure R&D</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">60-day pandemic prevention goal, DNA/RNA-encoded countermeasures</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">USAMRIID Biosurveillance</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Biodefense Research & Surveillance</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">BSL-4 maximum containment, Select agent expertise</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">81.5</span><span class="text-[10px] text-gray-300 truncate">Project BioShield / BARDA</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">National Medical Countermeasure Procurement</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">$5.6B+ authorized funding, Private sector MCM incentives</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">81</span><span class="text-[10px] text-gray-300 truncate">DARPA ADEPT</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Autonomous Diagnostics</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Point-of-need diagnostics, Force health protection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">80.5</span><span class="text-[10px] text-gray-300 truncate">NBACC</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">National Biodefense Analysis & Bioforensics</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">BSL-4 bioforensics capability, Threat characterization</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">80</span><span class="text-[10px] text-gray-300 truncate">Arvados</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Bioinformatics Infrastructure</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">CWL workflow support, Data provenance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79.5</span><span class="text-[10px] text-gray-300 truncate">DARPA INTERCEPT</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Adaptive Bio-Countermeasures</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Evolutionary countermeasure design, Adaptive therapeutics</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79</span><span class="text-[10px] text-gray-300 truncate">DARPA NOW</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Mobile Medical Countermeasure Manufacturing</div>
+                        <div class="text-[9px] text-green-400/60 mt-0.5 truncate">Mobile MCM manufacturing, Deployable to any location</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-spider text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Global Dimension Averages (169 Platforms)</h2></div>
+            <div style="height:340px"><canvas id="bl-dim-radar"></canvas></div>
+        </div>
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-trophy text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Top 15 Technology-Ready Platforms</h2></div>
+            <div class="text-xs text-gray-500 mb-3">Ranked by combined Analytics + Real-time + Scalability scores</div>
+            <div class="overflow-y-auto scrollbar-thin" style="max-height:300px">
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">1</span>
+                    <span class="text-[10px] text-gray-200 flex-1">Nextstrain</span>
+                    <span class="font-bold text-green-400 text-[10px]">95</span>
+                    <span class="text-[9px] text-purple-400">287</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">2</span>
+                    <span class="text-[10px] text-gray-200 flex-1">NCBI Pathogen Detection</span>
+                    <span class="font-bold text-blue-400 text-[10px]">88.9</span>
+                    <span class="text-[9px] text-purple-400">270</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">3</span>
+                    <span class="text-[10px] text-gray-200 flex-1">GISAID</span>
+                    <span class="font-bold text-blue-400 text-[10px]">88.5</span>
+                    <span class="text-[9px] text-purple-400">270</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">4</span>
+                    <span class="text-[10px] text-gray-200 flex-1">SORMAS</span>
+                    <span class="font-bold text-green-400 text-[10px]">90</span>
+                    <span class="text-[9px] text-purple-400">269</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">5</span>
+                    <span class="text-[10px] text-gray-200 flex-1">outbreak.info</span>
+                    <span class="font-bold text-green-400 text-[10px]">90</span>
+                    <span class="text-[9px] text-purple-400">268</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">6</span>
+                    <span class="text-[10px] text-gray-200 flex-1">Airfinity</span>
+                    <span class="font-bold text-blue-400 text-[10px]">85.5</span>
+                    <span class="text-[9px] text-purple-400">268</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">7</span>
+                    <span class="text-[10px] text-gray-200 flex-1">BioSense / ESSENCE</span>
+                    <span class="font-bold text-blue-400 text-[10px]">87.2</span>
+                    <span class="text-[9px] text-purple-400">268</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">8</span>
+                    <span class="text-[10px] text-gray-200 flex-1">CZ ID</span>
+                    <span class="font-bold text-blue-400 text-[10px]">89.2</span>
+                    <span class="text-[9px] text-purple-400">267</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">9</span>
+                    <span class="text-[10px] text-gray-200 flex-1">DHIS2</span>
+                    <span class="font-bold text-blue-400 text-[10px]">89</span>
+                    <span class="text-[9px] text-purple-400">266</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">10</span>
+                    <span class="text-[10px] text-gray-200 flex-1">BlueDot</span>
+                    <span class="font-bold text-blue-400 text-[10px]">85</span>
+                    <span class="text-[9px] text-purple-400">266</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">11</span>
+                    <span class="text-[10px] text-gray-200 flex-1">NWSS</span>
+                    <span class="font-bold text-blue-400 text-[10px]">86.2</span>
+                    <span class="text-[9px] text-purple-400">261</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">12</span>
+                    <span class="text-[10px] text-gray-200 flex-1">DARPA P3 (Pandemic Prevention Platform)</span>
+                    <span class="font-bold text-blue-400 text-[10px]">84</span>
+                    <span class="text-[9px] text-purple-400">259</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">13</span>
+                    <span class="text-[10px] text-gray-200 flex-1">GEIS (Global Emerging Infections Surveillance)</span>
+                    <span class="font-bold text-blue-400 text-[10px]">85</span>
+                    <span class="text-[9px] text-purple-400">259</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">14</span>
+                    <span class="text-[10px] text-gray-200 flex-1">ProMED</span>
+                    <span class="font-bold text-blue-400 text-[10px]">85</span>
+                    <span class="text-[9px] text-purple-400">258</span>
+                </div>
+                <div class="flex items-center gap-2 py-1.5 border-b border-bio-border/20">
+                    <span class="w-5 text-[10px] text-gray-600">15</span>
+                    <span class="text-[10px] text-gray-200 flex-1">Pathogenwatch</span>
+                    <span class="font-bold text-blue-400 text-[10px]">87</span>
+                    <span class="text-[9px] text-purple-400">257</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layer Distribution -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-layer-group text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Layer Distribution (PSEF v3.0.0)</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L2 Genomic</div>
+                <div class="text-xl font-black text-bio-cyan">57</div>
+                <div class="text-[10px] text-gray-500">Avg: 79.5 | 60-95</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: Nextstrain (95)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L1 Surveillance</div>
+                <div class="text-xl font-black text-bio-cyan">63</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.0 | 62-90</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: outbreak.info (90)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L3 Defense</div>
+                <div class="text-xl font-black text-bio-cyan">35</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.4 | 55-84</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: DARPA P3 (Pandemic Prevention Platform) (84)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L4 Hardware</div>
+                <div class="text-xl font-black text-bio-cyan">9</div>
+                <div class="text-[10px] text-gray-500">Avg: 77.2 | 74.5-82</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: BioFire Defense (FilmArray) (82)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L5 Policy</div>
+                <div class="text-xl font-black text-bio-cyan">5</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.5 | 74-83</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: GHS Index (83)</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1700px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable F: Technology Readiness Scorecard</div>
+        <div>18 Technologies | 6 Categories | TRL 1-9 | 169 Baseline Platforms | 1,690 Data Points | 2026-2036</div>
+    </div>
+</footer>
+
+<script>
+const CATEGORIES = [
+    {id:'ai',name:'AI & Machine Learning',color:'#a855f7',icon:'fa-brain'},
+    {id:'genomics',name:'Genomics & Sequencing',color:'#06b6d4',icon:'fa-dna'},
+    {id:'synbio',name:'Synthetic Biology',color:'#ef4444',icon:'fa-biohazard'},
+    {id:'detection',name:'Detection & Sensors',color:'#f59e0b',icon:'fa-satellite'},
+    {id:'platform',name:'Platform Technologies',color:'#10b981',icon:'fa-server'},
+    {id:'mcm',name:'Medical Countermeasures',color:'#3b82f6',icon:'fa-syringe'}
+];
+
+const TECHNOLOGIES = [
+    // AI & Machine Learning
+    {id:1,name:'Pandemic Prediction AI',category:'ai',trl:5,trlTarget:8,adoptionYear:2029,
+     impact:95,risk:'medium',dualUseRisk:'high',adversaryLevel:'Advanced (China AMMS)',
+     description:'AI/ML models for predicting pandemic emergence, spillover events, and outbreak trajectories using multi-source data fusion.',
+     currentState:'Multiple models in research/pilot (DARPA NOW, Google DeepMind, Meta Forecasting). Validation frameworks lacking. Accuracy varies 40-70% for novel pathogen prediction.',
+     keyPlayers:['DARPA NOW','Google Earth Engine AI','EPIWATCH','AMMS AI (China)'],
+     barriers:['No standardized validation framework','Data quality varies dramatically across nations','Interpretability challenges for policymakers','Training data bias toward known pathogens'],
+     investmentNeeded:'$380M over 3yr for allied validation consortium + shared platform',
+     recommendation:'PRIORITY: Establish allied AI model validation framework and shared pandemic forecasting platform for Five Eyes'},
+    {id:2,name:'AI-Powered Biosurveillance NLP',category:'ai',trl:6,trlTarget:9,adoptionYear:2028,
+     impact:85,risk:'low',dualUseRisk:'low',adversaryLevel:'Moderate',
+     description:'Natural language processing for multilingual event detection from open sources, social media, news, and clinical reports.',
+     currentState:'EIOS, HealthMap, and ProMED use NLP but limited to 5-8 languages. GPT-4 class models enable 25+ language coverage. Real-time processing demonstrated.',
+     keyPlayers:['WHO EIOS','HealthMap','ProMED','BlueDot'],
+     barriers:['Language model accuracy varies by language','False positive management','Integration with existing surveillance','Cost of inference at scale'],
+     investmentNeeded:'$180M over 2yr for 25-language deployment',
+     recommendation:'Deploy 25-language AI event detection integrated with EIOS/HealthMap pipeline'},
+    {id:3,name:'Autonomous Pathogen Surveillance',category:'ai',trl:2,trlTarget:7,adoptionYear:2034,
+     impact:98,risk:'high',dualUseRisk:'medium',adversaryLevel:'Research phase globally',
+     description:'Fully autonomous surveillance network combining satellite imagery, wastewater sensors, environmental DNA, and genomic data for real-time global pathogen monitoring.',
+     currentState:'Concept demonstrated in limited settings. No integrated autonomous system exists. Individual components (satellite, wastewater, eDNA) at varying maturity levels.',
+     keyPlayers:['DARPA','Google Earth Engine','WastewaterSCAN'],
+     barriers:['Massive infrastructure requirement','Sensor network power/connectivity','Data fusion algorithms immature','Regulatory framework non-existent'],
+     investmentNeeded:'$4.2B over 10yr for global sensor network',
+     recommendation:'LONG-TERM: Fund foundational research and pilot 10-node autonomous network'},
+
+    // Genomics & Sequencing
+    {id:4,name:'Real-Time Field Sequencing',category:'genomics',trl:7,trlTarget:9,adoptionYear:2027,
+     impact:88,risk:'low',dualUseRisk:'medium',adversaryLevel:'Comparable',
+     description:'Portable nanopore sequencing (Oxford Nanopore MinION/Flongle) for in-field pathogen identification within hours.',
+     currentState:'MinION deployed in 50+ countries. Demonstrated during COVID, Ebola, Zika. Accuracy improving. Field protocols not standardized across NATO.',
+     keyPlayers:['Oxford Nanopore','Illumina','PacBio','BioFire'],
+     barriers:['Protocol standardization across NATO','Cold-chain for reagents in tropical settings','Bioinformatics expertise gap in LMIC','Cost per sample still high for routine use'],
+     investmentNeeded:'$95M for NATO protocol standardization + LMIC deployment',
+     recommendation:'Standardize NATO field sequencing protocols and deploy to 30 allied nations'},
+    {id:5,name:'Metagenomic Pathogen Discovery',category:'genomics',trl:6,trlTarget:8,adoptionYear:2029,
+     impact:92,risk:'medium',dualUseRisk:'high',adversaryLevel:'Advanced (China BGI)',
+     description:'Shotgun metagenomic sequencing for discovery of novel pathogens directly from clinical/environmental samples without prior knowledge of the agent.',
+     currentState:'CZ ID, CZID, and WIMP platforms operational. Sensitivity/specificity improving. Cost decreasing but still $200-500 per sample. Database completeness a limitation.',
+     keyPlayers:['CZ ID','NCBI','BGI (China)','Illumina'],
+     barriers:['Database completeness for novel pathogens','Cost per sample','Computational requirements','Sample preparation complexity'],
+     investmentNeeded:'$250M for allied metagenomic capability network',
+     recommendation:'Fund allied metagenomic surveillance network with shared novel pathogen database'},
+    {id:6,name:'CRISPR-Based Diagnostics',category:'genomics',trl:5,trlTarget:8,adoptionYear:2029,
+     impact:82,risk:'low',dualUseRisk:'medium',adversaryLevel:'Comparable',
+     description:'CRISPR-Cas12/Cas13 based point-of-care diagnostics (SHERLOCK, DETECTR) enabling rapid, field-deployable pathogen detection.',
+     currentState:'SHERLOCK and DETECTR platforms validated for COVID, Zika, Dengue. Lateral flow format enables field use. Multiplex capability expanding.',
+     keyPlayers:['Mammoth Biosciences','Sherlock Biosciences','Broad Institute'],
+     barriers:['Regulatory approval pathways','Multiplex panel development','Manufacturing scale-up','Shelf-life in tropical conditions'],
+     investmentNeeded:'$120M for regulatory approval + field deployment',
+     recommendation:'Accelerate regulatory approval and deploy 10-plex panels to field settings'},
+
+    // Synthetic Biology
+    {id:7,name:'mRNA Platform Technology',category:'mcm',trl:8,trlTarget:9,adoptionYear:2026,
+     impact:96,risk:'low',dualUseRisk:'medium',adversaryLevel:'Behind (Russia/China developing)',
+     description:'mRNA vaccine platform enabling rapid design-to-production of vaccines against novel pathogens within 60-100 days.',
+     currentState:'Proven during COVID (Pfizer/BioNTech, Moderna). Manufacturing capacity expanding. Next-gen self-amplifying mRNA in trials. Thermostable formulations in development.',
+     keyPlayers:['Moderna','BioNTech','CureVac','Arcturus'],
+     barriers:['Manufacturing capacity still concentrated (US/EU)','Cold-chain requirements','Platform access equity','Intellectual property barriers'],
+     investmentNeeded:'$2.2B for allied manufacturing network (6 hubs)',
+     recommendation:'PRIORITY: Establish distributed allied mRNA manufacturing network'},
+    {id:8,name:'Self-Amplifying RNA (saRNA)',category:'mcm',trl:4,trlTarget:7,adoptionYear:2030,
+     impact:90,risk:'medium',dualUseRisk:'medium',adversaryLevel:'Behind',
+     description:'Self-amplifying RNA vaccines requiring 100x lower doses than conventional mRNA, enabling rapid scale-up and reduced cold-chain needs.',
+     currentState:'Phase 2/3 trials underway (Arcturus, Imperial College). Dose-sparing advantage demonstrated. Manufacturing simpler than mRNA. Thermostability improved.',
+     keyPlayers:['Arcturus','Imperial College','CSL Seqirus'],
+     barriers:['Regulatory pathway not established','Innate immune response concerns','Manufacturing standardization','Limited clinical data'],
+     investmentNeeded:'$450M for clinical validation + manufacturing',
+     recommendation:'Fund Phase 3 validation and establish saRNA manufacturing pilot'},
+    {id:9,name:'Gene Drive Technology',category:'synbio',trl:3,trlTarget:6,adoptionYear:2032,
+     impact:85,risk:'extreme',dualUseRisk:'extreme',adversaryLevel:'Research phase globally',
+     description:'CRISPR-based gene drives for suppressing vector-borne disease by modifying mosquito populations (malaria, dengue, Zika).',
+     currentState:'Proof of concept in laboratory (Target Malaria, UC San Diego). Caged trials ongoing. No open-release approved. Ecological risk assessment frameworks immature.',
+     keyPlayers:['Target Malaria','UC San Diego','Oxitec'],
+     barriers:['Ecological risk: irreversible environmental change','Regulatory framework non-existent','Public acceptance challenges','Geopolitical governance gap','Dual-use: could be weaponized'],
+     investmentNeeded:'$280M for contained field trials + governance framework',
+     recommendation:'CAUTION: Fund governance framework BEFORE expanded field trials'},
+    {id:10,name:'Synthetic Biology Screening',category:'synbio',trl:6,trlTarget:9,adoptionYear:2028,
+     impact:88,risk:'low',dualUseRisk:'low',adversaryLevel:'Behind',
+     description:'Automated screening of DNA synthesis orders for dual-use/dangerous sequences to prevent misuse of synthetic biology.',
+     currentState:'International Gene Synthesis Consortium (IGSC) screens ~80% of commercial synthesis. NucleoStar AI expanding coverage. Gaps: benchtop synthesizers, non-IGSC vendors.',
+     keyPlayers:['IGSC','NucleoStar','Battelle'],
+     barriers:['Benchtop DNA synthesizers bypass screening','Non-IGSC vendor compliance','Evolving threat sequences','International harmonization'],
+     investmentNeeded:'$85M for universal screening mandate + AI enhancement',
+     recommendation:'PRIORITY: Mandate universal DNA synthesis screening with AI-powered threat detection'},
+
+    // Detection & Sensors
+    {id:11,name:'Next-Gen Environmental Biodetection',category:'detection',trl:5,trlTarget:8,adoptionYear:2029,
+     impact:85,risk:'medium',dualUseRisk:'low',adversaryLevel:'Comparable',
+     description:'Advanced environmental biodetection systems replacing BioWatch with faster, more sensitive, and broader-spectrum capability.',
+     currentState:'Multiple prototype systems in evaluation (BSAS, IBADS-2). PCR + immunoassay + mass-spec combinations. Detection time reduced from 12-36hr to 1-4hr.',
+     keyPlayers:['Northrop Grumman','FLIR/Teledyne','BioFire Defense','Chemring'],
+     barriers:['False alarm rate management','Cost per installation','Maintenance infrastructure','Urban deployment challenges'],
+     investmentNeeded:'$450M for allied capital city deployment',
+     recommendation:'Fund next-gen biodetection deployment in 10 allied capitals'},
+    {id:12,name:'Wastewater Genomic Surveillance',category:'detection',trl:7,trlTarget:9,adoptionYear:2027,
+     impact:82,risk:'low',dualUseRisk:'low',adversaryLevel:'Behind',
+     description:'Automated wastewater sampling and genomic analysis for community-level pathogen detection 7-14 days before clinical presentation.',
+     currentState:'Operational in US (WastewaterSCAN), UK, Australia. Demonstrated value for COVID, polio, mpox. Automation improving. WHO standard pending.',
+     keyPlayers:['WastewaterSCAN','Biobot Analytics','UK JBC'],
+     barriers:['No global standard','Sewage infrastructure varies dramatically','Pathogen panel expansion needed','Data integration with clinical systems'],
+     investmentNeeded:'$420M for 20-city LMIC network + WHO standard',
+     recommendation:'Create WHO wastewater standard and deploy 20-city LMIC sentinel network'},
+    {id:13,name:'Wearable Biosensors',category:'detection',trl:3,trlTarget:6,adoptionYear:2031,
+     impact:75,risk:'medium',dualUseRisk:'low',adversaryLevel:'Research phase',
+     description:'Continuous physiological monitoring wearables detecting pre-symptomatic infection signals (heart rate variability, temperature, SpO2 patterns).',
+     currentState:'DETECT study (Scripps) showed feasibility during COVID. Apple Watch, Fitbit, Oura ring studies ongoing. Specificity still low (~65%). Privacy concerns significant.',
+     keyPlayers:['Scripps Research','Apple','Oura','DARPA'],
+     barriers:['Low specificity','Privacy and consent challenges','Integration with public health systems','False alarm fatigue'],
+     investmentNeeded:'$180M for military pilot + validation studies',
+     recommendation:'Fund military pilot program for pre-symptomatic detection wearables'},
+
+    // Platform Technologies
+    {id:14,name:'Federated Learning for Health',category:'platform',trl:4,trlTarget:7,adoptionYear:2030,
+     impact:82,risk:'low',dualUseRisk:'low',adversaryLevel:'Research phase',
+     description:'Federated machine learning enabling cross-border health data analysis without sharing raw data, solving GDPR/privacy constraints.',
+     currentState:'Demonstrated in research settings (FeTS Challenge, NVIDIA FLARE). Applied to medical imaging successfully. Extension to surveillance data early-stage.',
+     keyPlayers:['NVIDIA','Google Health','Microsoft','OpenMined'],
+     barriers:['Computational overhead','Model convergence challenges','Standardization of health data','Trust framework between nations'],
+     investmentNeeded:'$120M for allied federated learning platform',
+     recommendation:'Fund Five Eyes federated learning pilot for cross-border surveillance'},
+    {id:15,name:'Digital Twins for Epidemic Modeling',category:'platform',trl:3,trlTarget:7,adoptionYear:2031,
+     impact:88,risk:'medium',dualUseRisk:'low',adversaryLevel:'Comparable',
+     description:'City/nation-scale digital twins integrating population dynamics, transportation, healthcare capacity for epidemic simulation and response planning.',
+     currentState:'COVID accelerated development (JHU, Imperial College, Metabiota). Limited to specific cities/scenarios. Real-time data integration challenging. Computational requirements massive.',
+     keyPlayers:['Johns Hopkins','Imperial College','MOBS Lab','Metabiota'],
+     barriers:['Massive computational requirements','Real-time data feed integration','Model validation challenges','Privacy of population data'],
+     investmentNeeded:'$280M for 10-city digital twin network',
+     recommendation:'Fund 10-city allied digital twin network for pandemic planning'},
+    {id:16,name:'Blockchain for Supply Chain Integrity',category:'platform',trl:5,trlTarget:8,adoptionYear:2029,
+     impact:72,risk:'low',dualUseRisk:'low',adversaryLevel:'Research phase',
+     description:'Blockchain/DLT for tracking MCM supply chain integrity, preventing counterfeit vaccines/therapeutics, and ensuring cold-chain compliance.',
+     currentState:'Pilot projects (IBM/WHO, SAP). Track-and-trace demonstrated for COVID vaccines. Scalability proven. Integration with existing pharma systems ongoing.',
+     keyPlayers:['IBM','SAP','WHO Vaccine Tracker'],
+     barriers:['Integration with legacy systems','Energy consumption concerns','Governance framework','Interoperability between chains'],
+     investmentNeeded:'$65M for allied MCM supply chain blockchain',
+     recommendation:'Deploy blockchain-based MCM tracking across allied supply chains'},
+
+    // Medical Countermeasures
+    {id:17,name:'Broadly Neutralizing Antibodies (bnAbs)',category:'mcm',trl:4,trlTarget:7,adoptionYear:2030,
+     impact:90,risk:'medium',dualUseRisk:'low',adversaryLevel:'Comparable',
+     description:'Universal/broadly neutralizing antibodies providing immediate protection against entire pathogen families (pan-coronavirus, pan-influenza).',
+     currentState:'Multiple candidates in Phase 1/2 trials. Pan-coronavirus bnAbs showing promise. Manufacturing at scale challenging. Half-life extension technology improving.',
+     keyPlayers:['VIR Biotechnology','AstraZeneca','Regeneron','DARPA ADEPT'],
+     barriers:['Manufacturing cost','Escape mutant risk','Delivery logistics','Regulatory pathway for prophylactic use'],
+     investmentNeeded:'$350M for clinical validation + manufacturing',
+     recommendation:'Fund Phase 2/3 trials for pan-coronavirus and pan-influenza bnAbs'},
+    {id:18,name:'Rapid Antiviral Discovery Platform',category:'mcm',trl:4,trlTarget:7,adoptionYear:2030,
+     impact:92,risk:'medium',dualUseRisk:'low',adversaryLevel:'Comparable (China active)',
+     description:'AI-powered drug discovery platform for rapid identification of antivirals against novel pathogens within 30-60 days of emergence.',
+     currentState:'Demonstrated during COVID (Baricitinib identification by BenevolentAI). AlphaFold enabling structure-based drug design. Pipeline automation improving.',
+     keyPlayers:['BenevolentAI','Insilico Medicine','Recursion','DARPA PANACEA'],
+     barriers:['Validation for novel pathogens','Manufacturing scale-up speed','Regulatory fast-track framework','Clinical trial speed'],
+     investmentNeeded:'$250M for allied rapid antiviral consortium',
+     recommendation:'Establish allied rapid antiviral discovery consortium with 60-day target'}
+];
+
+let chartInstances = {};
+
+function trlColor(trl){return trl>=7?'#10b981':trl>=4?'#f59e0b':'#ef4444';}
+function trlLabel(trl){return trl>=7?'Operational (TRL 7-9)':trl>=4?'Developing (TRL 4-6)':'Research (TRL 1-3)';}
+function riskBadgeClass(r){return r==='low'?'r-low':r==='medium'?'r-medium':r==='high'?'r-high':'r-extreme';}
+
+function switchTab(id){
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+    if(id==='timeline'&&!chartInstances.adoptionTimeline) renderTimeline();
+    if(id==='risk'&&!chartInstances.riskImpact) renderRisk();
+    if(id==='recommend'&&!chartInstances.recsDone) renderRecommend();
+    if(id==='baseline') renderBaselineCharts();
+}
+
+function renderScorecard(){
+    // TRL Distribution
+    const trlCounts = Array(9).fill(0);
+    TECHNOLOGIES.forEach(t=>trlCounts[t.trl-1]++);
+    const ctx1 = document.getElementById('trl-dist').getContext('2d');
+    chartInstances.trlDist = new Chart(ctx1,{
+        type:'bar',data:{labels:['TRL 1','TRL 2','TRL 3','TRL 4','TRL 5','TRL 6','TRL 7','TRL 8','TRL 9'],
+        datasets:[{data:trlCounts,backgroundColor:['#ef4444cc','#ef4444cc','#ef4444cc','#f59e0bcc','#f59e0bcc','#f59e0bcc','#10b981cc','#10b981cc','#10b981cc'],borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',stepSize:1}},x:{grid:{display:false},ticks:{color:'#9ca3af'}}},plugins:{legend:{display:false}}}
+    });
+
+    // Category Radar
+    const catAvg = CATEGORIES.map(cat=>{
+        const techs = TECHNOLOGIES.filter(t=>t.category===cat.id);
+        return techs.length ? +(techs.reduce((s,t)=>s+t.trl,0)/techs.length).toFixed(1) : 0;
+    });
+    const catImpact = CATEGORIES.map(cat=>{
+        const techs = TECHNOLOGIES.filter(t=>t.category===cat.id);
+        return techs.length ? +(techs.reduce((s,t)=>s+t.impact,0)/techs.length/10).toFixed(1) : 0;
+    });
+    const ctx2 = document.getElementById('cat-radar').getContext('2d');
+    chartInstances.catRadar = new Chart(ctx2,{
+        type:'radar',data:{labels:CATEGORIES.map(c=>c.name.split(' ')[0]),datasets:[
+            {label:'Avg TRL',data:catAvg,backgroundColor:'rgba(168,85,247,.12)',borderColor:'#a855f7',borderWidth:2,pointRadius:4,pointBackgroundColor:'#a855f7'},
+            {label:'Avg Impact/10',data:catImpact,backgroundColor:'rgba(6,182,212,.12)',borderColor:'#06b6d4',borderWidth:2,pointRadius:4,pointBackgroundColor:'#06b6d4'}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:9,ticks:{stepSize:1,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:10}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+
+    // TRL Matrix
+    const matrixEl = document.getElementById('trl-matrix');
+    const sorted = [...TECHNOLOGIES].sort((a,b)=>b.trl-a.trl);
+    matrixEl.innerHTML = sorted.map(tech=>{
+        const cat = CATEGORIES.find(c=>c.id===tech.category);
+        return `
+        <div class="tech-card" onclick="this.classList.toggle('expanded')">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:${cat.color}20">
+                    <i class="fas ${cat.icon}" style="color:${cat.color}"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-200">${tech.name}</div>
+                    <div class="text-[10px] text-gray-500">${cat.name} | Target: TRL ${tech.trlTarget} by ${tech.adoptionYear}</div>
+                </div>
+                <div class="text-right mr-3">
+                    <div class="text-[10px] text-gray-500 mb-1">Current TRL</div>
+                    <div class="trl-bar w-40">
+                        <div class="trl-fill" style="width:${(tech.trl/9*100).toFixed(0)}%;background:${trlColor(tech.trl)}">${tech.trl}</div>
+                    </div>
+                </div>
+                <div class="text-center w-16">
+                    <div class="text-lg font-black" style="color:${trlColor(tech.trl)}">${tech.trl}</div>
+                    <div class="text-[9px] text-gray-600">of 9</div>
+                </div>
+                <span class="risk-badge ${riskBadgeClass(tech.risk)}">${tech.risk} risk</span>
+                <i class="fas fa-chevron-down text-gray-600 text-xs ml-2"></i>
+            </div>
+            <div class="card-detail mt-4 pt-4 border-t border-bio-border/50">
+                <p class="text-xs text-gray-400 mb-3">${tech.description}</p>
+                <div class="grid grid-cols-2 gap-4 mb-3">
+                    <div>
+                        <div class="text-[10px] text-gray-500 font-bold mb-1">Current State</div>
+                        <div class="text-[10px] text-gray-400">${tech.currentState}</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-gray-500 font-bold mb-1">Key Players</div>
+                        <div class="flex flex-wrap gap-1">${tech.keyPlayers.map(p=>`<span class="text-[9px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">${p}</span>`).join('')}</div>
+                        <div class="text-[10px] text-gray-500 font-bold mb-1 mt-2">Adversary Level</div>
+                        <div class="text-[10px] text-amber-400">${tech.adversaryLevel}</div>
+                    </div>
+                </div>
+                <div class="text-[10px] text-gray-500 font-bold mb-1">Barriers</div>
+                <div class="mb-2">${tech.barriers.map(b=>`<span class="text-[10px] text-red-400/80">• ${b} </span>`).join('')}</div>
+                <div class="flex items-center gap-4 text-[10px] mt-2 p-2 rounded bg-gray-800/30">
+                    <span class="text-gray-500">Investment: <span class="text-bio-cyan font-bold">${tech.investmentNeeded.split(' ')[0]}</span></span>
+                    <span class="text-gray-500">Impact: <span class="font-bold" style="color:${tech.impact>=90?'#10b981':tech.impact>=80?'#3b82f6':'#f59e0b'}">${tech.impact}/100</span></span>
+                    <span class="text-gray-500">Dual-Use Risk: <span class="risk-badge ${riskBadgeClass(tech.dualUseRisk)}">${tech.dualUseRisk}</span></span>
+                </div>
+                <div class="mt-2 p-2 rounded bg-green-500/5 border border-green-500/10">
+                    <div class="text-[10px] text-green-400"><i class="fas fa-lightbulb mr-1"></i>${tech.recommendation}</div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderTimeline(){
+    const years = [2026,2027,2028,2029,2030,2031,2032,2033,2034,2035,2036];
+    const datasets = CATEGORIES.map(cat=>{
+        const techs = TECHNOLOGIES.filter(t=>t.category===cat.id);
+        return {label:cat.name.split(' ')[0],data:years.map(yr=>techs.filter(t=>t.adoptionYear<=yr).length),
+            backgroundColor:cat.color+'20',borderColor:cat.color,fill:true,tension:.3};
+    });
+    const ctx = document.getElementById('adoption-timeline').getContext('2d');
+    chartInstances.adoptionTimeline = new Chart(ctx,{
+        type:'line',data:{labels:years,datasets},
+        options:{responsive:true,maintainAspectRatio:false,scales:{y:{stacked:true,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',stepSize:1}},x:{grid:{display:false},ticks:{color:'#9ca3af'}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+
+    // Adoption phases
+    const phases = [
+        {label:'Near-term (2026-2028)',color:'#10b981',techs:TECHNOLOGIES.filter(t=>t.adoptionYear<=2028)},
+        {label:'Mid-term (2029-2031)',color:'#f59e0b',techs:TECHNOLOGIES.filter(t=>t.adoptionYear>=2029&&t.adoptionYear<=2031)},
+        {label:'Long-term (2032-2036)',color:'#ef4444',techs:TECHNOLOGIES.filter(t=>t.adoptionYear>=2032)}
+    ];
+    document.getElementById('adoption-phases').innerHTML = phases.map(ph=>`
+        <div class="glass p-5">
+            <div class="flex items-center gap-2 mb-3"><span class="w-3 h-3 rounded-full" style="background:${ph.color}"></span><span class="text-sm font-bold" style="color:${ph.color}">${ph.label}</span></div>
+            <div class="text-3xl font-black text-white mb-3">${ph.techs.length}</div>
+            <div class="space-y-2">${ph.techs.map(t=>`
+                <div class="flex items-center gap-2"><span class="text-[10px] font-bold w-6" style="color:${trlColor(t.trl)}">T${t.trl}</span><span class="text-[10px] text-gray-400 flex-1">${t.name}</span><span class="text-[10px] text-gray-600">${t.adoptionYear}</span></div>
+            `).join('')}</div>
+        </div>`).join('');
+}
+
+function renderRisk(){
+    const ctx = document.getElementById('risk-impact').getContext('2d');
+    const riskNum = r=>r==='low'?1:r==='medium'?2:r==='high'?3:4;
+    const catData = CATEGORIES.map(cat=>({
+        label:cat.name.split(' ')[0],
+        data:TECHNOLOGIES.filter(t=>t.category===cat.id).map(t=>({x:riskNum(t.risk),y:t.impact,r:t.trl*1.5})),
+        backgroundColor:cat.color+'40',borderColor:cat.color
+    }));
+    chartInstances.riskImpact = new Chart(ctx,{
+        type:'bubble',data:{datasets:catData},
+        options:{responsive:true,maintainAspectRatio:false,
+            scales:{x:{title:{display:true,text:'Risk Level',color:'#6b7280'},min:0.5,max:4.5,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',callback:v=>v===1?'Low':v===2?'Medium':v===3?'High':v===4?'Extreme':''}},
+                    y:{title:{display:true,text:'Impact Score',color:'#6b7280'},min:60,max:100,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280'}}},
+            plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+
+    const dualUseHigh = TECHNOLOGIES.filter(t=>t.dualUseRisk==='high'||t.dualUseRisk==='extreme');
+    document.getElementById('risk-cards').innerHTML = dualUseHigh.map(tech=>{
+        const cat = CATEGORIES.find(c=>c.id===tech.category);
+        return `
+        <div class="glass p-4">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fas ${cat.icon}" style="color:${cat.color}"></i>
+                <span class="text-xs font-bold text-gray-200">${tech.name}</span>
+                <span class="risk-badge ${riskBadgeClass(tech.dualUseRisk)} ml-auto">${tech.dualUseRisk} dual-use</span>
+            </div>
+            <p class="text-[10px] text-gray-400 mb-2">${tech.description.split('.')[0]}.</p>
+            <div class="text-[10px] text-amber-400 mb-1"><i class="fas fa-exclamation-triangle mr-1"></i>Adversary: ${tech.adversaryLevel}</div>
+            <div class="text-[10px] text-gray-500">Current TRL: <span class="font-bold" style="color:${trlColor(tech.trl)}">${tech.trl}</span> | Impact: <span class="font-bold text-bio-cyan">${tech.impact}</span></div>
+        </div>`;
+    }).join('');
+}
+
+function renderRecommend(){
+    chartInstances.recsDone = true;
+    const priority = [...TECHNOLOGIES].sort((a,b)=>(b.impact*(9-a.trl))-(a.impact*(9-b.trl)));
+    document.getElementById('invest-recs').innerHTML = priority.map((tech,i)=>{
+        const cat = CATEGORIES.find(c=>c.id===tech.category);
+        const score = (tech.impact*(9-tech.trl)/9).toFixed(0);
+        return `
+        <div class="tech-card" onclick="this.classList.toggle('expanded')">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm" style="background:${i<5?'#ef4444':i<10?'#f59e0b':'#10b981'}">${i+1}</div>
+                <div class="flex-1">
+                    <div class="text-sm font-bold text-gray-200">${tech.name}</div>
+                    <div class="text-[10px] text-gray-500">${cat.name} | TRL ${tech.trl} → ${tech.trlTarget} by ${tech.adoptionYear}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm font-bold text-bio-cyan">${tech.investmentNeeded.split(' over')[0]}</div>
+                    <div class="text-[10px] text-gray-500">Priority Score: ${score}</div>
+                </div>
+                <i class="fas fa-chevron-down text-gray-600 text-xs"></i>
+            </div>
+            <div class="card-detail mt-3 pt-3 border-t border-bio-border/50">
+                <div class="p-2 rounded bg-green-500/5 border border-green-500/10">
+                    <div class="text-[10px] text-green-400"><i class="fas fa-lightbulb mr-1"></i>${tech.recommendation}</div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-2 text-center text-[10px]">
+                    <div class="bg-gray-800/30 rounded p-2"><span class="font-bold text-bio-cyan">${tech.impact}</span><br><span class="text-gray-600">Impact</span></div>
+                    <div class="bg-gray-800/30 rounded p-2"><span class="font-bold" style="color:${trlColor(tech.trl)}">${tech.trl}→${tech.trlTarget}</span><br><span class="text-gray-600">TRL Path</span></div>
+                    <div class="bg-gray-800/30 rounded p-2"><span class="risk-badge ${riskBadgeClass(tech.risk)}">${tech.risk}</span><br><span class="text-gray-600">Risk</span></div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    const roadmap = [
+        {label:'Fund Now (TRL 7+)',color:'#10b981',icon:'fa-check-circle',items:TECHNOLOGIES.filter(t=>t.trl>=7).map(t=>`${t.name} (TRL ${t.trl})`)},
+        {label:'Accelerate (TRL 4-6)',color:'#f59e0b',icon:'fa-fast-forward',items:TECHNOLOGIES.filter(t=>t.trl>=4&&t.trl<7).map(t=>`${t.name} (TRL ${t.trl})`)},
+        {label:'Research (TRL 1-3)',color:'#ef4444',icon:'fa-flask',items:TECHNOLOGIES.filter(t=>t.trl<4).map(t=>`${t.name} (TRL ${t.trl})`)}
+    ];
+    document.getElementById('roadmap-summary').innerHTML = roadmap.map(r=>`
+        <div class="glass p-5">
+            <div class="flex items-center gap-2 mb-3"><i class="fas ${r.icon}" style="color:${r.color}"></i><h3 class="text-sm font-bold" style="color:${r.color}">${r.label}</h3><span class="text-[10px] text-gray-600 ml-auto">${r.items.length} techs</span></div>
+            <div class="space-y-1.5">${r.items.map(item=>`<div class="text-[10px] text-gray-400">• ${item}</div>`).join('')}</div>
+        </div>`).join('');
+}
+
+
+// ====================================================================
+// BASELINE PLATFORMS TAB
+// ====================================================================
+const BL_DIM_LABELS = ["Data Integration","Analytics","Visualization","Accessibility","Scalability","Documentation","Community","Security","Interoperability","Real-time"];
+const BL_DIM_AVGS = [79.3,79.3,76.6,73.9,79.2,77.9,75,82.5,77.3,77.7];
+
+function renderBaselineCharts(){
+    const ctx = document.getElementById('bl-dim-radar')?.getContext('2d');
+    if(ctx && !chartInstances.blDimRadar){
+        chartInstances.blDimRadar = new Chart(ctx,{
+            type:'radar',
+            data:{labels:BL_DIM_LABELS,datasets:[{label:'Global Avg (169)',data:BL_DIM_AVGS,backgroundColor:'rgba(168,85,247,.15)',borderColor:'#a855f7',pointBackgroundColor:'#a855f7',pointRadius:4}]},
+            options:{responsive:true,maintainAspectRatio:false,scales:{r:{angleLines:{color:'rgba(42,54,80,.3)'},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:9}},ticks:{display:false},min:60,max:90}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{renderScorecard();});
+</script>
+</body>
+</html>

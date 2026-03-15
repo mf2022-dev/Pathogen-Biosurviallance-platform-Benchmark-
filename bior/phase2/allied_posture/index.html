@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Allied Biodefense Posture Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#0a0e1a;--card:#1a2235;--border:#2a3650;--t1:#e5e7eb;--t2:#9ca3af;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass:hover{border-color:rgba(59,130,246,.3)}
+        .bar-fill{transition:width 1.2s ease-out}
+        .scrollbar-thin::-webkit-scrollbar{width:4px}.scrollbar-thin::-webkit-scrollbar-track{background:transparent}.scrollbar-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+        .rag{text-align:center;font-weight:700;font-size:11px;padding:6px 4px;border-radius:6px;cursor:pointer;transition:all .2s}
+        .rag:hover{transform:scale(1.08);z-index:5;position:relative}
+        .rag-e{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.25)}
+        .rag-g{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.25)}
+        .rag-a{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.25)}
+        .rag-c{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.25)}
+        .alliance-card{background:rgba(26,34,53,.6);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s;cursor:pointer}
+        .alliance-card:hover{border-color:rgba(6,182,212,.4);transform:translateY(-3px)}
+        .alliance-card.selected{border-color:var(--cyan);background:rgba(6,182,212,.05)}
+        .tab-btn{padding:6px 16px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t2);cursor:pointer;transition:all .2s}
+        .tab-btn:hover{border-color:rgba(59,130,246,.5);color:var(--t1)}
+        .tab-btn.active{background:rgba(6,182,212,.15);border-color:var(--cyan);color:var(--cyan)}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .readiness-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative}
+        #tooltip{position:fixed;z-index:9999;pointer-events:none;background:rgba(10,14,26,.95);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;max-width:400px;display:none;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div id="tooltip"></div>
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-sm">BR</span></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-blue-400 font-normal text-sm ml-1">Allied Biodefense Posture Review</span></h1>
+                <p class="text-xs text-gray-500">Deliverable E — Phase 2 | 6 Alliance Frameworks × 12 Capability Dimensions</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../../phase1/executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../investment_roadmap/index.html" class="hover:text-bio-cyan"><i class="fas fa-road mr-1"></i>Investment</a>
+            <a href="../readiness_scorecard/index.html" class="hover:text-bio-cyan"><i class="fas fa-clipboard-check mr-1"></i>TRL Scorecard</a>
+        </nav>
+    </div>
+</header>
+
+<!-- SUMMARY STRIP -->
+<div class="border-b border-bio-border" style="background:linear-gradient(90deg,rgba(59,130,246,.04),rgba(6,182,212,.04),rgba(16,185,129,.04))">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-6 text-sm">
+        <div class="text-center"><div class="text-2xl font-black text-bio-blue">6</div><div class="text-[10px] text-gray-500 uppercase">Alliances</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-bio-cyan">12</div><div class="text-[10px] text-gray-500 uppercase">Capability Dims</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-purple-400">72</div><div class="text-[10px] text-gray-500 uppercase">Assessments</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-green-400">78.2</div><div class="text-[10px] text-gray-500 uppercase">Allied Avg</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-red-400">52.3</div><div class="text-[10px] text-gray-500 uppercase">Adversary Avg</div></div>
+        <div class="text-center"><div class="text-2xl font-black text-amber-400">+25.9</div><div class="text-[10px] text-gray-500 uppercase">Allied Advantage</div></div>
+        <div class="ml-auto text-right text-xs text-gray-500"><div>Assessment Date: Mar 2026</div><div>PSEF v3.0.0 Baseline</div></div>
+    </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1700px] mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+        <button class="tab-btn active" onclick="switchTab('posture')"><i class="fas fa-shield-alt mr-1"></i>Alliance Posture</button>
+        <button class="tab-btn" onclick="switchTab('compare')"><i class="fas fa-balance-scale mr-1"></i>Comparative Analysis</button>
+        <button class="tab-btn" onclick="switchTab('gaps')"><i class="fas fa-exclamation-triangle mr-1"></i>Interop Gaps & Barriers</button>
+        <button class="tab-btn" onclick="switchTab('exercises')"><i class="fas fa-running mr-1"></i>Joint Exercises & Recommendations</button>
+        <button class="tab-btn" onclick="switchTab('baseline')"><i class="fas fa-database mr-1"></i>Baseline Platforms (169)</button>
+    </div>
+</div>
+
+<main class="max-w-[1700px] mx-auto px-6 py-6">
+
+<!-- ====================== POSTURE TAB ====================== -->
+<div id="posture" class="tab-content active space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4" id="alliance-cards"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-spider text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Alliance Capability Radar</h2></div>
+            <div style="height:400px"><canvas id="alliance-radar"></canvas></div>
+        </div>
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-info-circle text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400" id="alliance-detail-title">Select an Alliance</h2></div>
+            <div id="alliance-detail">
+                <div class="text-center text-gray-600 py-16"><i class="fas fa-handshake text-4xl mb-3 block"></i><p>Click an alliance card to view detailed posture assessment</p></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== COMPARE TAB ====================== -->
+<div id="compare" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-th text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Alliance × Capability Heatmap (72 Assessments)</h2></div>
+        <div class="overflow-x-auto" id="alliance-heatmap"></div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Alliance Readiness Rankings</h2></div>
+            <div style="height:350px"><canvas id="readiness-bar"></canvas></div>
+        </div>
+        <div class="glass p-6">
+            <div class="flex items-center gap-2 mb-4"><i class="fas fa-crosshairs text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Allied vs Adversary Comparison</h2></div>
+            <div style="height:350px"><canvas id="allied-vs-adv"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<!-- ====================== GAPS TAB ====================== -->
+<div id="gaps" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-exclamation-circle text-red-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-red-400">Critical Interoperability Barriers (12 identified)</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="barriers-grid"></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-chart-bar text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Worst Capability Gaps by Alliance</h2></div>
+        <div style="height:350px"><canvas id="worst-gaps-chart"></canvas></div>
+    </div>
+</div>
+
+<!-- ====================== EXERCISES TAB ====================== -->
+<div id="exercises" class="tab-content space-y-6">
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-running text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Recommended Joint Exercises (8 exercises)</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="exercise-list"></div>
+    </div>
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-clipboard-list text-green-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-green-400">Strategic Recommendations for Alliance Strengthening</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="strategy-recs"></div>
+    </div>
+</div>
+
+
+<!-- ====================== BASELINE PLATFORMS TAB ====================== -->
+<div id="baseline" class="tab-content space-y-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-bio-cyan">169</div><div class="text-[10px] text-gray-500">Total Platforms</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-green-400">3</div><div class="text-[10px] text-gray-500">Excellent</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-blue-400">74</div><div class="text-[10px] text-gray-500">Good</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-amber-400">77</div><div class="text-[10px] text-gray-500">Adequate</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-red-400">15</div><div class="text-[10px] text-gray-500">Developing</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-purple-400">5</div><div class="text-[10px] text-gray-500">Layers</div></div>
+        <div class="glass p-4 text-center"><div class="text-2xl font-black text-pink-400">1,690</div><div class="text-[10px] text-gray-500">Data Points</div></div>
+    </div>
+
+    <!-- Alliance Platform Mapping -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-globe text-bio-cyan"></i><h2 class="text-sm font-bold uppercase tracking-wider text-bio-cyan">Platforms by Alliance / Region</h2></div>
+        <div class="text-xs text-gray-500 mb-4">169 baseline platforms mapped to alliance groupings. Many platforms serve multiple alliances or operate globally.</div>
+        <div class="space-y-4">
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#3b82f6"></span>
+                    <span class="text-xs font-bold" style="color:#3b82f6">Five Eyes</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">15 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.9</span><span class="text-[10px] text-gray-300 truncate">NCBI Pathogen Detection</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Pathogen Detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87.2</span><span class="text-[10px] text-gray-300 truncate">BioSense / ESSENCE</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Syndromic Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.2</span><span class="text-[10px] text-gray-300 truncate">NWSS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Wastewater Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">85</span><span class="text-[10px] text-gray-300 truncate">GEIS (Global Emerging Infections Surveillance)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">DoD Global Disease Surveillance Network</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">DARPA P3 (Pandemic Prevention Platform)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Pandemic Countermeasure R&D</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">84</span><span class="text-[10px] text-gray-300 truncate">USAMRIID Biosurveillance</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Biodefense Research & Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.6</span><span class="text-[10px] text-gray-300 truncate">CDC TGS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Traveler Genomic Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83.5</span><span class="text-[10px] text-gray-300 truncate">NNDSS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Notifiable Disease Reporting</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">83</span><span class="text-[10px] text-gray-300 truncate">AMRFinderPlus</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">AMR Gene Detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.5</span><span class="text-[10px] text-gray-300 truncate">DARPA PREEMPT</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Military Zoonotic Spillover Prevention</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#10b981"></span>
+                    <span class="text-xs font-bold" style="color:#10b981">NATO/EU</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">9 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">90</span><span class="text-[10px] text-gray-300 truncate">SORMAS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Surveillance & Outbreak Response</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">82.5</span><span class="text-[10px] text-gray-300 truncate">UK Dstl (Porton Down)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">UK Military Biodefense Research</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">81</span><span class="text-[10px] text-gray-300 truncate">EU HERA</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">EU Health Emergency Preparedness Authority</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79.5</span><span class="text-[10px] text-gray-300 truncate">NATO JCBRN Defence COE</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">NATO CBRN Knowledge & Capability Hub</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79.5</span><span class="text-[10px] text-gray-300 truncate">DRDC Suffield (Canada)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Canadian Military CBRN Defense Research</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78</span><span class="text-[10px] text-gray-300 truncate">Bundeswehr CBRN Defence</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">German Military CBRN Defense</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">76</span><span class="text-[10px] text-gray-300 truncate">GECO (ECDC)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">EU Genomic Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">76</span><span class="text-[10px] text-gray-300 truncate">Rheinmetall NBC Field Lab</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Mobile CBRN Reconnaissance & Analysis</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-red-400 text-[11px]">67.5</span><span class="text-[10px] text-gray-300 truncate">ECDC Hub</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">EU Disease Surveillance</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#a855f7"></span>
+                    <span class="text-xs font-bold" style="color:#a855f7">Quad</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">7 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78.5</span><span class="text-[10px] text-gray-300 truncate">Korea-US Joint Biosurveillance Portal</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Allied Joint Biosurveillance System</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">78</span><span class="text-[10px] text-gray-300 truncate">Japan NIID / JSDF CBRN</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Japanese National & Military Biodefense</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">75.8</span><span class="text-[10px] text-gray-300 truncate">APGI</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Regional Capacity Building</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">75</span><span class="text-[10px] text-gray-300 truncate">India DRDO Biodefense (DFRL/CFEES)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Indian Military Biodefense Research</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">74.5</span><span class="text-[10px] text-gray-300 truncate">KIDA Biosecurity Analysis (Korea)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Korean Defense Biodefense Analysis</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">74</span><span class="text-[10px] text-gray-300 truncate">JUPITR</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">US Forces Korea Biosurveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-red-400 text-[11px]">55</span><span class="text-[10px] text-gray-300 truncate">North Korea Bio Program (Assessed)</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Assessed State Biological Weapons Capability</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#06b6d4"></span>
+                    <span class="text-xs font-bold" style="color:#06b6d4">AUKUS</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">0 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#f59e0b"></span>
+                    <span class="text-xs font-bold" style="color:#f59e0b">African Union</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">3 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79</span><span class="text-[10px] text-gray-300 truncate">Africa CDC AGARI</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Pan-African Pathogen Genomic Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-red-400 text-[11px]">66</span><span class="text-[10px] text-gray-300 truncate">Africa CDC ARES</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Continental Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-red-400 text-[11px]">63</span><span class="text-[10px] text-gray-300 truncate">RESAOLAB</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Lab Network (W. Africa)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#ef4444"></span>
+                    <span class="text-xs font-bold" style="color:#ef4444">GCC</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">5 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">79</span><span class="text-[10px] text-gray-300 truncate">HESN</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">National Disease Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">77.5</span><span class="text-[10px] text-gray-300 truncate">HHIS / HEWS</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Mass Gathering Disease Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">76</span><span class="text-[10px] text-gray-300 truncate">Tawakkalna</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">National Digital Health & Pandemic Response</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">75</span><span class="text-[10px] text-gray-300 truncate">Saudi AMR Surveillance</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">National AMR Surveillance</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-amber-400 text-[11px]">73</span><span class="text-[10px] text-gray-300 truncate">KAUST PGL / AssayM</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Pathogen Genomics Research Tools</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-800/20 rounded-lg p-4 border border-bio-border/30">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-3 h-3 rounded-full" style="background:#9ca3af"></span>
+                    <span class="text-xs font-bold" style="color:#9ca3af">Global/Multi</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">15 platforms</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">95</span><span class="text-[10px] text-gray-300 truncate">Nextstrain</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Phylogenetic Analysis & Visualization</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-green-400 text-[11px]">90</span><span class="text-[10px] text-gray-300 truncate">outbreak.info</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Epidemiological Data Aggregation</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89.2</span><span class="text-[10px] text-gray-300 truncate">CZ ID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Metagenomic Pathogen Detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">89</span><span class="text-[10px] text-gray-300 truncate">DHIS2</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Health Information Management</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.9</span><span class="text-[10px] text-gray-300 truncate">NCBI Pathogen Detection</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Pathogen Detection</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">88.5</span><span class="text-[10px] text-gray-300 truncate">GISAID</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Data Sharing</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87.5</span><span class="text-[10px] text-gray-300 truncate">Microreact</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Genomic Epidemiology Visualization</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">87</span><span class="text-[10px] text-gray-300 truncate">Pathogenwatch</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Pathogen Genomic Analysis</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86.5</span><span class="text-[10px] text-gray-300 truncate">Galaxy Project</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Bioinformatics Workflow Platform</div>
+                    </div>
+                    <div class="bg-gray-800/40 rounded p-2">
+                        <div class="flex items-center gap-1"><span class="font-bold text-blue-400 text-[11px]">86</span><span class="text-[10px] text-gray-300 truncate">EpiCollect5</span></div>
+                        <div class="text-[9px] text-gray-500 truncate">Mobile Data Collection</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layer Breakdown -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-layer-group text-purple-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-purple-400">Layer Distribution (PSEF v3.0.0)</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L2 Genomic</div>
+                <div class="text-xl font-black text-bio-cyan">57</div>
+                <div class="text-[10px] text-gray-500">Avg: 79.5 | 60-95</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: Nextstrain (95)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L1 Surveillance</div>
+                <div class="text-xl font-black text-bio-cyan">63</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.0 | 62-90</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: outbreak.info (90)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L3 Defense</div>
+                <div class="text-xl font-black text-bio-cyan">35</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.4 | 55-84</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: DARPA P3 (Pandemic Prevention Platform) (84)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L4 Hardware</div>
+                <div class="text-xl font-black text-bio-cyan">9</div>
+                <div class="text-[10px] text-gray-500">Avg: 77.2 | 74.5-82</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: BioFire Defense (FilmArray) (82)</div>
+            </div>
+            <div class="bg-gray-800/30 rounded-lg p-4 border border-bio-border/50">
+                <div class="text-xs font-bold text-gray-300 mb-1">L5 Policy</div>
+                <div class="text-xl font-black text-bio-cyan">5</div>
+                <div class="text-[10px] text-gray-500">Avg: 78.5 | 74-83</div>
+                <div class="text-[10px] text-green-400 mt-1">Top: GHS Index (83)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 20 Platform Ranking -->
+    <div class="glass p-6">
+        <div class="flex items-center gap-2 mb-4"><i class="fas fa-trophy text-amber-400"></i><h2 class="text-sm font-bold uppercase tracking-wider text-amber-400">Top 20 Platforms — Global Rankings</h2></div>
+        <div class="overflow-x-auto scrollbar-thin">
+            <table class="w-full text-xs border-collapse">
+                <thead><tr><th class="p-2 text-left text-gray-400 w-8">#</th><th class="p-2 text-left text-gray-400">Platform</th><th class="p-2 text-left text-gray-400">Category</th><th class="p-2 text-center text-gray-400 w-12">Score</th><th class="p-2 text-left text-gray-400">Strengths</th><th class="p-2 text-left text-gray-400">Weaknesses</th></tr></thead>
+                <tbody>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">1</td><td class="p-1.5 text-gray-200">Nextstrain</td><td class="p-1.5 text-[10px] text-gray-500">Phylogenetic Analysis & Visualization</td><td class="p-1.5 text-center font-bold text-green-400">95</td><td class="p-1.5 text-[10px] text-green-400/60">Real-time phylogenetic analysis, Open-source with active community</td><td class="p-1.5 text-[10px] text-red-400/60">Steep learning curve, Limited clinical data integration</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">2</td><td class="p-1.5 text-gray-200">outbreak.info</td><td class="p-1.5 text-[10px] text-gray-500">Epidemiological Data Aggregation</td><td class="p-1.5 text-center font-bold text-green-400">90</td><td class="p-1.5 text-[10px] text-green-400/60">Comprehensive data aggregation, Strong API</td><td class="p-1.5 text-[10px] text-red-400/60">COVID-19 focused, Limited offline</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">3</td><td class="p-1.5 text-gray-200">SORMAS</td><td class="p-1.5 text-[10px] text-gray-500">Surveillance & Outbreak Response</td><td class="p-1.5 text-center font-bold text-green-400">90</td><td class="p-1.5 text-[10px] text-green-400/60">End-to-end outbreak management, Mobile application</td><td class="p-1.5 text-[10px] text-red-400/60">Complex setup, Resource-intensive</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">4</td><td class="p-1.5 text-gray-200">CZ ID</td><td class="p-1.5 text-[10px] text-gray-500">Metagenomic Pathogen Detection</td><td class="p-1.5 text-center font-bold text-blue-400">89.2</td><td class="p-1.5 text-[10px] text-green-400/60">Automated metagenomic analysis, No-code browser-based</td><td class="p-1.5 text-[10px] text-red-400/60">Cloud dependency, Limited custom pipelines</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">5</td><td class="p-1.5 text-gray-200">DHIS2</td><td class="p-1.5 text-[10px] text-gray-500">Health Information Management</td><td class="p-1.5 text-center font-bold text-blue-400">89</td><td class="p-1.5 text-[10px] text-green-400/60">100+ country deployment, Highly customizable</td><td class="p-1.5 text-[10px] text-red-400/60">Limited genomic integration, Customization complexity</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">6</td><td class="p-1.5 text-gray-200">NCBI Pathogen Detection</td><td class="p-1.5 text-[10px] text-gray-500">Genomic Pathogen Detection</td><td class="p-1.5 text-center font-bold text-blue-400">88.9</td><td class="p-1.5 text-[10px] text-green-400/60">Massive genomic database, Automated clustering</td><td class="p-1.5 text-[10px] text-red-400/60">US-centric, Limited custom analysis</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">7</td><td class="p-1.5 text-gray-200">GISAID</td><td class="p-1.5 text-[10px] text-gray-500">Genomic Data Sharing</td><td class="p-1.5 text-center font-bold text-blue-400">88.5</td><td class="p-1.5 text-[10px] text-green-400/60">Largest sequence repo, Rapid data sharing</td><td class="p-1.5 text-[10px] text-red-400/60">Restricted access, Limited tools</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">8</td><td class="p-1.5 text-gray-200">Microreact</td><td class="p-1.5 text-[10px] text-gray-500">Genomic Epidemiology Visualization</td><td class="p-1.5 text-center font-bold text-blue-400">87.5</td><td class="p-1.5 text-[10px] text-green-400/60">Excellent visualization, Easy sharing</td><td class="p-1.5 text-[10px] text-red-400/60">Limited analytics, Smaller datasets</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">9</td><td class="p-1.5 text-gray-200">BioSense / ESSENCE</td><td class="p-1.5 text-[10px] text-gray-500">Syndromic Surveillance</td><td class="p-1.5 text-center font-bold text-blue-400">87.2</td><td class="p-1.5 text-[10px] text-green-400/60">National-scale syndromic surveillance, Real-time anomaly detection</td><td class="p-1.5 text-[10px] text-red-400/60">US-only, Requires data-use agreements</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">10</td><td class="p-1.5 text-gray-200">Pathogenwatch</td><td class="p-1.5 text-[10px] text-gray-500">Pathogen Genomic Analysis</td><td class="p-1.5 text-center font-bold text-blue-400">87</td><td class="p-1.5 text-[10px] text-green-400/60">Automated analysis, AMR prediction</td><td class="p-1.5 text-[10px] text-red-400/60">Limited organisms, Database dependent</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">11</td><td class="p-1.5 text-gray-200">Galaxy Project</td><td class="p-1.5 text-[10px] text-gray-500">Bioinformatics Workflow Platform</td><td class="p-1.5 text-center font-bold text-blue-400">86.5</td><td class="p-1.5 text-[10px] text-green-400/60">Extensive tool library, Reproducible workflows</td><td class="p-1.5 text-[10px] text-red-400/60">General-purpose, Resource-intensive</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">12</td><td class="p-1.5 text-gray-200">NWSS</td><td class="p-1.5 text-[10px] text-gray-500">Wastewater Surveillance</td><td class="p-1.5 text-center font-bold text-blue-400">86.2</td><td class="p-1.5 text-[10px] text-green-400/60">Population-level monitoring, Multi-pathogen detection</td><td class="p-1.5 text-[10px] text-red-400/60">US-focused, Infrastructure requirements</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">13</td><td class="p-1.5 text-gray-200">EpiCollect5</td><td class="p-1.5 text-[10px] text-gray-500">Mobile Data Collection</td><td class="p-1.5 text-center font-bold text-blue-400">86</td><td class="p-1.5 text-[10px] text-green-400/60">Mobile support, Offline capability</td><td class="p-1.5 text-[10px] text-red-400/60">Limited analytics, Basic visualization</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">14</td><td class="p-1.5 text-gray-200">BV-BRC</td><td class="p-1.5 text-[10px] text-gray-500">Bacterial & Viral Bioinformatics Resource</td><td class="p-1.5 text-center font-bold text-blue-400">86</td><td class="p-1.5 text-[10px] text-green-400/60">Massive integrated DB, Comprehensive analysis services</td><td class="p-1.5 text-[10px] text-red-400/60">Complex interface, Steep learning curve</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">15</td><td class="p-1.5 text-gray-200">Pathoplexus</td><td class="p-1.5 text-[10px] text-gray-500">Genomic Data Sharing</td><td class="p-1.5 text-center font-bold text-blue-400">85.6</td><td class="p-1.5 text-[10px] text-green-400/60">Open data sharing, Modern architecture</td><td class="p-1.5 text-[10px] text-red-400/60">Early stage, Limited organism coverage</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">16</td><td class="p-1.5 text-gray-200">Airfinity</td><td class="p-1.5 text-[10px] text-gray-500">AI Health Analytics & Disease Forecasting</td><td class="p-1.5 text-center font-bold text-blue-400">85.5</td><td class="p-1.5 text-[10px] text-green-400/60">160+ disease coverage, Proven forecast accuracy (outperformed market consensus)</td><td class="p-1.5 text-[10px] text-red-400/60">Commercial subscription only, Proprietary algorithms</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">17</td><td class="p-1.5 text-gray-200">HealthMap</td><td class="p-1.5 text-[10px] text-gray-500">Disease Intelligence</td><td class="p-1.5 text-center font-bold text-blue-400">85.5</td><td class="p-1.5 text-[10px] text-green-400/60">Automated news monitoring, Real-time intelligence</td><td class="p-1.5 text-[10px] text-red-400/60">Unstructured data, Signal-to-noise</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">18</td><td class="p-1.5 text-gray-200">ProMED</td><td class="p-1.5 text-[10px] text-gray-500">Event-Based Surveillance</td><td class="p-1.5 text-center font-bold text-blue-400">85</td><td class="p-1.5 text-[10px] text-green-400/60">Expert-curated, Long history</td><td class="p-1.5 text-[10px] text-red-400/60">Limited tools, Manual curation</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">19</td><td class="p-1.5 text-gray-200">BlueDot</td><td class="p-1.5 text-[10px] text-gray-500">AI Epidemic Intelligence</td><td class="p-1.5 text-center font-bold text-blue-400">85</td><td class="p-1.5 text-[10px] text-green-400/60">AI-powered early detection, First to flag COVID-19</td><td class="p-1.5 text-[10px] text-red-400/60">Commercial platform, Limited public access</td></tr>
+                    <tr class="border-t border-bio-border/20 hover:bg-bio-blue/5"><td class="p-1.5 text-gray-600">20</td><td class="p-1.5 text-gray-200">GEIS (Global Emerging Infections Surveillance)</td><td class="p-1.5 text-[10px] text-gray-500">DoD Global Disease Surveillance Network</td><td class="p-1.5 text-center font-bold text-blue-400">85</td><td class="p-1.5 text-[10px] text-green-400/60">30+ country network since 1997, USAMRIID/WRAIR/NAMRU partnerships</td><td class="p-1.5 text-[10px] text-red-400/60">Military-access primarily, Government bureaucracy</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1700px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Deliverable E: Allied Biodefense Posture Review</div>
+        <div>6 Alliances | 12 Capability Dimensions | 72 Assessments | 169 Baseline Platforms | 1,690 Data Points | PSEF v3.0.0</div>
+    </div>
+</footer>
+
+<script>
+const CAPABILITIES = [
+    {id:'early_warning',name:'Early Warning',short:'EW',icon:'fa-bell'},
+    {id:'genomic',name:'Genomic Surveillance',short:'Genomic',icon:'fa-dna'},
+    {id:'data_sharing',name:'Data Sharing',short:'DataShare',icon:'fa-exchange-alt'},
+    {id:'mcm',name:'MCM Pipeline',short:'MCM',icon:'fa-syringe'},
+    {id:'detection',name:'Bio-Agent Detection',short:'Detect',icon:'fa-biohazard'},
+    {id:'lab_network',name:'Lab Network',short:'Labs',icon:'fa-flask'},
+    {id:'ai_forecast',name:'AI/ML Forecasting',short:'AI/ML',icon:'fa-brain'},
+    {id:'supply_chain',name:'Supply Chain',short:'Supply',icon:'fa-truck'},
+    {id:'workforce',name:'Workforce',short:'Workforce',icon:'fa-user-graduate'},
+    {id:'interop_tech',name:'Technical Interop',short:'TechInterop',icon:'fa-plug'},
+    {id:'command',name:'Command & Control',short:'C2',icon:'fa-sitemap'},
+    {id:'intel_sharing',name:'Intel Sharing',short:'Intel',icon:'fa-user-secret'}
+];
+
+const ALLIANCES = [
+    {id:'fvey',name:'Five Eyes',short:'FVEY',icon:'👁️',color:'#3b82f6',
+     members:'US, UK, Canada, Australia, New Zealand',
+     established:1946,biodefensePact:'UKUSA + Bio Extension',
+     readiness:88,
+     scores:{early_warning:92,genomic:94,data_sharing:72,mcm:85,detection:88,lab_network:90,ai_forecast:82,supply_chain:78,workforce:78,interop_tech:82,command:90,intel_sharing:95},
+     strengths:['Deepest intelligence integration globally','Shared classified bio-intelligence','Mature genomic surveillance (COG-UK, CDC, PHAC)','Combined BSL-4 capacity: 12 facilities','Joint CBRN doctrine'],
+     weaknesses:['Data sharing still inconsistent for health data','No unified wastewater surveillance','Workforce aging in UK/Canada','Limited engagement with Pacific Island partners'],
+     narrative:'Five Eyes represents the gold standard for intelligence-integrated biosurveillance. The UKUSA agreement provides the foundation, but biological data sharing still lags signals intelligence maturity. The alliance has the strongest combined laboratory network and genomic capability globally.'},
+    {id:'nato',name:'NATO/EU',short:'NATO',icon:'🇪🇺',color:'#10b981',
+     members:'31 NATO + 27 EU members',
+     established:1949,biodefensePact:'NATO CBRN Policy (MC 0343/2)',
+     readiness:72,
+     scores:{early_warning:80,genomic:78,data_sharing:55,mcm:72,detection:75,lab_network:80,ai_forecast:70,supply_chain:70,workforce:68,interop_tech:60,command:78,intel_sharing:58},
+     strengths:['ECDC coordination for EU members','EU HERA for MCM procurement','NATO CBRN battalion capability','STANAG framework for standardization','Combined military-civilian coordination'],
+     weaknesses:['GDPR impedes health data sharing','Wide capability variance (Western vs Eastern Europe)','No unified biosurveillance data protocol','Limited classified bio-intel sharing','Language barriers across 30+ nations'],
+     narrative:'NATO/EU has the structural frameworks but implementation is uneven. Western European members match Five Eyes capability in many areas, but Eastern European, Balkan, and smaller members lag significantly. GDPR is a major barrier to real-time cross-border health data sharing.'},
+    {id:'quad',name:'Quad',short:'QUAD',icon:'🔷',color:'#a855f7',
+     members:'US, Japan, Australia, India',
+     established:2007,biodefensePact:'Quad Health Security Partnership (2021)',
+     readiness:74,
+     scores:{early_warning:82,genomic:80,data_sharing:62,mcm:78,detection:78,lab_network:82,ai_forecast:80,supply_chain:72,workforce:72,interop_tech:58,command:68,intel_sharing:55},
+     strengths:['India vaccine manufacturing capacity (world largest)','Japan advanced biotech capability','Australia biosecurity expertise','US military biodefense assets in Pacific','Combined population health data: 1.8B people'],
+     weaknesses:['Newest alliance — limited integration history','India data-sharing concerns','No unified C2 for bio-events','Different classification systems','Geographic dispersion limits response speed'],
+     narrative:'The Quad is the most promising emerging biodefense alliance. India brings unmatched vaccine manufacturing scale, Japan brings cutting-edge biotech, Australia brings biosecurity expertise, and the US brings military biodefense assets. However, integration is nascent and trust-building is ongoing.'},
+    {id:'aukus',name:'AUKUS',short:'AUKUS',icon:'⚓',color:'#06b6d4',
+     members:'Australia, UK, US',
+     established:2021,biodefensePact:'Pillar II Advanced Capabilities',
+     readiness:82,
+     scores:{early_warning:88,genomic:90,data_sharing:78,mcm:82,detection:85,lab_network:88,ai_forecast:80,supply_chain:80,workforce:75,interop_tech:78,command:85,intel_sharing:88},
+     strengths:['Subset of Five Eyes — deep trust foundation','Pillar II includes bio-defense technology','Shared nuclear submarine program demonstrates integration depth','Combined Indo-Pacific coverage','Advanced AI/ML collaboration'],
+     weaknesses:['Only 3 members — limited geographic coverage','No formal bio-specific treaty','Dependent on Five Eyes infrastructure','Pacific Island gap in coverage'],
+     narrative:'AUKUS benefits from being a Five Eyes subset with the deepest trust relationships. Pillar II explicitly includes advanced biotechnology and could become the most tightly integrated biodefense trilateral. The submarine program demonstrates the depth of technology sharing these nations are willing to undertake.'},
+    {id:'au',name:'African Union',short:'AU',icon:'🌍',color:'#f59e0b',
+     members:'55 member states',
+     established:2002,biodefensePact:'Africa CDC Framework (2017)',
+     readiness:38,
+     scores:{early_warning:48,genomic:42,data_sharing:30,mcm:28,detection:32,lab_network:38,ai_forecast:30,supply_chain:25,workforce:28,interop_tech:35,command:42,intel_sharing:30},
+     strengths:['Africa CDC providing coordination','AGARI genomic initiative expanding','Regional disease surveillance networks (WAHO, ECSA)','Young workforce demographic advantage','High motivation post-COVID'],
+     weaknesses:['Massive infrastructure gaps','Only 2 operational BSL-4 labs for 1.4B people','Dependency on external MCM supply','Limited funding (<$2/capita health spend in many nations)','Brain drain of trained professionals','55 nations with widely varying capability'],
+     narrative:'The African Union represents the largest capability gap in global biodefense. Africa CDC is making progress but faces enormous structural challenges. The continent has 1.4 billion people served by only 2 BSL-4 labs and fewer than 500 BSL-3 trained technicians. Investment here yields the highest marginal impact globally.'},
+    {id:'gcc',name:'Gulf Cooperation Council',short:'GCC',icon:'🕌',color:'#ef4444',
+     members:'Saudi Arabia, UAE, Qatar, Kuwait, Bahrain, Oman',
+     established:1981,biodefensePact:'GCC Health Committee',
+     readiness:55,
+     scores:{early_warning:62,genomic:58,data_sharing:42,mcm:52,detection:58,lab_network:60,ai_forecast:52,supply_chain:50,workforce:45,interop_tech:48,command:58,intel_sharing:40},
+     strengths:['Significant financial resources','UAE/Saudi modern healthcare infrastructure','KAUST and KFUPM research capacity','Strategic geographic position','Willingness to invest in technology'],
+     weaknesses:['Limited indigenous biodefense R&D','Workforce heavily expatriate-dependent','Data sharing constrained by sovereignty concerns','No regional BSL-4 facility','Limited One Health integration','Political tensions within GCC impede cooperation'],
+     narrative:'GCC nations have financial resources but lag in indigenous capability. UAE and Saudi Arabia are investing heavily in healthcare infrastructure, but biodefense-specific capabilities remain underdeveloped. The region is strategically positioned as a crossroads for pandemic pathogen movement.'}
+];
+
+const ADVERSARY = {
+    name:'Adversary Bloc (Russia + China)',
+    scores:{early_warning:72,genomic:75,data_sharing:15,mcm:78,detection:80,lab_network:78,ai_forecast:82,supply_chain:72,workforce:68,interop_tech:25,command:72,intel_sharing:10}
+};
+
+const BARRIERS = [
+    {id:1,title:'Classification Mismatch',severity:'critical',alliances:['nato','quad'],description:'Different national classification systems prevent sharing of threat assessments. Five Eyes has solved this; NATO/Quad have not.',recommendation:'Extend Five Eyes classification bridging framework to NATO and Quad partners'},
+    {id:2,title:'GDPR vs Health Data Sharing',severity:'critical',alliances:['nato'],description:'EU GDPR restricts cross-border transfer of health surveillance data, creating 72-hour+ delays during crises.',recommendation:'Negotiate GDPR emergency exemption for declared biological events'},
+    {id:3,title:'No Unified Bio-Data Protocol',severity:'critical',alliances:['nato','quad','au'],description:'No standardized data format for biosurveillance information exchange between alliance members.',recommendation:'Create NATO STANAG and adapt for Quad/AU use'},
+    {id:4,title:'Lab Network Fragmentation',severity:'high',alliances:['nato','au'],description:'BSL-3/4 laboratories operate on different IT systems, quality standards, and accreditation frameworks.',recommendation:'Establish mutual recognition agreements and shared LIMS platform'},
+    {id:5,title:'MCM Supply Chain Sovereignty',severity:'high',alliances:['quad','au','gcc'],description:'Nations insist on sovereign MCM manufacturing capability rather than pooling, creating redundancy and gaps.',recommendation:'Create allied MCM manufacturing consortium with guaranteed access rights'},
+    {id:6,title:'AI Model Validation Gap',severity:'high',alliances:['fvey','nato','quad'],description:'No standardized framework for validating pandemic prediction AI/ML models across alliances.',recommendation:'Establish multi-alliance AI model validation consortium'},
+    {id:7,title:'Workforce Mobility Barriers',severity:'high',alliances:['nato','au'],description:'Laboratory professionals cannot easily deploy across borders during crises due to credentialing differences.',recommendation:'Create allied emergency credentialing fast-track system'},
+    {id:8,title:'Communication Latency',severity:'medium',alliances:['nato','quad','gcc'],description:'Bio-event communication takes 24-72 hours to propagate through alliance notification systems.',recommendation:'Establish 4-hour notification standard with automated routing'},
+    {id:9,title:'Wastewater Data Incompatibility',severity:'medium',alliances:['fvey','nato'],description:'Different wastewater surveillance methodologies produce incomparable data across nations.',recommendation:'Adopt WHO wastewater standard (pending) across all alliances'},
+    {id:10,title:'Indo-Pacific Coverage Gap',severity:'medium',alliances:['quad','aukus'],description:'Pacific Island nations fall between alliance coverage zones with minimal biosurveillance capability.',recommendation:'Create Pacific Island Biosurveillance Initiative under Quad framework'},
+    {id:11,title:'One Health Fragmentation',severity:'high',alliances:['nato','quad','au','gcc'],description:'Human, animal, and environmental surveillance systems are disconnected across all alliances.',recommendation:'Fund tripartite (WHO-FAO-WOAH) integration pilots within each alliance'},
+    {id:12,title:'Bioforensic Attribution Gap',severity:'critical',alliances:['nato','quad','au','gcc'],description:'Only Five Eyes has operational bioforensic attribution capability. Other alliances have doctrine but no capability.',recommendation:'Establish NATO Bioforensic Attribution Center, extend training to Quad/AU'}
+];
+
+const EXERCISES = [
+    {name:'VIGILANT SHIELD BIO',alliance:'fvey',frequency:'Annual',focus:'Full-spectrum biodefense exercise',description:'Five Eyes joint biodefense exercise testing intelligence sharing, genomic surveillance, MCM deployment, and attribution across all 5 nations.',participants:'500+ military/civilian',lastHeld:'Proposed 2027',scenarios:['Novel pathogen release in urban environment','Deliberate bio-event attribution','Cross-border MCM surge deployment']},
+    {name:'NOBLE GENOME',alliance:'nato',frequency:'Annual',focus:'NATO biosurveillance data sharing',description:'NATO-wide exercise testing standardized biosurveillance data exchange, lab network activation, and joint C2 for biological events.',participants:'30 nations, 1000+',lastHeld:'Proposed 2027',scenarios:['Multi-country outbreak requiring data sharing','Lab network surge capacity activation','STANAG implementation test']},
+    {name:'PACIFIC SENTINEL BIO',alliance:'quad',frequency:'Biennial',focus:'Indo-Pacific biodefense cooperation',description:'Quad exercise testing vaccine distribution logistics, genomic data sharing, and AI-powered outbreak prediction across Indo-Pacific.',participants:'4 nations + partners',lastHeld:'Proposed 2028',scenarios:['Indo-Pacific pandemic scenario','MCM distribution to 10 Pacific nations','AI model ensemble forecasting']},
+    {name:'AUKUS BIO DEFENDER',alliance:'aukus',frequency:'Annual',focus:'Advanced biodefense technology',description:'AUKUS trilateral exercise testing next-generation biodefense technologies including AI, field sequencing, and autonomous detection.',participants:'3 nations, 200+',lastHeld:'Proposed 2027',scenarios:['Field sequencing of unknown pathogen','AI-powered threat prediction','Autonomous biodetection network test']},
+    {name:'AFRICA HEALTH SHIELD',alliance:'au',frequency:'Annual',focus:'African epidemic response',description:'African Union exercise testing continental epidemic response, cross-border data sharing, and MCM distribution across regional hubs.',participants:'30+ African nations',lastHeld:'Proposed 2028',scenarios:['Multi-country hemorrhagic fever outbreak','Cross-border sample transport and sequencing','Regional MCM distribution']},
+    {name:'GULF BIO READY',alliance:'gcc',frequency:'Biennial',focus:'GCC biodefense readiness',description:'GCC exercise testing regional biosurveillance coordination, lab network activation, and public health communication during biological events.',participants:'6 GCC nations',lastHeld:'Proposed 2028',scenarios:['Novel respiratory pathogen in pilgrimage setting','Regional lab network activation','Joint public health messaging']},
+    {name:'GLOBAL BIO UNITY',alliance:'all',frequency:'Quadrennial',focus:'Multi-alliance coordination',description:'Global exercise bringing all 6 alliances together to test inter-alliance coordination, data sharing, and MCM distribution during a global pandemic scenario.',participants:'60+ nations',lastHeld:'Proposed 2030',scenarios:['Simultaneous multi-continent outbreaks','Inter-alliance MCM allocation negotiation','Global genomic data sharing sprint']},
+    {name:'CYBER BIO SHIELD',alliance:'fvey',frequency:'Annual',focus:'Cyber-bio convergence',description:'Exercise testing defense against cyber attacks on biosurveillance infrastructure, genomic databases, and MCM supply chain systems.',participants:'Five Eyes + NATO cyber',lastHeld:'Proposed 2027',scenarios:['Ransomware attack on national lab network','Supply chain data manipulation','Disinformation during bio-event']}
+];
+
+let selectedAlliance = null;
+let chartInstances = {};
+
+function ragClass(v){return v>=85?'rag-e':v>=70?'rag-g':v>=50?'rag-a':'rag-c';}
+function ragLabel(v){return v>=85?'Excellent':v>=70?'Adequate':v>=50?'Gap':'Critical';}
+
+function switchTab(id){
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el=>el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.closest('.tab-btn').classList.add('active');
+    if(id==='compare'&&!chartInstances.heatmapDone) renderCompare();
+    if(id==='gaps'&&!chartInstances.gapsDone) renderGaps();
+    if(id==='exercises'&&!chartInstances.exercisesDone) renderExercises();
+    // Baseline tab is static HTML — no rendering needed
+}
+
+// ====================== POSTURE TAB ======================
+function renderPosture(){
+    document.getElementById('alliance-cards').innerHTML = ALLIANCES.map(a=>{
+        const avg = (Object.values(a.scores).reduce((s,v)=>s+v,0)/12).toFixed(0);
+        const color = avg>=80?'#3b82f6':avg>=65?'#10b981':avg>=50?'#f59e0b':'#ef4444';
+        return `
+        <div class="alliance-card ${selectedAlliance?.id===a.id?'selected':''}" onclick="selectAlliance('${a.id}')">
+            <div class="text-center mb-3">
+                <div class="text-3xl mb-1">${a.icon}</div>
+                <div class="text-sm font-bold" style="color:${a.color}">${a.name}</div>
+                <div class="text-[10px] text-gray-500">${a.members.split(',').length} members</div>
+            </div>
+            <div class="text-center mb-3">
+                <div class="text-3xl font-black" style="color:${color}">${avg}</div>
+                <div class="text-[10px] text-gray-500">Readiness Score</div>
+            </div>
+            <div class="grid grid-cols-3 gap-1 text-[9px] text-center">
+                <div><span class="font-bold text-green-400">${Math.max(...Object.values(a.scores))}</span><br><span class="text-gray-600">Best</span></div>
+                <div><span class="font-bold text-amber-400">${avg}</span><br><span class="text-gray-600">Avg</span></div>
+                <div><span class="font-bold text-red-400">${Math.min(...Object.values(a.scores))}</span><br><span class="text-gray-600">Worst</span></div>
+            </div>
+        </div>`;
+    }).join('');
+
+    // Alliance Radar
+    const ctx = document.getElementById('alliance-radar').getContext('2d');
+    chartInstances.radar = new Chart(ctx,{
+        type:'radar',
+        data:{
+            labels:CAPABILITIES.map(c=>c.short),
+            datasets:[
+                ...ALLIANCES.filter(a=>['fvey','nato','quad','au'].includes(a.id)).map(a=>({
+                    label:a.short,data:CAPABILITIES.map(c=>a.scores[c.id]),
+                    backgroundColor:a.color+'12',borderColor:a.color,borderWidth:2,pointRadius:3,pointBackgroundColor:a.color
+                })),
+                {label:'Adversary',data:CAPABILITIES.map(c=>ADVERSARY.scores[c.id]),
+                 backgroundColor:'rgba(239,68,68,.08)',borderColor:'#ef4444',borderWidth:2,borderDash:[5,5],pointRadius:3,pointBackgroundColor:'#ef4444'}
+            ]
+        },
+        options:{responsive:true,maintainAspectRatio:false,
+            scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:9}}}},
+            plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+}
+
+function selectAlliance(id){
+    selectedAlliance = ALLIANCES.find(a=>a.id===id);
+    if(!selectedAlliance) return;
+    renderPosture();
+    renderAllianceDetail();
+}
+
+function renderAllianceDetail(){
+    const a = selectedAlliance;
+    if(!a) return;
+    document.getElementById('alliance-detail-title').innerHTML = `${a.icon} ${a.name} — Detailed Posture`;
+    const avg = (Object.values(a.scores).reduce((s,v)=>s+v,0)/12).toFixed(1);
+    const sorted = CAPABILITIES.map(c=>({cap:c,score:a.scores[c.id]})).sort((x,y)=>y.score-x.score);
+
+    document.getElementById('alliance-detail').innerHTML = `
+        <div class="space-y-4">
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-gray-800/30 rounded-lg p-3"><div class="text-xl font-bold text-bio-cyan">${avg}</div><div class="text-[10px] text-gray-500">Avg Score</div></div>
+                <div class="bg-gray-800/30 rounded-lg p-3"><div class="text-xl font-bold text-green-400">${a.readiness}</div><div class="text-[10px] text-gray-500">Readiness</div></div>
+                <div class="bg-gray-800/30 rounded-lg p-3"><div class="text-xl font-bold text-purple-400">${a.established}</div><div class="text-[10px] text-gray-500">Established</div></div>
+            </div>
+            <p class="text-xs text-gray-400 leading-relaxed">${a.narrative}</p>
+            <div class="text-xs font-bold text-gray-400 mb-1">Capability Scores</div>
+            <div class="space-y-1.5">
+                ${sorted.map(s=>`
+                <div class="flex items-center gap-2">
+                    <i class="fas ${s.cap.icon} text-gray-500 w-4 text-[10px]"></i>
+                    <span class="text-[10px] text-gray-400 w-20">${s.cap.short}</span>
+                    <div class="flex-1 h-2.5 bg-gray-800 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full bar-fill" style="width:${s.score}%;background:${s.score>=85?'#3b82f6':s.score>=70?'#10b981':s.score>=50?'#f59e0b':'#ef4444'}"></div>
+                    </div>
+                    <span class="text-[10px] font-bold w-8 text-right" style="color:${s.score>=85?'#3b82f6':s.score>=70?'#10b981':s.score>=50?'#f59e0b':'#ef4444'}">${s.score}</span>
+                </div>`).join('')}
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-3">
+                <div><div class="text-[10px] text-green-400 font-bold mb-1">Strengths</div>${a.strengths.map(s=>`<div class="text-[10px] text-gray-400">+ ${s}</div>`).join('')}</div>
+                <div><div class="text-[10px] text-red-400 font-bold mb-1">Weaknesses</div>${a.weaknesses.map(w=>`<div class="text-[10px] text-gray-400">- ${w}</div>`).join('')}</div>
+            </div>
+        </div>`;
+}
+
+// ====================== COMPARE TAB ======================
+function renderCompare(){
+    chartInstances.heatmapDone = true;
+    const hmEl = document.getElementById('alliance-heatmap');
+    hmEl.innerHTML = `
+    <table class="w-full text-xs border-collapse">
+        <thead><tr>
+            <th class="p-2 text-left text-gray-400 min-w-[140px]">Capability</th>
+            ${ALLIANCES.map(a=>`<th class="p-2 text-center min-w-[80px]" style="color:${a.color}">${a.icon} ${a.short}</th>`).join('')}
+            <th class="p-2 text-center text-red-400 min-w-[80px]">⚠️ ADV</th>
+            <th class="p-2 text-center text-gray-400 min-w-[60px]">Allied Avg</th>
+        </tr></thead>
+        <tbody>
+        ${CAPABILITIES.map(cap=>{
+            const alliedAvg = (ALLIANCES.reduce((s,a)=>s+a.scores[cap.id],0)/ALLIANCES.length).toFixed(0);
+            const advScore = ADVERSARY.scores[cap.id];
+            return `<tr class="border-t border-bio-border/30 hover:bg-bio-blue/5">
+                <td class="p-2 font-semibold text-gray-300"><i class="fas ${cap.icon} mr-1 text-gray-500"></i>${cap.name}</td>
+                ${ALLIANCES.map(a=>{const v=a.scores[cap.id];return `<td class="p-1"><div class="rag ${ragClass(v)}">${v}</div></td>`;}).join('')}
+                <td class="p-1"><div class="rag ${ragClass(advScore)}">${advScore}</div></td>
+                <td class="p-2 text-center font-bold" style="color:${alliedAvg>=70?'#10b981':alliedAvg>=50?'#f59e0b':'#ef4444'}">${alliedAvg}</td>
+            </tr>`;
+        }).join('')}
+        </tbody>
+    </table>`;
+
+    // Readiness Bar
+    const sorted = [...ALLIANCES].sort((a,b)=>b.readiness-a.readiness);
+    const ctx1 = document.getElementById('readiness-bar').getContext('2d');
+    chartInstances.readinessBar = new Chart(ctx1,{
+        type:'bar',data:{labels:sorted.map(a=>a.short),datasets:[{data:sorted.map(a=>a.readiness),backgroundColor:sorted.map(a=>a.color+'99'),borderColor:sorted.map(a=>a.color),borderWidth:1,borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{min:20,max:100,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:11}}}},plugins:{legend:{display:false}}}
+    });
+
+    // Allied vs Adversary
+    const alliedAvg = CAPABILITIES.map(c=>(ALLIANCES.slice(0,4).reduce((s,a)=>s+a.scores[c.id],0)/4).toFixed(0));
+    const advScores = CAPABILITIES.map(c=>ADVERSARY.scores[c.id]);
+    const ctx2 = document.getElementById('allied-vs-adv').getContext('2d');
+    chartInstances.alliedVsAdv = new Chart(ctx2,{
+        type:'radar',data:{labels:CAPABILITIES.map(c=>c.short),datasets:[
+            {label:'Allied Avg (Top 4)',data:alliedAvg,backgroundColor:'rgba(16,185,129,.12)',borderColor:'#10b981',borderWidth:2,pointRadius:3,pointBackgroundColor:'#10b981'},
+            {label:'Adversary (RUS+CHN)',data:advScores,backgroundColor:'rgba(239,68,68,.08)',borderColor:'#ef4444',borderWidth:2,borderDash:[5,5],pointRadius:3,pointBackgroundColor:'#ef4444'}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:25,color:'#4b5563',backdropColor:'transparent',font:{size:8}},grid:{color:'rgba(42,54,80,.3)'},pointLabels:{color:'#9ca3af',font:{size:9}}}},plugins:{legend:{labels:{color:'#9ca3af',font:{size:10}}}}}
+    });
+}
+
+// ====================== GAPS TAB ======================
+function renderGaps(){
+    chartInstances.gapsDone = true;
+    const sevColor = s=>s==='critical'?'#ef4444':s==='high'?'#f59e0b':'#3b82f6';
+    document.getElementById('barriers-grid').innerHTML = BARRIERS.map(b=>`
+        <div class="glass p-4">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full" style="background:${sevColor(b.severity)}"></span>
+                <span class="text-xs font-bold text-gray-200">${b.title}</span>
+                <span class="text-[9px] font-bold uppercase ml-auto" style="color:${sevColor(b.severity)}">${b.severity}</span>
+            </div>
+            <p class="text-[10px] text-gray-400 mb-2">${b.description}</p>
+            <div class="flex flex-wrap gap-1 mb-2">${b.alliances.map(a=>{const al=ALLIANCES.find(x=>x.id===a);return al?`<span class="text-[9px] px-2 py-0.5 rounded-full" style="background:${al.color}20;color:${al.color}">${al.short}</span>`:''}).join('')}</div>
+            <div class="text-[10px] text-green-400/80"><i class="fas fa-lightbulb mr-1"></i>${b.recommendation}</div>
+        </div>`).join('');
+
+    // Worst Gaps Chart
+    const worstGaps = ALLIANCES.map(a=>{
+        const min = Math.min(...Object.values(a.scores));
+        const minCap = CAPABILITIES.find(c=>a.scores[c.id]===min);
+        return {alliance:a.short,color:a.color,score:min,cap:minCap?.short||'?'};
+    }).sort((a,b)=>a.score-b.score);
+
+    const ctx = document.getElementById('worst-gaps-chart').getContext('2d');
+    chartInstances.worstGaps = new Chart(ctx,{
+        type:'bar',data:{labels:worstGaps.map(w=>`${w.alliance} (${w.cap})`),datasets:[{data:worstGaps.map(w=>w.score),backgroundColor:worstGaps.map(w=>w.color+'80'),borderColor:worstGaps.map(w=>w.color),borderWidth:1,borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',scales:{x:{min:0,max:100,grid:{color:'rgba(42,54,80,.3)'},ticks:{color:'#6b7280',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#9ca3af',font:{size:10}}}},plugins:{legend:{display:false}}}
+    });
+}
+
+// ====================== EXERCISES TAB ======================
+function renderExercises(){
+    chartInstances.exercisesDone = true;
+    document.getElementById('exercise-list').innerHTML = EXERCISES.map(ex=>{
+        const al = ALLIANCES.find(a=>a.id===ex.alliance);
+        const color = al?al.color:'#9ca3af';
+        return `
+        <div class="glass p-5">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fas fa-shield-alt" style="color:${color}"></i>
+                <span class="text-sm font-bold" style="color:${color}">${ex.name}</span>
+                <span class="text-[9px] px-2 py-0.5 rounded-full bg-gray-800 text-gray-400 ml-auto">${ex.frequency}</span>
+            </div>
+            <div class="text-[10px] text-gray-500 mb-1">${al?al.name:ex.alliance==='all'?'Multi-Alliance':ex.alliance} | ${ex.participants} | ${ex.lastHeld}</div>
+            <p class="text-xs text-gray-400 mb-3">${ex.description}</p>
+            <div class="text-[10px] text-gray-500 font-bold mb-1">Scenarios</div>
+            ${ex.scenarios.map(s=>`<div class="text-[10px] text-bio-cyan/80">• ${s}</div>`).join('')}
+        </div>`;
+    }).join('');
+
+    const recs = [
+        {phase:'Immediate (0-1yr)',color:'#ef4444',icon:'fa-rocket',items:['Stand up Five Eyes BSDEP for biosurveillance data exchange','Negotiate GDPR emergency bio-event exemption','Launch NATO STANAG for bio-data standards','Create AUKUS Pillar II biodefense working group','Begin Africa CDC capacity assessment']},
+        {phase:'Near-term (1-3yr)',color:'#f59e0b',icon:'fa-hammer',items:['Execute VIGILANT SHIELD BIO and NOBLE GENOME exercises','Establish NATO Bioforensic Attribution Center','Launch Quad vaccine manufacturing consortium','Deploy African regional data hub network','Create allied AI model validation framework']},
+        {phase:'Long-term (3-10yr)',color:'#10b981',icon:'fa-flag',items:['Achieve full 6-alliance biosurveillance interoperability','Execute GLOBAL BIO UNITY multi-alliance exercise','African BSL-4 network operational','Pacific Island biosurveillance coverage complete','Allied autonomous surveillance network deployed']}
+    ];
+
+    document.getElementById('strategy-recs').innerHTML = recs.map(r=>`
+        <div class="space-y-3">
+            <div class="flex items-center gap-2"><i class="fas ${r.icon}" style="color:${r.color}"></i><h3 class="text-sm font-bold" style="color:${r.color}">${r.phase}</h3></div>
+            ${r.items.map((item,i)=>`
+            <div class="flex items-start gap-2 p-2 rounded-lg bg-gray-800/20">
+                <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style="background:${r.color}20;color:${r.color}">${i+1}</span>
+                <span class="text-xs text-gray-400">${item}</span>
+            </div>`).join('')}
+        </div>`).join('');
+}
+
+function showTip(e,t,b){const el=document.getElementById('tooltip');el.innerHTML=`<div class="font-bold text-white">${t}</div><div class="text-gray-400">${b}</div>`;el.style.display='block';el.style.left=(e.clientX+15)+'px';el.style.top=(e.clientY-10)+'px';}
+function hideTip(){document.getElementById('tooltip').style.display='none';}
+
+document.addEventListener('DOMContentLoaded',()=>{renderPosture();});
+</script>
+</body>
+</html>
