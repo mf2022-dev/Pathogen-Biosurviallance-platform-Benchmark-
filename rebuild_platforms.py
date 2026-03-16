@@ -199,11 +199,25 @@ def build_comparison_array(data):
 
 def build_directory_array(data):
     """Build the PLATFORMS array for Platform Directory (includes rich profile fields)."""
+    # Build a name-to-layer lookup from the layers dict (source of truth)
+    name_to_layer = {}
+    name_to_extra = {}  # surveillance_input_types, military_biodefense, biosurveillance_class
+    for lname, lplats in data.get('layers', {}).items():
+        for lp in lplats:
+            name_to_layer[lp['n']] = lname
+            name_to_extra[lp['n']] = {
+                'sit': lp.get('surveillance_input_types', []),
+                'pit': lp.get('primary_input_type', ''),
+                'bsc': lp.get('biosurveillance_class', ''),
+                'mil': lp.get('military_biodefense', False),
+            }
+
     platforms = []
     for p in data['all']:
         profile = p.get('profile', {})
-        # Infer layer
-        layer = infer_layer(p.get('c', ''))
+        # Use actual layer from data structure, fallback to inference
+        layer = p.get('l') or name_to_layer.get(p['n']) or infer_layer(p.get('c', ''))
+        extra = name_to_extra.get(p['n'], {})
         entry = {
             'r': p['r'],
             'n': p['n'],
@@ -215,6 +229,10 @@ def build_directory_array(data):
             'st': p.get('st', []),
             'wk': p.get('wk', []),
             'ly': layer,
+            'sit': extra.get('sit', p.get('surveillance_input_types', [])),
+            'pit': extra.get('pit', p.get('primary_input_type', '')),
+            'bsc': extra.get('bsc', p.get('biosurveillance_class', '')),
+            'mil': extra.get('mil', p.get('military_biodefense', False)),
             'ov': profile.get('overview', ''),
             'fs': profile.get('functional_scope', ''),
             'ts': profile.get('tech_stack', ''),
@@ -223,6 +241,9 @@ def build_directory_array(data):
             'us': profile.get('users_scale', ''),
             'am': profile.get('access_model', ''),
         }
+        # Only include military flag if True to save space
+        if not entry['mil']:
+            del entry['mil']
         platforms.append(entry)
     return platforms
 
