@@ -1,199 +1,169 @@
 # BioR Enrichment Prompt v2.0
-# ===========================
-# Copy everything below the line into any AI assistant (ChatGPT, Claude, Gemini, Perplexity).
-# Replace [BRACKETED] fields with the platform's actual data.
-# ---
+# Option A: 5-Layer Architecture + CBRN Multi-Tag System
+# 
+# USAGE: Copy everything below the line into any AI assistant (ChatGPT, Claude,
+# Gemini, Perplexity) and replace the [BRACKETED] fields with platform data.
+# ============================================================================
 
 You are an intelligence analyst conducting deep-dive platform profiling for a global
 biosurveillance and CBRN operational infrastructure map (BioR Project — Biosurveillance
-Intelligence for Operational Readiness).
-
-The BioR project benchmarks 169+ digital platforms across pathogen surveillance, genomics,
-biodefense, CBRN operations, hardware detection systems, and policy frameworks. The audience
-is senior military leadership, public health directors, intelligence analysts, and policy makers.
+Intelligence for Operational Readiness). This project benchmarks 169+ platforms across
+pathogen surveillance, genomics, biodefense, detection hardware, and policy frameworks.
 
 ---
 
-## PLATFORM UNDER ANALYSIS
+## PLATFORM BEING PROFILED
 
 PLATFORM: [NAME]
 URL: [URL]
-LAYER: [L1_Surveillance / L2_Genomic / L3_Defense / L4_Hardware / L5_Policy]
-SCORE: [COMPOSITE SCORE] / 100
-CATEGORY: [CATEGORY]
+LAYER: [LAYER — one of the 5 below]
+CURRENT CATEGORY: [CATEGORY]
 CURRENT DESCRIPTION: [DESCRIPTION]
-BIOSURVEILLANCE CLASS: [genomic_biosurveillance / clinical_biosurveillance / environmental_biosurveillance / laboratory_biosurveillance / non_biological]
-PRIMARY INPUT TYPE: [genomic / epidemiological / syndromic / clinical / environmental / signals_intelligence / modeling / geospatial / laboratory / hardware_sensor / policy_index / multi_source]
-SURVEILLANCE INPUT TYPES: [list all that apply from the 12 types above]
-MILITARY/BIODEFENSE FLAG: [Yes / No]
-STRENGTHS: [list current strengths]
-WEAKNESSES: [list current weaknesses]
-
-CURRENT SUB-SCORES (0-100 each):
-  data_integration:    [XX]
-  analytics_capability: [XX]
-  visualization:        [XX]
-  accessibility:        [XX]
-  scalability:          [XX]
-  documentation:        [XX]
-  community_support:    [XX]
-  security_compliance:  [XX]
-  interoperability:     [XX]
-  real_time_capability: [XX]
+CURRENT SCORE: [COMPOSITE SCORE] / 100
 
 ---
 
-## LAYER DEFINITIONS (5-Layer Architecture)
+## 5-LAYER ARCHITECTURE (assign exactly one)
 
-Assign each platform to exactly ONE layer:
-
-| Layer | Name | Definition |
-|-------|------|-----------|
-| L1_Surveillance | Surveillance | Primarily collects, aggregates, or reports epidemiological, clinical, syndromic, or environmental data. Includes disease reporting systems, outbreak management, event-based intelligence, wastewater monitoring, environmental sensing, and syndromic surveillance. |
-| L2_Genomic | Genomic | Primarily processes, analyzes, or shares genomic/sequence data. Includes bioinformatics pipelines, phylogenetics, AMR detection, pathogen databases, metagenomic analysis, variant tracking, and genomic data sharing repositories. |
-| L3_Defense | Defense | A defense/military program, biodefense initiative, threat reduction effort, or CBRN operational system. Includes MCM development, bioforensics, defense research institutes (allied + adversary), and CBRN programs. |
-| L4_Hardware | Hardware | A physical detection device, field-deployable sensor, rapid diagnostic instrument, aerosol collector, or CBRN detection system. The platform IS the hardware (not just software that runs on hardware). |
-| L5_Policy | Policy | A governance framework, health security index, preparedness assessment, regulatory program, or pandemic funding tracker. Produces assessments, scores, or policy guidance — not operational data. |
+| Layer | Name | Definition | Assignment Rule |
+|-------|------|-----------|-----------------|
+| L1 | Surveillance | Epidemiological surveillance, disease reporting, outbreak management, syndromic monitoring, event-based intelligence, wastewater monitoring, environmental sensing | Platform primarily collects, aggregates, or reports epidemiological / clinical / environmental data |
+| L2 | Genomic | Genomic sequencing, bioinformatics pipelines, phylogenetics, AMR detection, pathogen databases, metagenomic analysis, variant tracking, data sharing repositories | Platform primarily processes, analyzes, or shares genomic / sequence data |
+| L3 | Defense | Military biodefense programs, CBRN defense, MCM development, threat reduction, bioforensics, defense research institutes (allied + adversary), CBRN operational systems | Platform is a defense/military program, biodefense initiative, CBRN operational system, or threat reduction effort |
+| L4 | Hardware | Physical detection devices, field-deployable sensors, rapid diagnostics, aerosol collectors, point-of-need instruments, CBRN detection systems | Platform is a physical hardware device or sensor system |
+| L5 | Policy | Governance frameworks, health security indices, preparedness assessments, regulatory programs, pandemic funding trackers | Platform is a governance, policy, or assessment framework |
 
 ---
 
-## CBRN ASSESSMENT (Required for L3_Defense and L4_Hardware platforms)
+## CBRN FUNCTION TAGS (multi-select, only if L3_Defense or L4_Hardware)
 
-If this platform is in L3_Defense or L4_Hardware, you MUST answer this section.
+If this platform operates in the CBRN domain, tag ALL applicable functions:
 
-### CBRN Classification (pick one):
-- **TRUE CBRN OPERATIONAL PLATFORM** — Purpose-built for CBRN incident detection, response, or management
-- **CBRN MODULE WITHIN LARGER SUITE** — Has a CBRN-specific component but is part of a broader system
-- **ADJACENT ENABLING SYSTEM** — Supports CBRN missions but is not itself a CBRN operational platform
-- **NOT CBRN** — No direct CBRN operational function (e.g., pure biodefense R&D, policy, procurement)
+- [ ] BIO — Biological threat detection, bioagent identification, biodefense
+- [ ] CHEM — Chemical hazard detection, chemical agent identification
+- [ ] RAD — Radiological monitoring, nuclear detection
+- [ ] SENSOR — Sensor integration, networked detection, environmental monitoring hardware
+- [ ] MODEL — Plume/dispersion modeling, consequence assessment, hazard prediction
+- [ ] INCIDENT — CBRN incident management, responder workflow, operational coordination
+- [ ] W&R — Warning and reporting, alert dissemination, notification systems
+- [ ] C2 — Command and control integration, battle management, C2ISR interoperability
+- [ ] DECISIONSUPPORT — Decision support, course-of-action analysis, risk assessment
+- [ ] FORENSICS — Bioforensics, attribution analysis, sample chain-of-custody
+- [ ] MCM — Medical countermeasure development, procurement, stockpile management
 
-### CBRN Functional Tags (select all that apply):
-- [ ] Biological threat detection
-- [ ] Chemical hazard detection
-- [ ] Radiological/nuclear monitoring
-- [ ] Plume/dispersion modeling
-- [ ] Incident management
-- [ ] Sensor integration
-- [ ] Warning and reporting (W&R)
-- [ ] Decision support / consequence assessment
-- [ ] Command and control (C2) interoperability
-- [ ] Responder workflow
-- [ ] Decontamination planning
-- [ ] CBRN forensics / attribution
-
-### CBRN Gate Rule:
+IMPORTANT CBRN CLASSIFICATION RULE:
+After completing your research, explicitly state whether this platform is:
+  (A) A TRUE CBRN OPERATIONAL PLATFORM — directly performs CBRN operational functions
+  (B) A CBRN-SPECIFIC MODULE within a larger defense/health suite
+  (C) An ADJACENT ENABLING SYSTEM — supports CBRN mission but is not itself a CBRN platform
 Do NOT classify generic public health platforms, single-purpose surveillance databases,
-or broad command-and-control systems as CBRN platforms unless they clearly perform
-CBRN operational functions. A platform must actively support chemical, biological,
-radiological, or nuclear incident detection, response modeling, warning/reporting,
-sensor fusion, or responder decision-making to qualify.
+or broad command-and-control systems as CBRN unless they clearly perform CBRN operational
+functions as defined by the tags above.
 
 ---
 
-## REQUIRED OUTPUT: 8 PROFILE FIELDS
+## REQUIRED OUTPUT: 9 PROFILE FIELDS
 
-Research this platform thoroughly and return EXACTLY these 8 fields.
-Each field should be 200-500 characters, factual, specific, and cite real numbers,
-dates, names, and organizations. Do NOT invent data. If uncertain, write "unconfirmed."
+Return EXACTLY these 9 fields. Each should be 200–500 characters, factual, specific,
+and cite real numbers, dates, names, and organizations. Do NOT invent data.
+If uncertain, write "unconfirmed."
 
-### 1. OVERVIEW (200-500 chars)
+### 1. OVERVIEW (200–500 chars)
 What is this platform? Who created it and when? What is its primary mission?
-Include founding year, key people/labs, institutional home, and origin story.
+Include: founding year, key people/labs, institutional home, origin story.
 
-### 2. FUNCTIONAL SCOPE (200-500 chars)
-What does it actually do? List specific capabilities, supported pathogens/diseases/hazards/agents,
-analysis types, modules, and unique features that distinguish it from competitors.
+### 2. FUNCTIONAL SCOPE (200–500 chars)
+What does it actually do? List specific capabilities, supported pathogens/diseases
+or hazards/agents, analysis types, modules, and unique features that distinguish it
+from competitors.
 
-### 3. TECH STACK (200-500 chars)
-What technologies power it? Programming languages, frameworks, databases,
-cloud platforms, APIs, data standards (HL7/FHIR/ISO/NATO STANAG/OGC/EDXL, etc.),
-and deployment model. Include GitHub repo URL if open-source.
+### 3. TECH STACK (200–500 chars)
+What technologies power it? Programming languages, frameworks, databases, cloud
+platforms, APIs, data standards (HL7/FHIR/ISO/NATO STANAG/OGC, etc.), deployment
+model. Include GitHub repo URL if open-source.
 
-### 4. OPERATOR (200-500 chars)
+### 4. OPERATOR (200–500 chars)
 Who operates and funds it? Organization name, country, department, partnerships.
 Include funding sources (grants, government contracts) with dollar amounts if known.
 
-### 5. DATA MODEL (200-500 chars)
+### 5. DATA MODEL (200–500 chars)
 How is data structured? Input formats, output formats, key data types,
 ontologies/standards used, interoperability with other systems. Include specific
-database sizes (number of records/sequences/genomes/sensors/incidents/sites) if known.
+database sizes (records/sequences/genomes/sensors/incidents/sites) if known.
 
-### 6. USERS & SCALE (200-500 chars)
+### 6. USERS & SCALE (200–500 chars)
 Who uses it? How many users/countries/institutions? Deployment scale, citation
 counts, download stats, monthly active users, installed sites, or agency adoption.
 Include specific numbers.
 
-### 7. ACCESS MODEL (200-500 chars)
+### 7. ACCESS MODEL (200–500 chars)
 How do you access it? Free/paid/freemium? Open-source license type? Registration
 required? API access? Data redistribution restrictions? Commercial use allowed?
+Classification level (unclassified / CUI / classified)?
 
-### 8. ECOSYSTEM POSITION (200-400 chars)
+### 8. ECOSYSTEM POSITION (200–400 chars)
 What platforms feed data INTO this one? What platforms consume its outputs?
-What are the closest competitors or alternatives? Where does it sit in the
-data flow of a national or international surveillance pipeline?
+What are the closest competitors or alternatives? Where does it sit in the data
+flow of a national or international surveillance/defense pipeline?
+
+### 9. CONFIDENCE ASSESSMENT (100–200 chars)
+Rate overall confidence in this profile: HIGH / MEDIUM / LOW / VERY LOW.
+Explain what sources were available vs. what gaps remain. Flag any fields where
+data is unverified, vendor-claimed only, or inferred from OSINT.
 
 ---
 
 ## REQUIRED OUTPUT: SCORE REVIEW
 
-Review the current sub-scores listed above. For each dimension, state whether
-the score appears: CORRECT, TOO HIGH, or TOO LOW — based on your research.
-If adjusting, suggest a revised score and briefly explain why.
+Review the current 10-dimension sub-scores and flag any that seem too high or too
+low based on your research. Only flag scores you have evidence to dispute.
 
-| Dimension | Current | Assessment | Suggested | Reason |
-|-----------|---------|------------|-----------|--------|
-| data_integration | [XX] | CORRECT / TOO HIGH / TOO LOW | [YY] | [brief reason] |
-| analytics_capability | [XX] | ... | ... | ... |
-| visualization | [XX] | ... | ... | ... |
-| accessibility | [XX] | ... | ... | ... |
-| scalability | [XX] | ... | ... | ... |
-| documentation | [XX] | ... | ... | ... |
-| community_support | [XX] | ... | ... | ... |
-| security_compliance | [XX] | ... | ... | ... |
-| interoperability | [XX] | ... | ... | ... |
-| real_time_capability | [XX] | ... | ... | ... |
-
----
-
-## REQUIRED OUTPUT: REFERENCE MATERIALS
-
-### Key Scientific Publications (3-5)
-For each: Author(s), Year, Title, Journal, DOI or URL
-
-### Official Guidelines / Policy Documents (2-3)
-Standards, government directives, or international guidelines that reference this platform
-
-### Recent Changes (2024-2026)
-Any controversies, major updates, funding changes, governance shifts, or operational changes
-
-### Platform Connections
-Data feeds, API integrations, upstream data sources, downstream consumers, and dependencies on other platforms in the ecosystem
+| Dimension | Current Score | Your Assessment | Evidence |
+|-----------|--------------|-----------------|----------|
+| Data Integration | [SCORE] | OK / Too High / Too Low | [why] |
+| Analytics Capability | [SCORE] | OK / Too High / Too Low | [why] |
+| Visualization | [SCORE] | OK / Too High / Too Low | [why] |
+| Accessibility | [SCORE] | OK / Too High / Too Low | [why] |
+| Scalability | [SCORE] | OK / Too High / Too Low | [why] |
+| Documentation | [SCORE] | OK / Too High / Too Low | [why] |
+| Community Support | [SCORE] | OK / Too High / Too Low | [why] |
+| Security & Compliance | [SCORE] | OK / Too High / Too Low | [why] |
+| Interoperability | [SCORE] | OK / Too High / Too Low | [why] |
+| Real-Time Capability | [SCORE] | OK / Too High / Too Low | [why] |
 
 ---
 
-## REQUIRED OUTPUT: CONFIDENCE ASSESSMENT
+## REQUIRED OUTPUT: REFERENCES & CONTEXT
 
-Rate overall confidence in this profile:
+### Key Publications (3–5)
+List author, year, journal, title, and DOI/URL for the most important scientific
+or technical publications about this platform.
 
-| Level | Definition |
-|-------|-----------|
-| **HIGH** | Multiple independent primary sources (official docs, peer-reviewed papers, government reports). All 8 fields well-supported. |
-| **MEDIUM** | Mix of primary and secondary sources. Some fields based on vendor documentation or press releases rather than independent verification. |
-| **LOW** | Limited publicly available information. Some fields based on inference, OSINT analysis, or single-source reporting. |
-| **VERY LOW** | Opaque or denied-access platform. Most fields are assessed/inferred rather than confirmed. Applicable to adversary state programs. |
+### Official Guidelines & Policy Documents (2–3)
+List any government, WHO, NATO, or institutional guidelines that reference or
+mandate use of this platform.
 
-**Confidence:** [HIGH / MEDIUM / LOW / VERY LOW]
-**Source Gaps:** [Describe what information was NOT available and what would be needed to raise confidence]
+### Controversies, Limitations, or Recent Major Changes (2024–2026)
+Any known issues, data access disputes, funding changes, leadership changes,
+operational failures, or major upgrades.
+
+### Ecosystem Connections
+List specific platforms this one integrates with, feeds data to, or receives
+data from. Use format: "[Platform Name] — [relationship type]"
 
 ---
 
 ## OUTPUT QUALITY RULES
 
 1. Be precise and skeptical.
-2. Prefer official documentation, peer-reviewed literature, government sources, and vendor technical documents.
-3. Distinguish clearly between verified facts and vendor claims.
-4. If a metric, funding figure, or technical detail is not publicly confirmed, write "unconfirmed."
-5. Do not hallucinate numbers, dates, user counts, or funding amounts.
-6. For CBRN platforms: always complete the CBRN Assessment section.
-7. For adversary/opaque platforms: always assign LOW or VERY LOW confidence and explain gaps.
-8. Cross-reference against known platforms in the ecosystem (Nextstrain, GISAID, NCBI, DHIS2, etc.) to position this platform accurately.
+2. Prefer official documentation, peer-reviewed literature, government sources,
+   and vendor technical documents over news articles or blog posts.
+3. Distinguish clearly between VERIFIED FACTS and VENDOR CLAIMS.
+4. If a metric, funding figure, or technical detail is not publicly confirmed,
+   write "unconfirmed" — do not guess or extrapolate.
+5. For adversary-state platforms (Russia, China, DPRK, Iran), clearly state
+   confidence level and source limitations.
+6. For CBRN platforms, ground your assessment in observable capabilities, not
+   marketing language.
+7. Do not classify a platform as something it is not to fill the template —
+   leave fields as "insufficient data" if warranted.
