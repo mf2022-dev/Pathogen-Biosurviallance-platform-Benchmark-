@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Platform Intake Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#0a0e1a;--card:#1a2235;--border:#2a3650;--t1:#e5e7eb;--t2:#9ca3af;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(26,34,53,.95),rgba(17,24,39,.95));border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(20px);transition:all .3s}
+        .glass:hover{border-color:rgba(59,130,246,.3)}
+        input[type="text"],input[type="url"],input[type="number"],textarea,select{
+            background:rgba(26,34,53,.8);border:1px solid var(--border);border-radius:8px;padding:10px 14px;
+            color:var(--t1);font-size:13px;width:100%;outline:none;transition:border-color .2s;font-family:'Inter',sans-serif;
+        }
+        input:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+        input::placeholder,textarea::placeholder{color:#4b5563}
+        .score-slider{-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:#1f2937;outline:none;opacity:0.9;transition:opacity .2s}
+        .score-slider:hover{opacity:1}
+        .score-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;cursor:pointer}
+        .btn-primary{background:linear-gradient(135deg,#06b6d4,#3b82f6);color:white;border:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;transition:all .2s}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(6,182,212,.3)}
+        .btn-secondary{background:rgba(42,54,80,.5);border:1px solid var(--border);color:var(--t2);padding:10px 24px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s}
+        .btn-secondary:hover{border-color:var(--cyan);color:var(--t1)}
+        .btn-danger{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:10px 24px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s}
+        .btn-danger:hover{background:rgba(239,68,68,.25)}
+        .dim-row{display:grid;grid-template-columns:200px 1fr 60px 80px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(42,54,80,.3)}
+        .dim-row:last-child{border-bottom:none}
+        .tier-badge{padding:3px 10px;border-radius:999px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+        .tier-excellent{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3)}
+        .tier-good{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
+        .tier-adequate{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+        .tier-developing{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+        .step-indicator{display:flex;gap:4px;align-items:center}
+        .step-dot{width:32px;height:4px;border-radius:2px;background:rgba(42,54,80,.5);transition:all .3s}
+        .step-dot.active{background:var(--cyan)}
+        .step-dot.done{background:var(--green)}
+        .step-panel{display:none}.step-panel.active{display:block}
+        .tag-input{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:rgba(26,34,53,.8);border:1px solid var(--border);border-radius:8px;min-height:44px;cursor:text}
+        .tag-input:focus-within{border-color:var(--cyan)}
+        .tag-input input{background:none;border:none;outline:none;color:var(--t1);font-size:13px;flex:1;min-width:100px;padding:2px}
+        .tag{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:4px;cursor:default}
+        .tag-strength{background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.2)}
+        .tag-weakness{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+        .tag .remove{cursor:pointer;opacity:.6;transition:opacity .2s}.tag .remove:hover{opacity:1}
+        .radar-container{width:320px;height:320px;margin:0 auto}
+        .json-output{background:#0d1117;border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;overflow:auto;max-height:500px;white-space:pre;color:#c9d1d9;position:relative}
+        .copy-btn{position:absolute;top:8px;right:8px;background:rgba(42,54,80,.8);border:1px solid var(--border);color:var(--t2);padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s}
+        .copy-btn:hover{border-color:var(--cyan);color:var(--t1)}
+        .flash{animation:flash-green .6s ease-out}
+        @keyframes flash-green{0%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}100%{box-shadow:0 0 0 0 transparent}}
+        .tooltip{position:relative}.tooltip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:rgba(10,14,26,.95);border:1px solid var(--border);padding:6px 10px;border-radius:6px;font-size:10px;white-space:nowrap;color:var(--t2);pointer-events:none;opacity:0;transition:opacity .2s}
+        .tooltip:hover::after{opacity:1}
+        .preview-card{background:rgba(26,34,53,.6);border:1px solid var(--border);border-radius:12px;padding:16px;transition:all .3s}
+        .dim-bar-track{height:4px;border-radius:2px;background:rgba(42,54,80,.5);overflow:hidden}
+        .dim-bar-fill{height:100%;border-radius:2px;transition:width .6s ease-out}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#1a2235','bio-border':'#2a3650','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981'}}}}</script>
+</head>
+<body class="min-h-screen">
+
+<header class="border-b border-bio-border bg-bio-dark/80 backdrop-blur-xl sticky top-0 z-50">
+    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-lg flex items-center justify-center"><i class="fas fa-plus-circle text-white text-lg"></i></div>
+            <div>
+                <h1 class="text-lg font-bold tracking-tight">BioR <span class="text-bio-cyan font-normal text-sm ml-1">Platform Intake Tool</span></h1>
+                <p class="text-xs text-gray-500">Add New Platforms to the PSEF v3.0 Evaluation Database</p>
+            </div>
+        </div>
+        <nav class="hidden md:flex gap-4 text-xs text-gray-400">
+            <a href="../phase1/executive_dashboard/index.html" class="hover:text-bio-cyan"><i class="fas fa-chart-pie mr-1"></i>Dashboard</a>
+            <a href="../platform_directory/index.html" class="hover:text-bio-cyan"><i class="fas fa-book mr-1"></i>Directory</a>
+            <a href="../phase1/comparison_engine/index.html" class="hover:text-bio-cyan"><i class="fas fa-balance-scale mr-1"></i>Compare</a>
+        </nav>
+    </div>
+</header>
+
+<!-- PROGRESS BAR -->
+<div class="border-b border-bio-border bg-bio-dark/60">
+    <div class="max-w-[1400px] mx-auto px-6 py-3">
+        <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-gray-400" id="step-label">STEP 1 OF 4</span>
+                <span class="text-xs text-gray-600" id="step-desc">Basic Information</span>
+            </div>
+            <div class="step-indicator" id="step-dots">
+                <div class="step-dot active" data-step="1"></div>
+                <div class="step-dot" data-step="2"></div>
+                <div class="step-dot" data-step="3"></div>
+                <div class="step-dot" data-step="4"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main class="max-w-[1400px] mx-auto px-6 py-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+<!-- LEFT: Form (2/3) -->
+<div class="lg:col-span-2 space-y-6">
+
+    <!-- STEP 1: Basic Info -->
+    <div class="step-panel active" data-step="1">
+        <div class="glass p-6 space-y-5">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-cyan-500/15 flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div>
+                <h2 class="text-base font-bold">Basic Information</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5">Platform Name <span class="text-red-400">*</span></label>
+                    <input type="text" id="inp-name" placeholder="e.g. Nextstrain, SORMAS, CZ ID..." oninput="updatePreview()">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5">Platform URL <span class="text-red-400">*</span></label>
+                    <input type="url" id="inp-url" placeholder="https://..." oninput="updatePreview()">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1.5">Category <span class="text-red-400">*</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <select id="inp-category" onchange="handleCategoryChange();updatePreview()">
+                        <option value="">-- Select existing or type custom --</option>
+                        <optgroup label="Surveillance (L1)">
+                            <option>Disease Surveillance System</option>
+                            <option>Syndromic Surveillance</option>
+                            <option>Epidemic Intelligence</option>
+                            <option>AI Epidemic Intelligence</option>
+                            <option>Integrated Biosurveillance</option>
+                            <option>Wastewater Surveillance</option>
+                            <option>AMR Surveillance</option>
+                            <option>Animal Disease Surveillance</option>
+                            <option>One Health Early Warning</option>
+                            <option>Clinical Surveillance</option>
+                            <option>Epidemiological Data Aggregation</option>
+                            <option>Event-Based Surveillance</option>
+                        </optgroup>
+                        <optgroup label="Genomic (L2)">
+                            <option>Phylogenetic Analysis & Visualization</option>
+                            <option>Genomic Epidemiology Platform</option>
+                            <option>Pathogen Genomic Analysis</option>
+                            <option>Metagenomic Analysis Platform</option>
+                            <option>Bioinformatics Suite</option>
+                            <option>Cloud Bioinformatics</option>
+                            <option>Sequence Analysis</option>
+                            <option>AMR Gene Detection</option>
+                            <option>Lineage Classification</option>
+                        </optgroup>
+                        <optgroup label="Defense (L3)">
+                            <option>Military Biodefense Research & Surveillance</option>
+                            <option>Military Integrated Biosurveillance</option>
+                            <option>Global Cooperative Biological Threat Reduction</option>
+                            <option>National Biodefense Analysis & Bioforensics</option>
+                            <option>NATO CBRN Knowledge & Capability Hub</option>
+                        </optgroup>
+                        <optgroup label="Hardware (L4)">
+                            <option>Advanced Biological Point Detection</option>
+                            <option>Military Automated Bio-Agent Detection</option>
+                            <option>Mobile CBRN Reconnaissance & Analysis</option>
+                            <option>Rapid Multiplex Biothreat Diagnostics</option>
+                        </optgroup>
+                        <optgroup label="Policy (L5)">
+                            <option>Global Health Security Assessment</option>
+                            <option>IHR Compliance & Biosecurity Assessment</option>
+                            <option>AI-Powered Pandemic Preparedness R&D</option>
+                        </optgroup>
+                        <option value="__custom__">+ Custom Category...</option>
+                    </select>
+                    <input type="text" id="inp-category-custom" placeholder="Type custom category name..." style="display:none" oninput="updatePreview()">
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1.5">Layer Assignment <span class="text-red-400">*</span></label>
+                <div class="flex flex-wrap gap-2" id="layer-chips">
+                    <button class="filter-chip" data-layer="L1_Surveillance" onclick="selectLayer(this)"><i class="fas fa-satellite-dish mr-1 text-blue-400"></i>L1 Surveillance (63)</button>
+                    <button class="filter-chip" data-layer="L2_Genomic" onclick="selectLayer(this)"><i class="fas fa-dna mr-1 text-green-400"></i>L2 Genomic (57)</button>
+                    <button class="filter-chip" data-layer="L3_Defense" onclick="selectLayer(this)"><i class="fas fa-shield-alt mr-1 text-red-400"></i>L3 Defense (35)</button>
+                    <button class="filter-chip" data-layer="L4_Hardware" onclick="selectLayer(this)"><i class="fas fa-microchip mr-1 text-amber-400"></i>L4 Hardware (9)</button>
+                    <button class="filter-chip" data-layer="L5_Policy" onclick="selectLayer(this)"><i class="fas fa-landmark mr-1 text-purple-400"></i>L5 Policy (5)</button>
+                </div>
+                <input type="hidden" id="inp-layer" value="">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1.5">Short Description <span class="text-red-400">*</span></label>
+                <input type="text" id="inp-desc" placeholder="One-line description (max 120 chars)" maxlength="120" oninput="updatePreview();document.getElementById('desc-count').textContent=this.value.length+'/120'">
+                <span class="text-xs text-gray-600 mt-1 block" id="desc-count">0/120</span>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button class="btn-primary" onclick="goStep(2)">Next: Scoring <i class="fas fa-arrow-right ml-2"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: Dimension Scoring -->
+    <div class="step-panel" data-step="2">
+        <div class="glass p-6 space-y-4">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center"><i class="fas fa-star-half-alt text-amber-400 text-sm"></i></div>
+                <h2 class="text-base font-bold">PSEF v3.0 Dimension Scoring</h2>
+                <div class="ml-auto flex items-center gap-2">
+                    <span class="text-xs text-gray-500">Composite:</span>
+                    <span class="text-lg font-black text-cyan-400" id="composite-live">0.0</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 -mt-2">Score each dimension 0-100. Weights are from PSEF v3.0 methodology. The composite score is auto-calculated.</p>
+
+            <div class="space-y-1" id="dimension-scoring">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="flex items-center justify-between pt-3 border-t border-bio-border mt-2">
+                <div class="flex gap-2">
+                    <button class="btn-secondary text-xs" onclick="autoFill(85)" title="Set all to 85"><i class="fas fa-magic mr-1"></i>Set All: 85</button>
+                    <button class="btn-secondary text-xs" onclick="autoFill(75)">Set All: 75</button>
+                    <button class="btn-secondary text-xs" onclick="autoFill(0)">Reset</button>
+                </div>
+                <div class="flex gap-2">
+                    <button class="btn-secondary" onclick="goStep(1)"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                    <button class="btn-primary" onclick="goStep(3)">Next: Profile <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3: Strengths/Weaknesses + Rich Profile -->
+    <div class="step-panel" data-step="3">
+        <div class="glass p-6 space-y-5">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center"><i class="fas fa-clipboard-list text-green-400 text-sm"></i></div>
+                <h2 class="text-base font-bold">Strengths, Weaknesses & Rich Profile</h2>
+            </div>
+
+            <!-- Strengths -->
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1.5"><i class="fas fa-check-circle text-green-400 mr-1"></i>Strengths <span class="text-gray-600">(press Enter to add)</span></label>
+                <div class="tag-input" id="str-tags" onclick="this.querySelector('input').focus()">
+                    <input type="text" placeholder="Type a strength and press Enter..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('str',this.value);this.value=''}">
+                </div>
+            </div>
+
+            <!-- Weaknesses -->
+            <div>
+                <label class="block text-xs font-bold text-gray-400 mb-1.5"><i class="fas fa-exclamation-triangle text-red-400 mr-1"></i>Weaknesses <span class="text-gray-600">(press Enter to add)</span></label>
+                <div class="tag-input" id="wk-tags" onclick="this.querySelector('input').focus()">
+                    <input type="text" placeholder="Type a weakness and press Enter..." onkeydown="if(event.key==='Enter'){event.preventDefault();addTag('wk',this.value);this.value=''}">
+                </div>
+            </div>
+
+            <hr class="border-bio-border">
+
+            <h3 class="text-sm font-bold text-gray-300"><i class="fas fa-book-open text-purple-400 mr-2"></i>Rich Profile (7 fields)</h3>
+            <p class="text-xs text-gray-500 -mt-3">These populate the Platform Directory's detailed view. Aim for 2-4 sentences each.</p>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-1.5">Overview</label>
+                    <textarea id="inp-overview" rows="3" placeholder="2-3 sentence overview of the platform..." oninput="updatePreview()"></textarea>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Functional Scope</label>
+                        <textarea id="inp-funcscope" rows="3" placeholder="Core functions and capabilities..." oninput="updatePreview()"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Technology Stack</label>
+                        <textarea id="inp-techstack" rows="3" placeholder="Languages, frameworks, infrastructure..." oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Operator</label>
+                        <input type="text" id="inp-operator" placeholder="Organization/institution running the platform" oninput="updatePreview()">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Access Model</label>
+                        <input type="text" id="inp-access" placeholder="e.g. Open-source, free tier, commercial license..." oninput="updatePreview()">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Data Model</label>
+                        <textarea id="inp-datamodel" rows="2" placeholder="How data is structured and stored..." oninput="updatePreview()"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5">Users & Scale</label>
+                        <textarea id="inp-usersscale" rows="2" placeholder="User base size, deployment scope..." oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between pt-3 border-t border-bio-border">
+                <button class="btn-secondary" onclick="goStep(2)"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                <button class="btn-primary" onclick="goStep(4)">Generate Output <i class="fas fa-arrow-right ml-2"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 4: Review & Export -->
+    <div class="step-panel" data-step="4">
+        <div class="glass p-6 space-y-5">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/15 flex items-center justify-center"><i class="fas fa-file-export text-purple-400 text-sm"></i></div>
+                <h2 class="text-base font-bold">Review & Export</h2>
+            </div>
+
+            <!-- Validation Summary -->
+            <div class="glass p-4" id="validation-box">
+                <!-- populated by JS -->
+            </div>
+
+            <!-- Tab: optB entry vs Comparison entry -->
+            <div class="flex gap-2 mb-2">
+                <button class="filter-chip active" id="tab-optb" onclick="showExportTab('optb')">optB_enriched.json entry</button>
+                <button class="filter-chip" id="tab-comparison" onclick="showExportTab('comparison')">Comparison Engine entry</button>
+                <button class="filter-chip" id="tab-directory" onclick="showExportTab('directory')">Platform Directory entry</button>
+            </div>
+
+            <div id="export-optb" class="relative">
+                <div class="json-output" id="json-optb"></div>
+                <button class="copy-btn" onclick="copyJSON('json-optb')"><i class="fas fa-copy mr-1"></i>Copy</button>
+            </div>
+            <div id="export-comparison" class="relative" style="display:none">
+                <div class="json-output" id="json-comparison"></div>
+                <button class="copy-btn" onclick="copyJSON('json-comparison')"><i class="fas fa-copy mr-1"></i>Copy</button>
+            </div>
+            <div id="export-directory" class="relative" style="display:none">
+                <div class="json-output" id="json-directory"></div>
+                <button class="copy-btn" onclick="copyJSON('json-directory')"><i class="fas fa-copy mr-1"></i>Copy</button>
+            </div>
+
+            <!-- Rebuild Instructions -->
+            <div class="glass p-5 border-cyan-500/20">
+                <h3 class="text-sm font-bold text-cyan-400 mb-3"><i class="fas fa-terminal mr-2"></i>After Adding to optB_enriched.json — Run Rebuild</h3>
+                <div class="json-output text-xs" style="max-height:160px">cd /home/user/pathogen-push
+python3 rebuild_platforms.py</div>
+                <p class="text-xs text-gray-500 mt-2">This script propagates the new platform to all 4 data targets and updates platform counts across all 11 dashboards automatically.</p>
+            </div>
+
+            <div class="flex justify-between pt-3 border-t border-bio-border">
+                <button class="btn-secondary" onclick="goStep(3)"><i class="fas fa-arrow-left mr-2"></i>Back</button>
+                <div class="flex gap-2">
+                    <button class="btn-danger" onclick="resetForm()"><i class="fas fa-redo mr-2"></i>Reset Form</button>
+                    <button class="btn-primary" onclick="downloadJSON()"><i class="fas fa-download mr-2"></i>Download JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- RIGHT: Live Preview (1/3) -->
+<div class="lg:col-span-1 space-y-4">
+    <!-- Live Score Card -->
+    <div class="glass p-5 sticky top-20">
+        <div class="flex items-center gap-2 mb-4">
+            <i class="fas fa-eye text-cyan-400 text-sm"></i>
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Live Preview</h3>
+        </div>
+
+        <!-- Mini Platform Card -->
+        <div class="preview-card mb-4" id="preview-card">
+            <div class="flex items-center justify-between mb-2">
+                <div>
+                    <div class="text-sm font-bold" id="pv-name">Platform Name</div>
+                    <div class="text-xs text-gray-500" id="pv-category">Category</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-2xl font-black text-cyan-400" id="pv-score">0.0</div>
+                    <span class="tier-badge tier-developing text-[9px]" id="pv-tier">DEVELOPING</span>
+                </div>
+            </div>
+            <div class="text-xs text-gray-400 mb-3" id="pv-desc">Short description will appear here...</div>
+            <div class="text-[10px] text-gray-600 mb-2" id="pv-url">-</div>
+            <div class="text-[10px] font-bold text-gray-500 mb-1" id="pv-layer">No layer selected</div>
+        </div>
+
+        <!-- Dimension Bars -->
+        <div class="space-y-2" id="pv-dims">
+            <!-- populated by JS -->
+        </div>
+
+        <!-- Radar Chart -->
+        <div class="mt-4">
+            <canvas id="radar-chart" width="280" height="280"></canvas>
+        </div>
+
+        <!-- Strengths/Weaknesses Preview -->
+        <div class="mt-4 space-y-2" id="pv-sw">
+            <div class="text-[10px] font-bold text-gray-500 uppercase">Strengths & Weaknesses</div>
+            <div id="pv-str-list" class="text-xs text-gray-500 italic">None added yet</div>
+            <div id="pv-wk-list" class="text-xs text-gray-500 italic">None added yet</div>
+        </div>
+    </div>
+</div>
+
+</div>
+</main>
+
+<footer class="border-t border-bio-border mt-8 py-6">
+    <div class="max-w-[1400px] mx-auto px-6 flex flex-wrap justify-between items-center text-xs text-gray-600">
+        <div><strong class="text-gray-400">BioR</strong> — Platform Intake Tool | PSEF v3.0.0</div>
+        <div>10 Dimensions | Weighted Scoring | Auto-Propagation</div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ============================================================
+// DIMENSIONS & WEIGHTS (PSEF v3.0)
+// ============================================================
+const DIMS = [
+    { key: 'data_integration',    label: 'Data Integration',     code: 'DI', weight: 0.12, color: '#3b82f6', icon: 'database',       tip: 'Multi-source ingestion, harmonization, API availability, real-time feeds, quality management' },
+    { key: 'analytics_capability',label: 'Analytics Capability',  code: 'AC', weight: 0.12, color: '#06b6d4', icon: 'brain',          tip: 'Phylogenetic analysis, statistical modeling, ML integration, outbreak detection, AMR prediction' },
+    { key: 'security_compliance', label: 'Security & Compliance', code: 'SE', weight: 0.12, color: '#ef4444', icon: 'shield-alt',     tip: 'Data encryption, access control, audit logging, HIPAA/GDPR compliance, data sovereignty' },
+    { key: 'visualization',       label: 'Visualization',         code: 'VZ', weight: 0.10, color: '#8b5cf6', icon: 'chart-bar',      tip: 'Interactive dashboards, phylogenetic trees, geographic mapping, temporal charts, export' },
+    { key: 'accessibility',       label: 'Accessibility',         code: 'AX', weight: 0.10, color: '#10b981', icon: 'universal-access',tip: 'Web interface, mobile compatibility, offline capability, multi-language, training resources' },
+    { key: 'scalability',         label: 'Scalability',           code: 'SC', weight: 0.10, color: '#f59e0b', icon: 'expand-arrows-alt',tip:'Data volume, concurrent users, geographic distribution, cloud deployment, horizontal scaling' },
+    { key: 'interoperability',    label: 'Interoperability',      code: 'IO', weight: 0.10, color: '#a855f7', icon: 'network-wired',  tip: 'HL7/FHIR support, standard file formats, API standards, third-party integration' },
+    { key: 'documentation',       label: 'Documentation',         code: 'DC', weight: 0.08, color: '#f97316', icon: 'book',           tip: 'User guides, API docs, deployment guides, changelog maintenance' },
+    { key: 'community_support',   label: 'Community Support',     code: 'CS', weight: 0.08, color: '#ec4899', icon: 'users',          tip: 'Active development, community forums, contribution guidelines, institutional backing' },
+    { key: 'real_time_capability',label: 'Real-Time Capability',  code: 'RT', weight: 0.08, color: '#14b8a6', icon: 'bolt',           tip: 'Streaming data support, automated alerts, rapid turnaround, dashboard refresh' },
+];
+
+const LAYER_LABELS = {
+    'L1_Surveillance': { label: 'L1 — Surveillance', color: '#3b82f6', icon: 'satellite-dish' },
+    'L2_Genomic':      { label: 'L2 — Genomic',      color: '#10b981', icon: 'dna' },
+    'L3_Defense':      { label: 'L3 — Defense',       color: '#ef4444', icon: 'shield-alt' },
+    'L4_Hardware':     { label: 'L4 — Hardware',      color: '#f59e0b', icon: 'microchip' },
+    'L5_Policy':       { label: 'L5 — Policy',        color: '#a855f7', icon: 'landmark' },
+};
+
+// STATE
+let currentStep = 1;
+let scores = {};
+DIMS.forEach(d => scores[d.key] = 0);
+let strengths = [];
+let weaknesses = [];
+let selectedLayer = '';
+let radarChart = null;
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+    buildScoringRows();
+    buildPreviewDims();
+    initRadar();
+    updatePreview();
+}
+
+// ============================================================
+// STEP NAVIGATION
+// ============================================================
+function goStep(n) {
+    // Validate before proceeding
+    if (n > currentStep) {
+        const issues = validateStep(currentStep);
+        if (issues.length > 0 && currentStep < 4) {
+            // Allow proceeding but show warning
+        }
+    }
+    currentStep = n;
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.step-panel[data-step="${n}"]`).classList.add('active');
+    document.querySelectorAll('.step-dot').forEach((d, i) => {
+        d.classList.remove('active', 'done');
+        if (i + 1 < n) d.classList.add('done');
+        if (i + 1 === n) d.classList.add('active');
+    });
+    const labels = ['', 'Basic Information', 'Dimension Scoring', 'Profile & Attributes', 'Review & Export'];
+    document.getElementById('step-label').textContent = `STEP ${n} OF 4`;
+    document.getElementById('step-desc').textContent = labels[n];
+    if (n === 4) generateExport();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function validateStep(step) {
+    const issues = [];
+    if (step >= 1) {
+        if (!document.getElementById('inp-name').value.trim()) issues.push('Platform name is required');
+        if (!document.getElementById('inp-url').value.trim()) issues.push('Platform URL is required');
+        if (!getCategory()) issues.push('Category is required');
+        if (!selectedLayer) issues.push('Layer assignment is required');
+    }
+    if (step >= 2) {
+        const composite = calcComposite();
+        if (composite === 0) issues.push('All dimension scores are zero');
+    }
+    return issues;
+}
+
+// ============================================================
+// SCORING ROWS
+// ============================================================
+function buildScoringRows() {
+    const container = document.getElementById('dimension-scoring');
+    container.innerHTML = DIMS.map(d => `
+        <div class="dim-row">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${d.color}22;color:${d.color}"><i class="fas fa-${d.icon}"></i></div>
+                <div>
+                    <div class="text-xs font-bold">${d.label}</div>
+                    <div class="text-[10px] text-gray-600">${(d.weight*100).toFixed(0)}% weight</div>
+                </div>
+            </div>
+            <div class="relative">
+                <input type="range" min="0" max="100" value="0" class="score-slider w-full" id="slider-${d.key}"
+                    style="accent-color:${d.color}"
+                    oninput="scores['${d.key}']=+this.value;document.getElementById('val-${d.key}').textContent=this.value;updateComposite();updatePreview()">
+                <div class="flex justify-between text-[9px] text-gray-700 mt-0.5 px-0.5"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+            </div>
+            <div class="text-center">
+                <span class="text-lg font-black" style="color:${d.color}" id="val-${d.key}">0</span>
+            </div>
+            <div>
+                <input type="number" min="0" max="100" value="0" class="text-center text-xs py-1.5 px-2" style="width:70px"
+                    id="num-${d.key}"
+                    oninput="let v=Math.min(100,Math.max(0,+this.value||0));scores['${d.key}']=v;document.getElementById('slider-${d.key}').value=v;document.getElementById('val-${d.key}').textContent=v;updateComposite();updatePreview()">
+            </div>
+        </div>
+    `).join('');
+}
+
+function autoFill(val) {
+    DIMS.forEach(d => {
+        scores[d.key] = val;
+        document.getElementById(`slider-${d.key}`).value = val;
+        document.getElementById(`val-${d.key}`).textContent = val;
+        document.getElementById(`num-${d.key}`).value = val;
+    });
+    updateComposite();
+    updatePreview();
+}
+
+function calcComposite() {
+    let total = 0;
+    DIMS.forEach(d => total += scores[d.key] * d.weight);
+    return Math.round(total * 10) / 10;
+}
+
+function updateComposite() {
+    const c = calcComposite();
+    document.getElementById('composite-live').textContent = c.toFixed(1);
+}
+
+// ============================================================
+// TAGS (Strengths/Weaknesses)
+// ============================================================
+function addTag(type, value) {
+    value = value.trim();
+    if (!value) return;
+    const arr = type === 'str' ? strengths : weaknesses;
+    if (arr.includes(value)) return;
+    arr.push(value);
+    renderTags(type);
+    updatePreview();
+}
+
+function removeTag(type, index) {
+    const arr = type === 'str' ? strengths : weaknesses;
+    arr.splice(index, 1);
+    renderTags(type);
+    updatePreview();
+}
+
+function renderTags(type) {
+    const arr = type === 'str' ? strengths : weaknesses;
+    const container = document.getElementById(`${type}-tags`);
+    const input = container.querySelector('input');
+    container.querySelectorAll('.tag').forEach(t => t.remove());
+    arr.forEach((t, i) => {
+        const el = document.createElement('span');
+        el.className = `tag ${type === 'str' ? 'tag-strength' : 'tag-weakness'}`;
+        el.innerHTML = `${t} <span class="remove" onclick="removeTag('${type}',${i})">&times;</span>`;
+        container.insertBefore(el, input);
+    });
+}
+
+// ============================================================
+// LAYER SELECTION
+// ============================================================
+function selectLayer(btn) {
+    document.querySelectorAll('#layer-chips .filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedLayer = btn.dataset.layer;
+    document.getElementById('inp-layer').value = selectedLayer;
+    updatePreview();
+}
+
+// ============================================================
+// CATEGORY
+// ============================================================
+function getCategory() {
+    const sel = document.getElementById('inp-category');
+    if (sel.value === '__custom__') {
+        return document.getElementById('inp-category-custom').value.trim();
+    }
+    return sel.value;
+}
+
+function handleCategoryChange() {
+    const sel = document.getElementById('inp-category');
+    const custom = document.getElementById('inp-category-custom');
+    if (sel.value === '__custom__') {
+        custom.style.display = '';
+        custom.focus();
+    } else {
+        custom.style.display = 'none';
+        // Auto-select layer based on category optgroup
+        const option = sel.options[sel.selectedIndex];
+        if (option && option.parentNode.tagName === 'OPTGROUP') {
+            const label = option.parentNode.label;
+            let layer = '';
+            if (label.includes('Surveillance')) layer = 'L1_Surveillance';
+            else if (label.includes('Genomic')) layer = 'L2_Genomic';
+            else if (label.includes('Defense')) layer = 'L3_Defense';
+            else if (label.includes('Hardware')) layer = 'L4_Hardware';
+            else if (label.includes('Policy')) layer = 'L5_Policy';
+            if (layer) {
+                const btn = document.querySelector(`#layer-chips [data-layer="${layer}"]`);
+                if (btn) selectLayer(btn);
+            }
+        }
+    }
+}
+
+// ============================================================
+// PREVIEW
+// ============================================================
+function buildPreviewDims() {
+    const container = document.getElementById('pv-dims');
+    container.innerHTML = DIMS.map(d => `
+        <div class="flex items-center gap-2">
+            <span class="text-[9px] font-bold w-6 text-center" style="color:${d.color}">${d.code}</span>
+            <div class="dim-bar-track flex-1"><div class="dim-bar-fill" id="pv-bar-${d.key}" style="width:0%;background:${d.color}"></div></div>
+            <span class="text-[10px] font-bold w-6 text-right" id="pv-val-${d.key}" style="color:${d.color}">0</span>
+        </div>
+    `).join('');
+}
+
+function initRadar() {
+    const ctx = document.getElementById('radar-chart').getContext('2d');
+    radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: DIMS.map(d => d.code),
+            datasets: [{
+                label: 'Scores',
+                data: DIMS.map(() => 0),
+                backgroundColor: 'rgba(6,182,212,0.15)',
+                borderColor: 'rgba(6,182,212,0.7)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(6,182,212,1)',
+                pointBorderColor: '#fff',
+                pointRadius: 3,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                r: {
+                    beginAtZero: true, max: 100,
+                    grid: { color: 'rgba(42,54,80,0.4)' },
+                    angleLines: { color: 'rgba(42,54,80,0.4)' },
+                    ticks: { display: false, stepSize: 25 },
+                    pointLabels: { color: '#9ca3af', font: { size: 10, weight: '600' } }
+                }
+            }
+        }
+    });
+}
+
+function getTier(score) {
+    if (score >= 90) return { label: 'EXCELLENT', cls: 'tier-excellent' };
+    if (score >= 80) return { label: 'GOOD', cls: 'tier-good' };
+    if (score >= 70) return { label: 'ADEQUATE', cls: 'tier-adequate' };
+    return { label: 'DEVELOPING', cls: 'tier-developing' };
+}
+
+function updatePreview() {
+    const name = document.getElementById('inp-name').value || 'Platform Name';
+    const category = getCategory() || 'Category';
+    const desc = document.getElementById('inp-desc').value || 'Short description will appear here...';
+    const url = document.getElementById('inp-url').value || '-';
+    const composite = calcComposite();
+    const tier = getTier(composite);
+
+    document.getElementById('pv-name').textContent = name;
+    document.getElementById('pv-category').textContent = category;
+    document.getElementById('pv-desc').textContent = desc;
+    document.getElementById('pv-url').textContent = url;
+    document.getElementById('pv-score').textContent = composite.toFixed(1);
+
+    const tierEl = document.getElementById('pv-tier');
+    tierEl.textContent = tier.label;
+    tierEl.className = `tier-badge ${tier.cls} text-[9px]`;
+
+    // Layer
+    const layerInfo = LAYER_LABELS[selectedLayer];
+    document.getElementById('pv-layer').innerHTML = layerInfo
+        ? `<i class="fas fa-${layerInfo.icon} mr-1" style="color:${layerInfo.color}"></i>${layerInfo.label}`
+        : 'No layer selected';
+
+    // Dimension bars
+    DIMS.forEach(d => {
+        document.getElementById(`pv-bar-${d.key}`).style.width = scores[d.key] + '%';
+        document.getElementById(`pv-val-${d.key}`).textContent = scores[d.key];
+    });
+
+    // Radar
+    if (radarChart) {
+        radarChart.data.datasets[0].data = DIMS.map(d => scores[d.key]);
+        radarChart.update('none');
+    }
+
+    // Strengths/Weaknesses
+    const strList = document.getElementById('pv-str-list');
+    const wkList = document.getElementById('pv-wk-list');
+    strList.innerHTML = strengths.length
+        ? strengths.map(s => `<div class="flex items-center gap-1"><i class="fas fa-check text-green-500 text-[9px]"></i><span class="text-xs text-gray-300">${s}</span></div>`).join('')
+        : '<span class="text-xs text-gray-600 italic">None added yet</span>';
+    wkList.innerHTML = weaknesses.length
+        ? weaknesses.map(w => `<div class="flex items-center gap-1"><i class="fas fa-times text-red-500 text-[9px]"></i><span class="text-xs text-gray-300">${w}</span></div>`).join('')
+        : '<span class="text-xs text-gray-600 italic">None added yet</span>';
+}
+
+// ============================================================
+// EXPORT GENERATION
+// ============================================================
+function buildPlatformData() {
+    const name = document.getElementById('inp-name').value.trim();
+    const url = document.getElementById('inp-url').value.trim();
+    const category = getCategory();
+    const desc = document.getElementById('inp-desc').value.trim();
+    const composite = calcComposite();
+
+    return {
+        name, url, category, desc, composite,
+        layer: selectedLayer,
+        scores: { ...scores },
+        strengths: [...strengths],
+        weaknesses: [...weaknesses],
+        profile: {
+            overview: document.getElementById('inp-overview').value.trim(),
+            functional_scope: document.getElementById('inp-funcscope').value.trim(),
+            tech_stack: document.getElementById('inp-techstack').value.trim(),
+            operator: document.getElementById('inp-operator').value.trim(),
+            data_model: document.getElementById('inp-datamodel').value.trim(),
+            users_scale: document.getElementById('inp-usersscale').value.trim(),
+            access_model: document.getElementById('inp-access').value.trim(),
+        }
+    };
+}
+
+function generateExport() {
+    const d = buildPlatformData();
+    const issues = validateStep(3);
+
+    // Validation box
+    const vbox = document.getElementById('validation-box');
+    if (issues.length === 0) {
+        vbox.innerHTML = `<div class="flex items-center gap-2 text-green-400"><i class="fas fa-check-circle"></i><span class="text-sm font-bold">All checks passed</span></div>
+        <p class="text-xs text-gray-500 mt-1">Platform data is complete and ready for export.</p>`;
+        vbox.style.borderColor = 'rgba(16,185,129,.3)';
+    } else {
+        vbox.innerHTML = `<div class="flex items-center gap-2 text-amber-400"><i class="fas fa-exclamation-triangle"></i><span class="text-sm font-bold">${issues.length} issue(s)</span></div>
+        <ul class="text-xs text-gray-400 mt-2 space-y-1">${issues.map(i => `<li><i class="fas fa-circle text-[4px] text-amber-500 mr-2 align-middle"></i>${i}</li>`).join('')}</ul>`;
+        vbox.style.borderColor = 'rgba(245,158,11,.3)';
+    }
+
+    // optB_enriched.json format
+    const optB = {
+        r: "NEW",
+        n: d.name,
+        u: d.url,
+        s: d.composite,
+        c: d.category,
+        d: d.desc,
+        sc: d.scores,
+        st: d.strengths,
+        wk: d.weaknesses,
+        profile: d.profile
+    };
+    document.getElementById('json-optb').textContent = JSON.stringify(optB, null, 2);
+
+    // Comparison Engine format
+    const comp = {
+        rank: "NEW",
+        name: d.name,
+        url: d.url,
+        overall_score: d.composite,
+        category: d.category,
+        description: d.desc,
+        dimension_scores: d.scores,
+        strengths: d.strengths,
+        weaknesses: d.weaknesses
+    };
+    document.getElementById('json-comparison').textContent = JSON.stringify(comp, null, 2);
+
+    // Platform Directory format
+    const dir = {
+        r: "NEW",
+        n: d.name,
+        u: d.url,
+        s: d.composite,
+        c: d.category,
+        desc: d.desc,
+        sc: d.scores,
+        st: d.strengths,
+        wk: d.weaknesses,
+        ly: d.layer,
+        ov: d.profile.overview,
+        fs: d.profile.functional_scope,
+        ts: d.profile.tech_stack,
+        op: d.profile.operator,
+        dm: d.profile.data_model,
+        us: d.profile.users_scale,
+        am: d.profile.access_model
+    };
+    document.getElementById('json-directory').textContent = JSON.stringify(dir, null, 2);
+}
+
+function showExportTab(tab) {
+    ['optb', 'comparison', 'directory'].forEach(t => {
+        document.getElementById(`export-${t}`).style.display = t === tab ? '' : 'none';
+        document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+    });
+}
+
+function copyJSON(elementId) {
+    const text = document.getElementById(elementId).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(elementId).parentElement.querySelector('.copy-btn');
+        btn.innerHTML = '<i class="fas fa-check mr-1 text-green-400"></i>Copied!';
+        setTimeout(() => btn.innerHTML = '<i class="fas fa-copy mr-1"></i>Copy', 2000);
+    });
+}
+
+function downloadJSON() {
+    const d = buildPlatformData();
+    const optB = {
+        r: "NEW", n: d.name, u: d.url, s: d.composite, c: d.category, d: d.desc,
+        sc: d.scores, st: d.strengths, wk: d.weaknesses, profile: d.profile
+    };
+    const blob = new Blob([JSON.stringify(optB, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `platform_${d.name.replace(/\s+/g, '_').toLowerCase()}_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+}
+
+function resetForm() {
+    if (!confirm('Reset the entire form? All data will be lost.')) return;
+    document.getElementById('inp-name').value = '';
+    document.getElementById('inp-url').value = '';
+    document.getElementById('inp-category').value = '';
+    document.getElementById('inp-category-custom').value = '';
+    document.getElementById('inp-category-custom').style.display = 'none';
+    document.getElementById('inp-desc').value = '';
+    document.getElementById('inp-overview').value = '';
+    document.getElementById('inp-funcscope').value = '';
+    document.getElementById('inp-techstack').value = '';
+    document.getElementById('inp-operator').value = '';
+    document.getElementById('inp-access').value = '';
+    document.getElementById('inp-datamodel').value = '';
+    document.getElementById('inp-usersscale').value = '';
+    document.getElementById('desc-count').textContent = '0/120';
+    strengths = []; weaknesses = [];
+    renderTags('str'); renderTags('wk');
+    selectedLayer = '';
+    document.querySelectorAll('#layer-chips .filter-chip').forEach(b => b.classList.remove('active'));
+    autoFill(0);
+    goStep(1);
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
