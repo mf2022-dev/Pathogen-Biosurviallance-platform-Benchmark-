@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Global Pathogen Surveillance Platform Benchmark</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#060a14;--bg2:#0a0e1a;--card:#111827;--card2:#1a2235;--border:#1e293b;--border2:#2a3650;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7;--indigo:#6366f1}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1);overflow-x:hidden}
+        .glass{background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(15,23,42,.85));border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(20px)}
+        .glass:hover{border-color:rgba(6,182,212,.2)}
+        .hero-glow{position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(6,182,212,.08) 0%,rgba(99,102,241,.04) 40%,transparent 70%);pointer-events:none;z-index:0}
+        .grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(6,182,212,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(6,182,212,.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+        .stat-number{font-variant-numeric:tabular-nums}
+        .counter{transition:all 1.5s cubic-bezier(.16,1,.3,1)}
+        .phase-card{transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;position:relative;overflow:hidden}
+        .phase-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(6,182,212,.03));opacity:0;transition:opacity .3s}
+        .phase-card:hover::before{opacity:1}
+        .phase-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.3);border-color:rgba(6,182,212,.25)}
+        .dash-card{transition:all .25s;cursor:pointer;border:1px solid var(--border);border-radius:12px;padding:16px 20px;background:rgba(17,24,39,.5)}
+        .dash-card:hover{border-color:rgba(6,182,212,.35);background:rgba(6,182,212,.04);transform:translateX(4px)}
+        .top-row{display:grid;grid-template-columns:32px 1fr 60px 160px;gap:12px;align-items:center;padding:12px 16px;border-radius:10px;transition:all .2s;border:1px solid transparent}
+        .top-row:hover{background:rgba(6,182,212,.04);border-color:rgba(6,182,212,.15)}
+        .bar-fill{transition:width 1.8s cubic-bezier(.16,1,.3,1)}
+        .tier-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+        .pulse{animation:pulse 2.5s ease-in-out infinite}
+        @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+        .slide-up{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .slide-up.visible{opacity:1;transform:translateY(0)}
+        .stagger-1{transition-delay:.1s}.stagger-2{transition-delay:.2s}.stagger-3{transition-delay:.3s}.stagger-4{transition-delay:.4s}.stagger-5{transition-delay:.5s}
+        .finding-card{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(17,24,39,.4);transition:all .2s}
+        .finding-card:hover{border-color:rgba(6,182,212,.2);background:rgba(6,182,212,.03)}
+        .dim-bar{height:6px;border-radius:3px;background:rgba(30,41,59,.5);overflow:hidden}.dim-fill{height:100%;border-radius:3px;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+        .methodology-step{position:relative;padding-left:40px}
+        .methodology-step::before{content:attr(data-step);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:8px;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.25);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+        .scroll-indicator{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--indigo));z-index:999;transition:width .1s}
+        a{text-decoration:none;color:inherit}
+        .nav-link{position:relative;padding:4px 0}.nav-link::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--cyan);transition:width .2s}.nav-link:hover::after{width:100%}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#111827','bio-border':'#1e293b','bio-cyan':'#06b6d4','bio-blue':'#3b82f6','bio-green':'#10b981','bio-indigo':'#6366f1'}}}}</script>
+</head>
+<body class="min-h-screen relative">
+<div class="grid-bg"></div>
+<div class="scroll-indicator" id="scroll-bar"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-50 border-b border-bio-border bg-[#060a14]/80 backdrop-blur-xl">
+    <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <span class="text-white font-black text-xs">BR</span>
+            </div>
+            <div>
+                <span class="text-sm font-bold tracking-tight">BioR</span>
+                <span class="text-xs text-gray-500 ml-2 hidden sm:inline">Global Pathogen Surveillance Benchmark</span>
+            </div>
+        </div>
+        <nav class="hidden md:flex items-center gap-6 text-xs text-gray-400">
+            <a href="#overview" class="nav-link hover:text-bio-cyan">Overview</a>
+            <a href="#findings" class="nav-link hover:text-bio-cyan">Key Findings</a>
+            <a href="#dashboards" class="nav-link hover:text-bio-cyan">Dashboards</a>
+            <a href="#methodology" class="nav-link hover:text-bio-cyan">Methodology</a>
+            <a href="#rankings" class="nav-link hover:text-bio-cyan">Rankings</a>
+            <a href="report/index.html" class="px-3 py-1.5 rounded-lg bg-bio-cyan/10 border border-bio-cyan/25 text-bio-cyan hover:bg-bio-cyan/20 transition-all font-semibold">Full Report <i class="fas fa-arrow-right ml-1 text-[9px]"></i></a>
+        </nav>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="relative pt-24 pb-16 overflow-hidden" id="overview">
+    <div class="hero-glow"></div>
+    <div class="max-w-[1400px] mx-auto px-6 relative z-10">
+        <div class="text-center mb-12 slide-up">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[11px] font-semibold mb-6">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 pulse"></span>
+                PSEF v3.0.0 &mdash; Assessment Period 2024&ndash;2026 &mdash; Updated March 2026
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-[1.1] mb-5">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">Global Pathogen Surveillance</span><br>
+                <span class="text-white">Platform Benchmark</span>
+            </h1>
+            <p class="text-base md:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                The most comprehensive evaluation of pathogen surveillance, genomic analysis, biodefense, and health security platforms worldwide &mdash; spanning <strong class="text-gray-200">169 platforms</strong> across <strong class="text-gray-200">5 capability layers</strong>.
+            </p>
+        </div>
+
+        <!-- HERO STATS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3 mb-12 slide-up stagger-1">
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-cyan-400 stat-number" data-target="169" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Platforms<br>Evaluated</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-blue-400 stat-number" data-target="1690" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Data<br>Points</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-indigo-400 stat-number" data-target="10" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Scoring<br>Dimensions</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-purple-400 stat-number" data-target="5" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Capability<br>Layers</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-green-400 stat-number" data-target="8" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Regions<br>Mapped</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-amber-400 stat-number" data-target="31.6" data-suffix="B" data-prefix="$">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Investment<br>Linked</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-red-400 stat-number" data-target="96" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Policy<br>Recommendations</div>
+            </div>
+            <div class="glass p-4 text-center">
+                <div class="text-2xl md:text-3xl font-black text-teal-400 stat-number" data-target="4" data-suffix="">0</div>
+                <div class="text-[10px] text-gray-500 font-semibold mt-1">Adversary<br>Profiles</div>
+            </div>
+        </div>
+
+        <!-- TIER OVERVIEW -->
+        <div class="glass p-6 mb-8 slide-up stagger-2">
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                <h3 class="text-sm font-bold text-gray-300"><i class="fas fa-layer-group text-cyan-400 mr-2"></i>Platform Tier Distribution</h3>
+                <div class="flex items-center gap-4 text-[10px] text-gray-500">
+                    <span><span class="tier-dot bg-green-500 mr-1"></span>Excellent (90+)</span>
+                    <span><span class="tier-dot bg-blue-500 mr-1"></span>Good (80-89)</span>
+                    <span><span class="tier-dot bg-amber-500 mr-1"></span>Adequate (70-79)</span>
+                    <span><span class="tier-dot bg-red-500 mr-1"></span>Developing (&lt;70)</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-3">
+                <div class="text-center p-4 rounded-xl bg-green-500/5 border border-green-500/15">
+                    <div class="text-3xl font-black text-green-400">3</div>
+                    <div class="text-xs text-green-400/70 font-semibold">Excellent</div>
+                    <div class="text-[10px] text-gray-600 mt-1">1.8% of total</div>
+                </div>
+                <div class="text-center p-4 rounded-xl bg-blue-500/5 border border-blue-500/15">
+                    <div class="text-3xl font-black text-blue-400">74</div>
+                    <div class="text-xs text-blue-400/70 font-semibold">Good</div>
+                    <div class="text-[10px] text-gray-600 mt-1">43.8% of total</div>
+                </div>
+                <div class="text-center p-4 rounded-xl bg-amber-500/5 border border-amber-500/15">
+                    <div class="text-3xl font-black text-amber-400">77</div>
+                    <div class="text-xs text-amber-400/70 font-semibold">Adequate</div>
+                    <div class="text-[10px] text-gray-600 mt-1">45.6% of total</div>
+                </div>
+                <div class="text-center p-4 rounded-xl bg-red-500/5 border border-red-500/15">
+                    <div class="text-3xl font-black text-red-400">15</div>
+                    <div class="text-xs text-red-400/70 font-semibold">Developing</div>
+                    <div class="text-[10px] text-gray-600 mt-1">8.9% of total</div>
+                </div>
+            </div>
+            <!-- Stacked bar -->
+            <div class="mt-4 h-3 rounded-full overflow-hidden flex" title="169 platforms scored 55-95">
+                <div class="bg-green-500 h-full" style="width:1.8%"></div>
+                <div class="bg-blue-500 h-full" style="width:43.8%"></div>
+                <div class="bg-amber-500 h-full" style="width:45.6%"></div>
+                <div class="bg-red-500 h-full" style="width:8.9%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-gray-600 mt-1">
+                <span>Score range: 55 &ndash; 95</span>
+                <span>Mean: 78.6 | Median: 79.4</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section class="py-16 relative z-10" id="findings">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="text-center mb-10 slide-up">
+            <h2 class="text-2xl md:text-3xl font-black mb-2">Key Findings</h2>
+            <p class="text-sm text-gray-500">Critical insights from evaluating 169 platforms across 10 dimensions</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 slide-up stagger-1">
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center"><i class="fas fa-exclamation-triangle text-red-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Critical Gap</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">Genomic Sequencing Inequity</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">80% of sequencing capacity concentrated in Five Eyes + EU nations. Africa, Central Asia, and Pacific Islands have near-zero autonomous capability, creating massive surveillance blind spots.</p>
+            </div>
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center"><i class="fas fa-shield-alt text-amber-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Security Strongest</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">Security Leads All Dimensions</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Security & Compliance scores highest at 82.5 average across all platforms. Defense-tier (L3) platforms show particularly strong security postures, but accessibility (73.9 avg) remains the weakest dimension.</p>
+            </div>
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center"><i class="fas fa-dna text-green-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-green-400 uppercase tracking-wider">Top Performer</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">Nextstrain Leads at 95/100</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Only 3 platforms achieve Excellent tier (90+): Nextstrain, SORMAS, and outbreak.info. These represent the gold standard in phylogenetic analysis, outbreak management, and data aggregation respectively.</p>
+            </div>
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fas fa-globe-americas text-cyan-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">Geopolitical</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">Adversary Capabilities Growing</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Russia (VECTOR), China (AMMS), DPRK, and Iran all maintain active biological research programs with dual-use potential. China's AI-integrated biosurveillance advancing rapidly.</p>
+            </div>
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center"><i class="fas fa-robot text-purple-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">AI/ML Divide</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">AI Adoption Highly Uneven</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Only ~15% of platforms integrate meaningful AI/ML capabilities. DARPA-funded programs (PREEMPT, P3) lead in AI-driven biosurveillance, while LMIC platforms largely lack any AI integration.</p>
+            </div>
+            <div class="finding-card">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center"><i class="fas fa-exchange-alt text-blue-400 text-sm"></i></div>
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Interoperability</span>
+                </div>
+                <h4 class="text-sm font-bold mb-2">Data Silos Persist</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">Interoperability averages 77.3/100. HL7/FHIR adoption remains inconsistent. Most defense platforms operate in classified silos, limiting Five Eyes data fusion potential despite treaty obligations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DASHBOARDS / NAVIGATION -->
+<section class="py-16 relative z-10" id="dashboards">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="text-center mb-10 slide-up">
+            <h2 class="text-2xl md:text-3xl font-black mb-2">Intelligence Dashboards</h2>
+            <p class="text-sm text-gray-500">12 interactive dashboards organized across 3 phases + tools</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Phase 1 -->
+            <div class="glass phase-card p-6 slide-up stagger-1">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/12 border border-cyan-500/20 flex items-center justify-center">
+                        <i class="fas fa-search text-cyan-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold">Phase 1 &mdash; Assessment</h3>
+                        <p class="text-[10px] text-gray-500">Platform evaluation & comparative analysis</p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <a href="phase1/executive_dashboard/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-chart-pie text-cyan-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Executive Dashboard</div><div class="text-[10px] text-gray-500">169 platforms, tier analysis, dimension overview</div></div>
+                    </a>
+                    <a href="phase1/threat_map/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-globe text-blue-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Threat Map</div><div class="text-[10px] text-gray-500">Geospatial platform distribution & alliance mapping</div></div>
+                    </a>
+                    <a href="phase1/gap_analysis/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-search-minus text-amber-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Gap Analysis</div><div class="text-[10px] text-gray-500">Capability gaps, cross-layer vulnerabilities</div></div>
+                    </a>
+                    <a href="phase1/interop_assessment/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-network-wired text-purple-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Interoperability Assessment</div><div class="text-[10px] text-gray-500">Data exchange standards & integration readiness</div></div>
+                    </a>
+                    <a href="phase1/comparison_engine/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-balance-scale text-green-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Comparison Engine</div><div class="text-[10px] text-gray-500">Side-by-side comparison of up to 4 platforms</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Phase 2 -->
+            <div class="glass phase-card p-6 slide-up stagger-2">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/12 border border-indigo-500/20 flex items-center justify-center">
+                        <i class="fas fa-chart-line text-indigo-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold">Phase 2 &mdash; Strategy</h3>
+                        <p class="text-[10px] text-gray-500">Investment, alliance & readiness posture</p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <a href="phase2/investment_roadmap/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-coins text-amber-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Investment Roadmap</div><div class="text-[10px] text-gray-500">$31.6B investment analysis, ROI projections</div></div>
+                    </a>
+                    <a href="phase2/allied_posture/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-flag text-blue-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Allied Posture</div><div class="text-[10px] text-gray-500">NATO & Five Eyes capability alignment</div></div>
+                    </a>
+                    <a href="phase2/readiness_scorecard/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-clipboard-check text-green-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Readiness Scorecard</div><div class="text-[10px] text-gray-500">National preparedness & response capacity</div></div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="glass phase-card p-6 slide-up stagger-3">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-red-500/12 border border-red-500/20 flex items-center justify-center">
+                        <i class="fas fa-user-secret text-red-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold">Phase 3 &mdash; Intelligence</h3>
+                        <p class="text-[10px] text-gray-500">Adversary dossiers & regional briefs</p>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <a href="phase3/adversary_dossier/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-crosshairs text-red-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Adversary Capability Dossier</div><div class="text-[10px] text-gray-500">Russia, China, DPRK, Iran — biodefense assessment</div></div>
+                    </a>
+                    <a href="phase3/regional_briefs/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-map-marked-alt text-amber-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Regional Recommendation Briefs</div><div class="text-[10px] text-gray-500">8 regions, 96 recommendations, $31.6B linked</div></div>
+                    </a>
+                </div>
+                <hr class="border-bio-border my-3">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center"><i class="fas fa-wrench text-green-400 text-xs"></i></div>
+                    <span class="text-xs font-bold text-gray-400">Tools</span>
+                </div>
+                <div class="space-y-2">
+                    <a href="platform_directory/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-book text-cyan-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Platform Intelligence Directory</div><div class="text-[10px] text-gray-500">Searchable database of all 169 platforms</div></div>
+                    </a>
+                    <a href="intake/index.html" class="dash-card flex items-center gap-3">
+                        <i class="fas fa-plus-circle text-green-400 text-xs w-5 text-center"></i>
+                        <div><div class="text-xs font-semibold">Platform Intake Tool</div><div class="text-[10px] text-gray-500">Add new platforms with guided evaluation</div></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TOP 10 RANKINGS -->
+<section class="py-16 relative z-10" id="rankings">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="flex flex-wrap items-end justify-between mb-8 slide-up">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-black mb-2">Top 10 Platforms</h2>
+                <p class="text-sm text-gray-500">Highest-scoring platforms across all capability layers</p>
+            </div>
+            <a href="platform_directory/index.html" class="text-xs text-cyan-400 hover:text-cyan-300 font-semibold">View all 169 <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+        <div class="glass p-6 slide-up stagger-1">
+            <div class="space-y-1" id="top10-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Dimension Averages Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div class="glass p-6 slide-up stagger-2">
+                <h3 class="text-sm font-bold text-gray-300 mb-4"><i class="fas fa-spider text-cyan-400 mr-2"></i>Global Dimension Averages</h3>
+                <div style="height:300px" class="flex justify-center"><canvas id="dim-radar"></canvas></div>
+            </div>
+            <div class="glass p-6 slide-up stagger-3">
+                <h3 class="text-sm font-bold text-gray-300 mb-4"><i class="fas fa-layer-group text-purple-400 mr-2"></i>Layer Performance</h3>
+                <div class="space-y-4 mt-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span class="font-semibold"><i class="fas fa-satellite-dish text-blue-400 mr-1"></i>L1 — Surveillance</span><span class="text-gray-400">63 platforms · avg 78.0</span></div>
+                        <div class="dim-bar"><div class="dim-fill bg-blue-500 bar-fill" style="width:0%" data-width="78%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span class="font-semibold"><i class="fas fa-dna text-green-400 mr-1"></i>L2 — Genomic</span><span class="text-gray-400">57 platforms · avg 79.5</span></div>
+                        <div class="dim-bar"><div class="dim-fill bg-green-500 bar-fill" style="width:0%" data-width="79.5%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span class="font-semibold"><i class="fas fa-shield-alt text-red-400 mr-1"></i>L3 — Defense</span><span class="text-gray-400">35 platforms · avg 78.4</span></div>
+                        <div class="dim-bar"><div class="dim-fill bg-red-500 bar-fill" style="width:0%" data-width="78.4%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span class="font-semibold"><i class="fas fa-microchip text-amber-400 mr-1"></i>L4 — Hardware</span><span class="text-gray-400">9 platforms · avg 77.2</span></div>
+                        <div class="dim-bar"><div class="dim-fill bg-amber-500 bar-fill" style="width:0%" data-width="77.2%"></div></div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span class="font-semibold"><i class="fas fa-landmark text-purple-400 mr-1"></i>L5 — Policy</span><span class="text-gray-400">5 platforms · avg 78.5</span></div>
+                        <div class="dim-bar"><div class="dim-fill bg-purple-500 bar-fill" style="width:0%" data-width="78.5%"></div></div>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/15">
+                    <div class="text-[10px] font-bold text-cyan-400 uppercase tracking-wider mb-2">Key Operators Represented</div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">CDC <span class="text-gray-500">(13)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">NIH <span class="text-gray-500">(11)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">WHO <span class="text-gray-500">(10)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">DARPA <span class="text-gray-500">(10)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">Wellcome <span class="text-gray-500">(8)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">Gates Foundation <span class="text-gray-500">(3)</span></span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] font-semibold text-gray-300">ECDC <span class="text-gray-500">(2)</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section class="py-16 relative z-10" id="methodology">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="text-center mb-10 slide-up">
+            <h2 class="text-2xl md:text-3xl font-black mb-2">Methodology</h2>
+            <p class="text-sm text-gray-500">Pathogen Surveillance Evaluation Framework (PSEF) v3.0.0</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass p-6 slide-up stagger-1">
+                <h3 class="text-sm font-bold text-gray-300 mb-5"><i class="fas fa-list-ol text-cyan-400 mr-2"></i>Evaluation Process</h3>
+                <div class="space-y-5">
+                    <div class="methodology-step" data-step="1">
+                        <h4 class="text-xs font-bold mb-1">Platform Identification</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">Systematic scan of government, academic, open-source, and defense biosurveillance platforms worldwide. 169 unique platforms identified across 164 functional categories.</p>
+                    </div>
+                    <div class="methodology-step" data-step="2">
+                        <h4 class="text-xs font-bold mb-1">Multi-Dimensional Scoring</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">Each platform scored 0-100 across 10 weighted dimensions using standardized rubrics aligned with WHO, CDC, ISO 27799:2025, and FDA AI/ML guidance.</p>
+                    </div>
+                    <div class="methodology-step" data-step="3">
+                        <h4 class="text-xs font-bold mb-1">Profile Enrichment</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">All 169 platforms enriched with 7-field profiles (overview, functional scope, tech stack, operator, data model, users/scale, access model) from verified sources.</p>
+                    </div>
+                    <div class="methodology-step" data-step="4">
+                        <h4 class="text-xs font-bold mb-1">Layer Classification</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">Five capability layers: L1 Surveillance (63), L2 Genomic (57), L3 Defense (35), L4 Hardware (9), L5 Policy (5) — reflecting the bio-intelligence stack.</p>
+                    </div>
+                    <div class="methodology-step" data-step="5">
+                        <h4 class="text-xs font-bold mb-1">Regional & Adversary Analysis</h4>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">Platforms mapped to 8 geopolitical regions. Adversary capabilities assessed for Russia, China, DPRK, and Iran using open-source intelligence and published assessments.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass p-6 slide-up stagger-2">
+                <h3 class="text-sm font-bold text-gray-300 mb-5"><i class="fas fa-weight-hanging text-amber-400 mr-2"></i>Scoring Dimensions & Weights</h3>
+                <div class="space-y-3" id="dim-weights">
+                    <!-- populated by JS -->
+                </div>
+                <div class="mt-5 p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/15">
+                    <div class="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-2">Compliance Alignment</div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] text-gray-300">WHO Guidance</span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] text-gray-300">CDC Standards</span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] text-gray-300">ISO 27799:2025</span>
+                        <span class="px-2 py-1 rounded-md bg-gray-800/50 border border-gray-700 text-[10px] text-gray-300">FDA AI/ML Guidance</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="py-16 relative z-10">
+    <div class="max-w-[1400px] mx-auto px-6 text-center">
+        <div class="glass p-8 md:p-12 slide-up" style="background:linear-gradient(135deg,rgba(6,182,212,.06),rgba(99,102,241,.06))">
+            <h2 class="text-xl md:text-2xl font-black mb-3">Explore the Full Benchmark</h2>
+            <p class="text-sm text-gray-400 mb-6 max-w-xl mx-auto">Dive into the complete analysis with interactive dashboards, platform comparisons, and intelligence-grade regional assessments.</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="report/index.html" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-sm hover:shadow-lg hover:shadow-cyan-500/20 transition-all hover:-translate-y-0.5"><i class="fas fa-file-alt mr-2"></i>Full Benchmark Report</a>
+                <a href="platform_directory/index.html" class="px-6 py-3 rounded-xl bg-gray-800/80 border border-gray-700 text-gray-200 font-bold text-sm hover:border-cyan-500/30 transition-all hover:-translate-y-0.5"><i class="fas fa-search mr-2"></i>Search 169 Platforms</a>
+                <a href="phase1/comparison_engine/index.html" class="px-6 py-3 rounded-xl bg-gray-800/80 border border-gray-700 text-gray-200 font-bold text-sm hover:border-cyan-500/30 transition-all hover:-translate-y-0.5"><i class="fas fa-balance-scale mr-2"></i>Compare Platforms</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="border-t border-bio-border py-8">
+    <div class="max-w-[1400px] mx-auto px-6">
+        <div class="flex flex-wrap justify-between items-start gap-6">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-7 h-7 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-md flex items-center justify-center"><span class="text-white font-black text-[9px]">BR</span></div>
+                    <span class="text-sm font-bold">BioR</span>
+                </div>
+                <p class="text-xs text-gray-600 max-w-xs">Global Pathogen Surveillance Platform Benchmark. 169 platforms evaluated across 10 dimensions using PSEF v3.0.0 methodology.</p>
+            </div>
+            <div class="grid grid-cols-3 gap-8 text-xs text-gray-500">
+                <div>
+                    <div class="font-bold text-gray-400 mb-2">Phase 1</div>
+                    <a href="phase1/executive_dashboard/index.html" class="block hover:text-gray-300 mb-1">Executive Dashboard</a>
+                    <a href="phase1/threat_map/index.html" class="block hover:text-gray-300 mb-1">Threat Map</a>
+                    <a href="phase1/gap_analysis/index.html" class="block hover:text-gray-300 mb-1">Gap Analysis</a>
+                    <a href="phase1/interop_assessment/index.html" class="block hover:text-gray-300 mb-1">Interop Assessment</a>
+                    <a href="phase1/comparison_engine/index.html" class="block hover:text-gray-300">Comparison Engine</a>
+                </div>
+                <div>
+                    <div class="font-bold text-gray-400 mb-2">Phase 2</div>
+                    <a href="phase2/investment_roadmap/index.html" class="block hover:text-gray-300 mb-1">Investment Roadmap</a>
+                    <a href="phase2/allied_posture/index.html" class="block hover:text-gray-300 mb-1">Allied Posture</a>
+                    <a href="phase2/readiness_scorecard/index.html" class="block hover:text-gray-300">Readiness Scorecard</a>
+                </div>
+                <div>
+                    <div class="font-bold text-gray-400 mb-2">Phase 3 & Tools</div>
+                    <a href="phase3/adversary_dossier/index.html" class="block hover:text-gray-300 mb-1">Adversary Dossier</a>
+                    <a href="phase3/regional_briefs/index.html" class="block hover:text-gray-300 mb-1">Regional Briefs</a>
+                    <a href="platform_directory/index.html" class="block hover:text-gray-300 mb-1">Platform Directory</a>
+                    <a href="intake/index.html" class="block hover:text-gray-300 mb-1">Intake Tool</a>
+                    <a href="report/index.html" class="block hover:text-gray-300">Full Report</a>
+                </div>
+            </div>
+        </div>
+        <hr class="border-bio-border my-5">
+        <div class="flex flex-wrap justify-between text-[10px] text-gray-600">
+            <span>PSEF v3.0.0 | Assessment Period 2024&ndash;2026 | Updated March 2026</span>
+            <span>169 Platforms | 1,690 Data Points | 5 Layers | 10 Dimensions | 8 Regions</span>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ============================================================
+// TOP 10 DATA
+// ============================================================
+const TOP10 = [
+    { rank:1, name:'Nextstrain', score:95, cat:'Phylogenetic Analysis & Visualization', url:'https://nextstrain.org', layer:'L2', color:'#10b981' },
+    { rank:2, name:'SORMAS', score:90, cat:'Surveillance & Outbreak Response', url:'https://sormas.org', layer:'L1', color:'#3b82f6' },
+    { rank:3, name:'outbreak.info', score:90, cat:'Epidemiological Data Aggregation', url:'https://outbreak.info', layer:'L1', color:'#3b82f6' },
+    { rank:4, name:'CZ ID', score:89.2, cat:'Metagenomic Pathogen Detection', url:'https://czid.org', layer:'L2', color:'#10b981' },
+    { rank:5, name:'DHIS2', score:89, cat:'Health Information Management', url:'https://dhis2.org', layer:'L1', color:'#3b82f6' },
+    { rank:6, name:'NCBI Pathogen Detection', score:88.9, cat:'Genomic Pathogen Detection', url:'https://ncbi.nlm.nih.gov/pathogens/', layer:'L2', color:'#10b981' },
+    { rank:7, name:'GISAID', score:88.5, cat:'Genomic Data Sharing', url:'https://gisaid.org', layer:'L2', color:'#10b981' },
+    { rank:8, name:'Microreact', score:87.5, cat:'Genomic Epidemiology Visualization', url:'https://microreact.org', layer:'L2', color:'#10b981' },
+    { rank:9, name:'BioSense / ESSENCE', score:87.2, cat:'Syndromic Surveillance', url:'#', layer:'L1', color:'#3b82f6' },
+    { rank:10, name:'Pathogenwatch', score:87, cat:'Pathogen Genomic Analysis', url:'https://pathogen.watch', layer:'L2', color:'#10b981' },
+];
+
+const DIMS = [
+    { key:'data_integration', label:'Data Integration', code:'DI', weight:0.12, color:'#3b82f6', avg:79.3, icon:'database' },
+    { key:'analytics_capability', label:'Analytics', code:'AC', weight:0.12, color:'#06b6d4', avg:79.3, icon:'brain' },
+    { key:'security_compliance', label:'Security & Compliance', code:'SE', weight:0.12, color:'#ef4444', avg:82.5, icon:'shield-alt' },
+    { key:'visualization', label:'Visualization', code:'VZ', weight:0.10, color:'#8b5cf6', avg:76.6, icon:'chart-bar' },
+    { key:'accessibility', label:'Accessibility', code:'AX', weight:0.10, color:'#10b981', avg:73.9, icon:'universal-access' },
+    { key:'scalability', label:'Scalability', code:'SC', weight:0.10, color:'#f59e0b', avg:79.2, icon:'expand-arrows-alt' },
+    { key:'interoperability', label:'Interoperability', code:'IO', weight:0.10, color:'#a855f7', avg:77.3, icon:'network-wired' },
+    { key:'documentation', label:'Documentation', code:'DC', weight:0.08, color:'#f97316', avg:77.9, icon:'book' },
+    { key:'community_support', label:'Community', code:'CS', weight:0.08, color:'#ec4899', avg:75.0, icon:'users' },
+    { key:'real_time_capability', label:'Real-Time', code:'RT', weight:0.08, color:'#14b8a6', avg:77.7, icon:'bolt' },
+];
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderTop10() {
+    const el = document.getElementById('top10-list');
+    el.innerHTML = TOP10.map((p, i) => {
+        const tierClass = p.score >= 90 ? 'bg-green-500' : p.score >= 80 ? 'bg-blue-500' : 'bg-amber-500';
+        return `<div class="top-row">
+            <div class="text-lg font-black text-gray-600">${p.rank}</div>
+            <div>
+                <div class="text-sm font-bold">${p.name}</div>
+                <div class="text-[10px] text-gray-500">${p.cat}</div>
+            </div>
+            <div class="text-right">
+                <span class="text-base font-black" style="color:${p.color}">${p.score}</span>
+            </div>
+            <div>
+                <div class="dim-bar"><div class="dim-fill bar-fill ${tierClass}" style="width:0%" data-width="${p.score}%"></div></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderDimWeights() {
+    const el = document.getElementById('dim-weights');
+    el.innerHTML = DIMS.map(d => `
+        <div class="flex items-center gap-3">
+            <div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${d.color}18;color:${d.color}"><i class="fas fa-${d.icon}"></i></div>
+            <div class="flex-1">
+                <div class="flex justify-between text-xs mb-0.5">
+                    <span class="font-semibold">${d.label}</span>
+                    <span class="text-gray-500">${(d.weight*100)}% · avg ${d.avg}</span>
+                </div>
+                <div class="dim-bar"><div class="dim-fill bar-fill" style="width:0%;background:${d.color}" data-width="${d.avg}%"></div></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function initRadar() {
+    const ctx = document.getElementById('dim-radar');
+    if (!ctx) return;
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: DIMS.map(d => d.code),
+            datasets: [{
+                label: 'Global Average',
+                data: DIMS.map(d => d.avg),
+                backgroundColor: 'rgba(6,182,212,0.12)',
+                borderColor: 'rgba(6,182,212,0.6)',
+                borderWidth: 2,
+                pointBackgroundColor: DIMS.map(d => d.color),
+                pointBorderColor: '#111827',
+                pointRadius: 4,
+                pointBorderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: true,
+            plugins: { legend: { display: false } },
+            scales: { r: {
+                beginAtZero: true, min: 60, max: 100,
+                grid: { color: 'rgba(30,41,59,0.4)' },
+                angleLines: { color: 'rgba(30,41,59,0.4)' },
+                ticks: { display: false, stepSize: 10 },
+                pointLabels: { color: '#94a3b8', font: { size: 11, weight: '600' } }
+            }}
+        }
+    });
+}
+
+// ============================================================
+// COUNTER ANIMATION
+// ============================================================
+function animateCounters() {
+    document.querySelectorAll('.stat-number').forEach(el => {
+        const target = parseFloat(el.dataset.target);
+        const suffix = el.dataset.suffix || '';
+        const prefix = el.dataset.prefix || '';
+        const isFloat = target % 1 !== 0;
+        const duration = 2000;
+        const start = performance.now();
+        function update(now) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 4);
+            const current = target * eased;
+            el.textContent = prefix + (isFloat ? current.toFixed(1) : Math.round(current)) + suffix;
+            if (progress < 1) requestAnimationFrame(update);
+        }
+        requestAnimationFrame(update);
+    });
+}
+
+// ============================================================
+// BAR ANIMATION
+// ============================================================
+function animateBars() {
+    document.querySelectorAll('.bar-fill').forEach(el => {
+        const width = el.dataset.width;
+        if (width) {
+            setTimeout(() => el.style.width = width, 100);
+        }
+    });
+}
+
+// ============================================================
+// SCROLL ANIMATIONS
+// ============================================================
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.slide-up').forEach(el => observer.observe(el));
+}
+
+function updateScrollBar() {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    document.getElementById('scroll-bar').style.width = scrolled + '%';
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+    renderTop10();
+    renderDimWeights();
+    initRadar();
+    initScrollAnimations();
+    setTimeout(animateCounters, 300);
+    setTimeout(animateBars, 600);
+});
+window.addEventListener('scroll', updateScrollBar);
+</script>
+</body>
+</html>

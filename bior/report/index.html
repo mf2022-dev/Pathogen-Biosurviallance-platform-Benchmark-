@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioR — Full Benchmark Report | PSEF v3.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        :root{--bg:#060a14;--card:#111827;--border:#1e293b;--t1:#f1f5f9;--t2:#94a3b8;--t3:#64748b;--cyan:#06b6d4;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7;--indigo:#6366f1}
+        *{font-family:'Inter',sans-serif;margin:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1)}
+        .glass{background:linear-gradient(135deg,rgba(17,24,39,.85),rgba(15,23,42,.85));border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(20px)}
+        a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+        .report-body h2{font-size:1.5rem;font-weight:900;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border)}
+        .report-body h3{font-size:1.1rem;font-weight:700;margin:1.8rem 0 0.8rem;color:var(--cyan)}
+        .report-body p{font-size:0.875rem;line-height:1.8;color:var(--t2);margin-bottom:1rem}
+        .report-body ul,.report-body ol{font-size:0.875rem;line-height:1.8;color:var(--t2);margin-bottom:1rem;padding-left:1.5rem}
+        .report-body li{margin-bottom:0.3rem}
+        .report-body strong{color:var(--t1)}
+        .report-body blockquote{border-left:3px solid var(--cyan);padding:12px 20px;margin:1.2rem 0;background:rgba(6,182,212,.04);border-radius:0 8px 8px 0;font-size:0.8rem;color:var(--t2)}
+        .toc a{display:block;padding:6px 12px;border-radius:6px;font-size:12px;color:var(--t3);transition:all .2s;border-left:2px solid transparent}
+        .toc a:hover{background:rgba(6,182,212,.05);color:var(--t1);border-left-color:var(--cyan);text-decoration:none}
+        .table-row{display:grid;grid-template-columns:40px 1fr 55px 100px 50px;gap:8px;align-items:center;padding:8px 12px;border-radius:6px;font-size:12px;transition:background .15s}
+        .table-row:hover{background:rgba(6,182,212,.03)}
+        .table-header{font-weight:700;color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:4px}
+        .tier-badge{padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;display:inline-block}
+        .tier-EX{background:rgba(16,185,129,.15);color:#10b981}.tier-GD{background:rgba(59,130,246,.15);color:#3b82f6}.tier-AD{background:rgba(245,158,11,.15);color:#f59e0b}.tier-DV{background:rgba(239,68,68,.15);color:#ef4444}
+        .layer-badge{padding:2px 8px;border-radius:999px;font-size:9px;font-weight:700;display:inline-block}
+        .layer-L1{background:rgba(59,130,246,.12);color:#60a5fa}.layer-L2{background:rgba(16,185,129,.12);color:#34d399}.layer-L3{background:rgba(239,68,68,.12);color:#f87171}.layer-L4{background:rgba(245,158,11,.12);color:#fbbf24}.layer-L5{background:rgba(168,85,247,.12);color:#c084fc}
+        .dim-bar{height:5px;border-radius:3px;background:rgba(30,41,59,.5);overflow:hidden}.dim-fill{height:100%;border-radius:3px;transition:width 1.2s ease-out}
+        .scroll-ind{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--indigo));z-index:999;transition:width .1s}
+        .search-input{background:rgba(17,24,39,.8);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 34px;color:var(--t1);font-size:13px;width:100%;outline:none}
+        .search-input:focus{border-color:var(--cyan)}
+        .search-input::placeholder{color:var(--t3)}
+        .filter-chip{padding:4px 10px;border-radius:999px;font-size:10px;font-weight:600;border:1px solid var(--border);background:transparent;color:var(--t3);cursor:pointer;transition:all .15s}
+        .filter-chip:hover{border-color:rgba(6,182,212,.4);color:var(--t1)}
+        .filter-chip.active{background:rgba(6,182,212,.12);border-color:rgba(6,182,212,.3);color:var(--cyan)}
+        @media print{body{background:#fff;color:#000}.glass{background:#f8f8f8;border-color:#ddd}header,footer,.toc-sidebar{display:none}.report-body h2{color:#000}.report-body p,.report-body li{color:#333}}
+    </style>
+    <script>tailwind.config={theme:{extend:{colors:{'bio-dark':'#0a0e1a','bio-card':'#111827','bio-border':'#1e293b','bio-cyan':'#06b6d4'}}}}</script>
+</head>
+<body class="min-h-screen">
+<div class="scroll-ind" id="scroll-bar"></div>
+
+<!-- HEADER -->
+<header class="fixed top-0 w-full z-50 border-b border-bio-border bg-[#060a14]/85 backdrop-blur-xl">
+    <div class="max-w-[1200px] mx-auto px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="../index.html" class="flex items-center gap-2 hover:no-underline">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-lg flex items-center justify-center"><span class="text-white font-black text-[9px]">BR</span></div>
+                <span class="text-sm font-bold">BioR</span>
+            </a>
+            <span class="text-xs text-gray-600 mx-2">/</span>
+            <span class="text-xs text-gray-400">Full Benchmark Report</span>
+        </div>
+        <div class="flex items-center gap-3 text-xs">
+            <button onclick="window.print()" class="text-gray-500 hover:text-gray-300"><i class="fas fa-print mr-1"></i>Print</button>
+            <a href="../index.html" class="text-gray-500 hover:text-gray-300"><i class="fas fa-home mr-1"></i>Home</a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-[1200px] mx-auto px-6 pt-20 pb-16 flex gap-8">
+
+<!-- TOC SIDEBAR -->
+<aside class="hidden lg:block w-56 flex-shrink-0 toc-sidebar">
+    <div class="sticky top-20 space-y-1 toc">
+        <div class="text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-2 px-3">Contents</div>
+        <a href="#exec-summary">Executive Summary</a>
+        <a href="#methodology">Methodology</a>
+        <a href="#tier-analysis">Tier Analysis</a>
+        <a href="#dimension-analysis">Dimension Analysis</a>
+        <a href="#layer-analysis">Layer Analysis</a>
+        <a href="#key-findings">Key Findings</a>
+        <a href="#regional-overview">Regional Overview</a>
+        <a href="#adversary-landscape">Adversary Landscape</a>
+        <a href="#full-rankings">Full Rankings</a>
+        <a href="#recommendations">Recommendations</a>
+        <a href="#appendix">Appendix</a>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 min-w-0 report-body">
+
+<!-- TITLE BLOCK -->
+<div class="glass p-8 mb-8">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-semibold mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>PSEF v3.0.0 &mdash; March 2026
+    </div>
+    <h1 class="text-3xl md:text-4xl font-black leading-tight mb-3">Global Pathogen Surveillance<br>Platform Benchmark Report</h1>
+    <p class="text-sm text-gray-400 mb-4">A comprehensive evaluation of <strong>169 pathogen surveillance, genomic analysis, biodefense, and health security platforms</strong> across <strong>10 scoring dimensions</strong>, <strong>5 capability layers</strong>, and <strong>8 geopolitical regions</strong>.</p>
+    <div class="flex flex-wrap gap-4 text-xs text-gray-500">
+        <span><i class="fas fa-calendar mr-1 text-gray-600"></i>Assessment Period: 2024&ndash;2026</span>
+        <span><i class="fas fa-database mr-1 text-gray-600"></i>1,690 Data Points</span>
+        <span><i class="fas fa-globe mr-1 text-gray-600"></i>8 Regions</span>
+        <span><i class="fas fa-shield-alt mr-1 text-gray-600"></i>4 Adversary Profiles</span>
+    </div>
+</div>
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<h2 id="exec-summary"><i class="fas fa-file-alt text-cyan-400 mr-2 text-base"></i>1. Executive Summary</h2>
+
+<p>This report presents the findings of the most comprehensive evaluation of global pathogen surveillance platforms to date. Using the <strong>Pathogen Surveillance Evaluation Framework (PSEF) v3.0</strong>, we assessed <strong>169 platforms</strong> across <strong>10 weighted dimensions</strong>, generating <strong>1,690 individual data points</strong> that form the basis for capability gap identification, investment prioritization, and strategic recommendations.</p>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-6">
+    <div class="glass p-4 text-center"><div class="text-2xl font-black text-cyan-400">169</div><div class="text-[10px] text-gray-500 mt-1">Platforms Evaluated</div></div>
+    <div class="glass p-4 text-center"><div class="text-2xl font-black text-blue-400">78.6</div><div class="text-[10px] text-gray-500 mt-1">Mean Score</div></div>
+    <div class="glass p-4 text-center"><div class="text-2xl font-black text-green-400">3</div><div class="text-[10px] text-gray-500 mt-1">Excellent Tier</div></div>
+    <div class="glass p-4 text-center"><div class="text-2xl font-black text-red-400">15</div><div class="text-[10px] text-gray-500 mt-1">Developing Tier</div></div>
+</div>
+
+<blockquote><strong>Bottom line:</strong> The global pathogen surveillance landscape is fragmented, with significant capability concentrated in a small number of elite platforms. Only 1.8% of evaluated platforms achieve Excellent status (90+), while 8.9% remain in the Developing tier (&lt;70). Critical gaps persist in genomic sequencing equity, AI/ML integration, interoperability, and One Health convergence.</blockquote>
+
+<h3>Key Takeaways</h3>
+<ol>
+    <li><strong>Extreme concentration of capability</strong> &mdash; The top 10 platforms (5.9%) account for a disproportionate share of global surveillance capacity, with 80% of genomic sequencing concentrated in Five Eyes + EU.</li>
+    <li><strong>Security is the strongest dimension</strong> (82.5 avg), while <strong>accessibility is the weakest</strong> (73.9 avg) &mdash; many platforms remain inaccessible to LMICs.</li>
+    <li><strong>Adversary capabilities are accelerating</strong> &mdash; China's AI-integrated biosurveillance and Russia's VECTOR modernization represent growing dual-use concerns.</li>
+    <li><strong>$31.6 billion in linked investment</strong> has been mapped to platform capabilities across 8 regions, with 96 policy recommendations generated.</li>
+    <li><strong>Interoperability remains a systemic weakness</strong> (77.3 avg) &mdash; HL7/FHIR adoption is inconsistent, and defense platforms operate in classified silos.</li>
+</ol>
+
+<!-- 2. METHODOLOGY -->
+<h2 id="methodology"><i class="fas fa-flask text-purple-400 mr-2 text-base"></i>2. Methodology</h2>
+
+<p>The PSEF v3.0 framework provides a standardized, reproducible methodology for evaluating pathogen surveillance platforms. It is aligned with <strong>WHO Guidance</strong>, <strong>CDC Standards</strong>, <strong>ISO 27799:2025</strong>, and <strong>FDA AI/ML Guidance</strong>.</p>
+
+<h3>2.1 Evaluation Dimensions</h3>
+<p>Each platform is scored 0&ndash;100 on 10 dimensions, with each dimension assigned a weight reflecting its relative importance to effective pathogen surveillance:</p>
+
+<div class="glass p-5 my-5" id="dim-chart-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="space-y-3" id="dim-list"></div>
+        </div>
+        <div style="height:280px" class="flex justify-center items-center">
+            <canvas id="dim-radar" width="280" height="280"></canvas>
+        </div>
+    </div>
+</div>
+
+<h3>2.2 Tier Classification</h3>
+<p>Platforms are classified into four performance tiers based on their composite score:</p>
+<div class="grid grid-cols-4 gap-2 my-4">
+    <div class="text-center p-3 rounded-xl bg-green-500/5 border border-green-500/15"><div class="text-lg font-black text-green-400">90&ndash;100</div><div class="text-[10px] text-green-400/70 font-bold">EXCELLENT</div><div class="text-[10px] text-gray-600">3 platforms (1.8%)</div></div>
+    <div class="text-center p-3 rounded-xl bg-blue-500/5 border border-blue-500/15"><div class="text-lg font-black text-blue-400">80&ndash;89</div><div class="text-[10px] text-blue-400/70 font-bold">GOOD</div><div class="text-[10px] text-gray-600">74 platforms (43.8%)</div></div>
+    <div class="text-center p-3 rounded-xl bg-amber-500/5 border border-amber-500/15"><div class="text-lg font-black text-amber-400">70&ndash;79</div><div class="text-[10px] text-amber-400/70 font-bold">ADEQUATE</div><div class="text-[10px] text-gray-600">77 platforms (45.6%)</div></div>
+    <div class="text-center p-3 rounded-xl bg-red-500/5 border border-red-500/15"><div class="text-lg font-black text-red-400">&lt;70</div><div class="text-[10px] text-red-400/70 font-bold">DEVELOPING</div><div class="text-[10px] text-gray-600">15 platforms (8.9%)</div></div>
+</div>
+
+<h3>2.3 Layer Classification</h3>
+<p>Platforms are organized into five capability layers representing the bio-intelligence stack:</p>
+<ul>
+    <li><strong>L1 &mdash; Surveillance</strong> (63 platforms): Disease monitoring, syndromic surveillance, epidemic intelligence, event-based monitoring</li>
+    <li><strong>L2 &mdash; Genomic</strong> (57 platforms): Phylogenetic analysis, sequencing pipelines, bioinformatics, variant tracking</li>
+    <li><strong>L3 &mdash; Defense</strong> (35 platforms): Military biodefense, CBRN programs, bioweapons assessment, countermeasure R&D</li>
+    <li><strong>L4 &mdash; Hardware</strong> (9 platforms): Biological point detection, aerosol collection, field diagnostic devices</li>
+    <li><strong>L5 &mdash; Policy</strong> (5 platforms): Health security assessment, IHR compliance, pandemic preparedness frameworks</li>
+</ul>
+
+<!-- 3. TIER ANALYSIS -->
+<h2 id="tier-analysis"><i class="fas fa-trophy text-amber-400 mr-2 text-base"></i>3. Tier Analysis</h2>
+
+<p>The distribution of platforms across tiers reveals a landscape where the bulk of platforms (&approx;89%) cluster in the Good and Adequate tiers, with excellence being rare and developing-status platforms concentrated in LMICs and classified programs with limited transparency.</p>
+
+<div class="glass p-5 my-5">
+    <div class="h-4 rounded-full overflow-hidden flex mb-2">
+        <div class="bg-green-500 h-full" style="width:1.8%" title="Excellent: 3"></div>
+        <div class="bg-blue-500 h-full" style="width:43.8%" title="Good: 74"></div>
+        <div class="bg-amber-500 h-full" style="width:45.6%" title="Adequate: 77"></div>
+        <div class="bg-red-500 h-full" style="width:8.9%" title="Developing: 15"></div>
+    </div>
+    <div class="flex justify-between text-[10px] text-gray-500">
+        <span><span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span>Excellent 3 (1.8%)</span>
+        <span><span class="inline-block w-2 h-2 rounded-full bg-blue-500 mr-1"></span>Good 74 (43.8%)</span>
+        <span><span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1"></span>Adequate 77 (45.6%)</span>
+        <span><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>Developing 15 (8.9%)</span>
+    </div>
+</div>
+
+<h3>3.1 Excellent Tier (Score &ge;90)</h3>
+<p>Only <strong>three platforms</strong> achieved Excellent status, representing the gold standard in pathogen surveillance:</p>
+<ul>
+    <li><strong>Nextstrain (95)</strong> &mdash; Open-source phylogenetic analysis platform from Fred Hutchinson Cancer Center, providing real-time tracking of pathogen evolution with unmatched visualization.</li>
+    <li><strong>SORMAS (90)</strong> &mdash; End-to-end outbreak management system deployed in 15+ countries, with mobile capabilities and WHO endorsement.</li>
+    <li><strong>outbreak.info (90)</strong> &mdash; Scripps Research Institute's open data aggregation platform, integrating GISAID, WHO, and Johns Hopkins data streams.</li>
+</ul>
+
+<!-- 4. DIMENSION ANALYSIS -->
+<h2 id="dimension-analysis"><i class="fas fa-chart-bar text-blue-400 mr-2 text-base"></i>4. Dimension Analysis</h2>
+
+<p>Cross-cutting analysis of the 10 scoring dimensions reveals structural strengths and weaknesses across the entire platform ecosystem:</p>
+
+<div class="glass p-5 my-5">
+    <div style="height:300px"><canvas id="dim-bar-chart"></canvas></div>
+</div>
+
+<h3>4.1 Strongest Dimension: Security & Compliance (82.5)</h3>
+<p>Security is the highest-scoring dimension globally, driven by strong encryption standards, access controls, and regulatory compliance across defense (L3) and genomic (L2) platforms. HIPAA, GDPR, and ISO 27799 compliance is well-established in the top tiers.</p>
+
+<h3>4.2 Weakest Dimension: Accessibility (73.9)</h3>
+<p>Accessibility remains the greatest challenge. Many platforms lack mobile compatibility, offline capability, multi-language support, and training resources &mdash; creating a significant barrier for deployment in low-resource settings where surveillance is most needed.</p>
+
+<h3>4.3 Notable Gaps</h3>
+<ul>
+    <li><strong>Community Support (75.0)</strong> &mdash; Many government and defense platforms operate with limited community engagement</li>
+    <li><strong>Visualization (76.6)</strong> &mdash; Interactive dashboards and geographic mapping capabilities remain inconsistent</li>
+    <li><strong>Interoperability (77.3)</strong> &mdash; HL7/FHIR adoption is fragmented; data silos persist between civilian and defense systems</li>
+</ul>
+
+<!-- 5. LAYER ANALYSIS -->
+<h2 id="layer-analysis"><i class="fas fa-layer-group text-green-400 mr-2 text-base"></i>5. Layer Analysis</h2>
+
+<div class="glass p-5 my-5">
+    <div style="height:260px"><canvas id="layer-chart"></canvas></div>
+</div>
+
+<p>Performance across the five capability layers is remarkably consistent (77.2&ndash;79.5 average), suggesting that capability gaps are more about <strong>distribution and access</strong> than absolute technical quality. L2 Genomic leads slightly (79.5), driven by strong open-source bioinformatics tools, while L4 Hardware trails (77.2) due to the small number of highly specialized platforms.</p>
+
+<!-- 6. KEY FINDINGS -->
+<h2 id="key-findings"><i class="fas fa-lightbulb text-amber-400 mr-2 text-base"></i>6. Key Findings</h2>
+
+<h3>6.1 Genomic Sequencing Inequity</h3>
+<p>Approximately 80% of global genomic sequencing capacity is concentrated in Five Eyes and EU nations. Africa, Central Asia, and Pacific Islands have near-zero autonomous sequencing capability, creating massive surveillance blind spots during pandemic events.</p>
+
+<h3>6.2 AI/ML Integration Divide</h3>
+<p>Only ~15% of evaluated platforms integrate meaningful AI/ML capabilities. DARPA-funded programs (PREEMPT, P3) and commercial platforms (BlueDot, Airfinity) lead, while the majority of LMIC-deployed platforms lack any AI integration.</p>
+
+<h3>6.3 One Health Fragmentation</h3>
+<p>Despite WHO advocacy, One Health integration &mdash; bridging human, animal, and environmental surveillance &mdash; remains the weakest convergence area. Only a handful of platforms (WAHIS, EMPRES-i, Predict) operate across these domains.</p>
+
+<h3>6.4 MCM Manufacturing Concentration</h3>
+<p>Medical countermeasure manufacturing capacity is concentrated in &lt;10 countries. The COVID-19 pandemic demonstrated the fragility of this model, yet platform coverage for distributed manufacturing intelligence remains minimal.</p>
+
+<h3>6.5 Cyber-Bio Convergence Risk</h3>
+<p>As biosurveillance platforms become increasingly digital, the cyber-bio attack surface is expanding. Only 12% of platforms demonstrate integrated cybersecurity postures. Genome databases and real-time surveillance feeds represent high-value targets.</p>
+
+<!-- 7. REGIONAL OVERVIEW -->
+<h2 id="regional-overview"><i class="fas fa-globe-americas text-indigo-400 mr-2 text-base"></i>7. Regional Overview</h2>
+
+<p>Platforms were mapped to 8 geopolitical regions, with 96 region-specific policy recommendations generated and $31.6 billion in investment linked:</p>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 my-5">
+    <div class="glass p-3 text-center"><div class="text-lg font-black text-cyan-400">88</div><div class="text-[10px] text-gray-500">Five Eyes<br>Readiness</div></div>
+    <div class="glass p-3 text-center"><div class="text-lg font-black text-blue-400">78</div><div class="text-[10px] text-gray-500">NATO/Europe<br>Readiness</div></div>
+    <div class="glass p-3 text-center"><div class="text-lg font-black text-green-400">72</div><div class="text-[10px] text-gray-500">Indo-Pacific<br>Readiness</div></div>
+    <div class="glass p-3 text-center"><div class="text-lg font-black text-amber-400">45</div><div class="text-[10px] text-gray-500">Africa<br>Readiness</div></div>
+</div>
+
+<p>For detailed regional analysis including platform mapping, investment linkages, and specific recommendations, see the <a href="../phase3/regional_briefs/index.html">Regional Recommendation Briefs</a> dashboard.</p>
+
+<!-- 8. ADVERSARY LANDSCAPE -->
+<h2 id="adversary-landscape"><i class="fas fa-user-secret text-red-400 mr-2 text-base"></i>8. Adversary Landscape</h2>
+
+<p>Four state actors were assessed for biological research capabilities with dual-use or weapons potential:</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-5">
+    <div class="glass p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-lg">🇷🇺</span><strong class="text-sm">Russia</strong><span class="text-[10px] text-red-400 font-bold ml-auto">HIGH THREAT</span></div>
+        <p class="text-xs text-gray-400 !mb-0">VECTOR Institute modernization ongoing. Historical offensive BW program. AMMS network of 15+ biological research facilities. Active dual-use research programs.</p>
+    </div>
+    <div class="glass p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-lg">🇨🇳</span><strong class="text-sm">China</strong><span class="text-[10px] text-red-400 font-bold ml-auto">HIGH THREAT</span></div>
+        <p class="text-xs text-gray-400 !mb-0">Rapid AI-integrated biosurveillance expansion. AMMS and CAS WIV research infrastructure. Gene-drive and synthetic biology capabilities advancing.</p>
+    </div>
+    <div class="glass p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-lg">🇰🇵</span><strong class="text-sm">DPRK</strong><span class="text-[10px] text-amber-400 font-bold ml-auto">MODERATE THREAT</span></div>
+        <p class="text-xs text-gray-400 !mb-0">Opaque biological research program. Suspected offensive BW capability. Limited but assessed capability at Pyongyang Bio-Technical Institute.</p>
+    </div>
+    <div class="glass p-4">
+        <div class="flex items-center gap-2 mb-2"><span class="text-lg">🇮🇷</span><strong class="text-sm">Iran</strong><span class="text-[10px] text-amber-400 font-bold ml-auto">MODERATE THREAT</span></div>
+        <p class="text-xs text-gray-400 !mb-0">Pasteur Institute of Iran and RVSRI capabilities. Historical program assessed by intelligence community. Growing civilian bioinformatics sector.</p>
+    </div>
+</div>
+
+<p>For detailed capability scores, facility listings, and intelligence assessments, see the <a href="../phase3/adversary_dossier/index.html">Adversary Capability Dossier</a>.</p>
+
+<!-- 9. FULL RANKINGS -->
+<h2 id="full-rankings"><i class="fas fa-list-ol text-cyan-400 mr-2 text-base"></i>9. Full Platform Rankings</h2>
+
+<p>Complete rankings of all 169 evaluated platforms, sortable and filterable:</p>
+
+<div class="glass p-5 my-5">
+    <div class="flex flex-wrap items-center gap-3 mb-4">
+        <div class="relative flex-1 min-w-[200px]">
+            <i class="fas fa-search absolute left-3 top-2.5 text-gray-600 text-xs"></i>
+            <input type="text" class="search-input" id="search-input" placeholder="Search 169 platforms..." oninput="filterTable()">
+        </div>
+        <div class="flex flex-wrap gap-1" id="filter-chips">
+            <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All (169)</button>
+            <button class="filter-chip" data-filter="EX" onclick="setFilter('EX',this)">Excellent (3)</button>
+            <button class="filter-chip" data-filter="GD" onclick="setFilter('GD',this)">Good (74)</button>
+            <button class="filter-chip" data-filter="AD" onclick="setFilter('AD',this)">Adequate (77)</button>
+            <button class="filter-chip" data-filter="DV" onclick="setFilter('DV',this)">Developing (15)</button>
+        </div>
+        <div class="flex flex-wrap gap-1">
+            <button class="filter-chip" data-layer="L1" onclick="setLayerFilter('L1',this)">L1 (63)</button>
+            <button class="filter-chip" data-layer="L2" onclick="setLayerFilter('L2',this)">L2 (57)</button>
+            <button class="filter-chip" data-layer="L3" onclick="setLayerFilter('L3',this)">L3 (35)</button>
+            <button class="filter-chip" data-layer="L4" onclick="setLayerFilter('L4',this)">L4 (9)</button>
+            <button class="filter-chip" data-layer="L5" onclick="setLayerFilter('L5',this)">L5 (5)</button>
+        </div>
+    </div>
+    <div class="table-header table-row"><span>#</span><span>Platform</span><span>Score</span><span>Category</span><span>Tier</span></div>
+    <div id="rankings-table" class="max-h-[600px] overflow-y-auto scrollbar-thin" style="scrollbar-width:thin;scrollbar-color:#1e293b transparent"></div>
+    <div class="text-center text-xs text-gray-600 mt-3" id="table-count">Showing 169 of 169</div>
+</div>
+
+<!-- 10. RECOMMENDATIONS -->
+<h2 id="recommendations"><i class="fas fa-clipboard-list text-green-400 mr-2 text-base"></i>10. Recommendations</h2>
+
+<h3>10.1 Immediate Priorities (0&ndash;12 months)</h3>
+<ol>
+    <li><strong>Establish genomic sequencing hubs</strong> in Africa, Central Asia, and Pacific Islands to close the surveillance blind spot.</li>
+    <li><strong>Mandate HL7/FHIR interoperability standards</strong> for all publicly funded surveillance platforms.</li>
+    <li><strong>Deploy AI/ML augmentation</strong> to existing LMIC surveillance systems, starting with DHIS2 and SORMAS deployments.</li>
+    <li><strong>Conduct cybersecurity audits</strong> of all platforms handling genomic data, particularly genome databases (GISAID, NCBI) and real-time surveillance feeds.</li>
+</ol>
+
+<h3>10.2 Medium-Term Goals (1&ndash;3 years)</h3>
+<ol>
+    <li><strong>Create a unified Five Eyes biosurveillance data fabric</strong> bridging civilian and defense platforms.</li>
+    <li><strong>Fund distributed MCM manufacturing intelligence</strong> platforms to reduce single-source dependency.</li>
+    <li><strong>Develop One Health integration frameworks</strong> connecting human, animal, and environmental surveillance streams.</li>
+    <li><strong>Establish wastewater surveillance networks</strong> in all WHO regions as a cost-effective early warning system.</li>
+</ol>
+
+<h3>10.3 Long-Term Vision (3&ndash;10 years)</h3>
+<ol>
+    <li><strong>Achieve global real-time pathogen surveillance coverage</strong> with &lt;24h sample-to-sequence-to-alert capability.</li>
+    <li><strong>Build sovereign national genomic surveillance capacity</strong> in all WHO member states.</li>
+    <li><strong>Deploy autonomous AI-driven early warning systems</strong> capable of detecting novel pathogen emergence before clinical recognition.</li>
+</ol>
+
+<!-- 11. APPENDIX -->
+<h2 id="appendix"><i class="fas fa-paperclip text-gray-400 mr-2 text-base"></i>11. Appendix</h2>
+
+<h3>Interactive Dashboards</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-2 my-4">
+    <a href="../phase1/executive_dashboard/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-chart-pie text-cyan-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Executive Dashboard</span></a>
+    <a href="../phase1/threat_map/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-globe text-blue-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Threat Map</span></a>
+    <a href="../phase1/gap_analysis/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-search-minus text-amber-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Gap Analysis</span></a>
+    <a href="../phase1/interop_assessment/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-network-wired text-purple-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Interoperability Assessment</span></a>
+    <a href="../phase1/comparison_engine/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-balance-scale text-green-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Comparison Engine</span></a>
+    <a href="../phase2/investment_roadmap/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-coins text-amber-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Investment Roadmap</span></a>
+    <a href="../phase2/allied_posture/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-flag text-blue-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Allied Posture</span></a>
+    <a href="../phase2/readiness_scorecard/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-clipboard-check text-green-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Readiness Scorecard</span></a>
+    <a href="../phase3/adversary_dossier/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-crosshairs text-red-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Adversary Dossier</span></a>
+    <a href="../phase3/regional_briefs/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-map-marked-alt text-amber-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Regional Briefs</span></a>
+    <a href="../platform_directory/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-book text-cyan-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Platform Directory</span></a>
+    <a href="../intake/index.html" class="glass p-3 flex items-center gap-3 hover:no-underline hover:border-cyan-500/20"><i class="fas fa-plus-circle text-green-400 w-5 text-center text-xs"></i><span class="text-xs font-semibold">Platform Intake Tool</span></a>
+</div>
+
+<hr class="border-bio-border my-8">
+<div class="text-center text-xs text-gray-600">
+    <p>BioR &mdash; Global Pathogen Surveillance Platform Benchmark Report</p>
+    <p>PSEF v3.0.0 | 169 Platforms | 1,690 Data Points | 5 Layers | 10 Dimensions | 8 Regions | March 2026</p>
+</div>
+
+</main>
+</div>
+
+<script>
+const ALL_PLATFORMS=[
+{r:1,n:"Nextstrain",s:95,c:"Phylogenetic Analysis & Visualization",ly:"L2",t:"EX"},
+{r:2,n:"SORMAS",s:90,c:"Surveillance & Outbreak Response",ly:"L1",t:"EX"},
+{r:3,n:"outbreak.info",s:90,c:"Epidemiological Data Aggregation",ly:"L1",t:"EX"},
+{r:4,n:"CZ ID",s:89.2,c:"Metagenomic Pathogen Detection",ly:"L4",t:"GD"},
+{r:5,n:"DHIS2",s:89,c:"Health Information Management",ly:"L1",t:"GD"},
+{r:6,n:"NCBI Pathogen Detection",s:88.9,c:"Genomic Pathogen Detection",ly:"L4",t:"GD"},
+{r:7,n:"GISAID",s:88.5,c:"Genomic Data Sharing",ly:"L2",t:"GD"},
+{r:8,n:"Microreact",s:87.5,c:"Genomic Epidemiology Visualization",ly:"L2",t:"GD"},
+{r:9,n:"BioSense / ESSENCE",s:87.2,c:"Syndromic Surveillance",ly:"L1",t:"GD"},
+{r:10,n:"Pathogenwatch",s:87,c:"Pathogen Genomic Analysis",ly:"L2",t:"GD"},
+{r:11,n:"Galaxy Project",s:86.5,c:"Bioinformatics Workflow Platform",ly:"L2",t:"GD"},
+{r:12,n:"NWSS",s:86.2,c:"Wastewater Surveillance",ly:"L1",t:"GD"},
+{r:13,n:"BV-BRC",s:86,c:"Bacterial & Viral Bioinformatics Resource",ly:"L2",t:"GD"},
+{r:14,n:"EpiCollect5",s:86,c:"Mobile Data Collection",ly:"L1",t:"GD"},
+{r:15,n:"Pathoplexus",s:85.6,c:"Genomic Data Sharing",ly:"L2",t:"GD"},
+{r:16,n:"Airfinity",s:85.5,c:"AI Health Analytics & Disease Forecasting",ly:"L1",t:"GD"},
+{r:17,n:"HealthMap",s:85.5,c:"Disease Intelligence",ly:"L1",t:"GD"},
+{r:18,n:"BlueDot",s:85,c:"AI Epidemic Intelligence",ly:"L1",t:"GD"},
+{r:19,n:"GEIS (Global Emerging Infections Surveillance)",s:85,c:"DoD Global Disease Surveillance Network",ly:"L1",t:"GD"},
+{r:20,n:"ProMED",s:85,c:"Event-Based Surveillance",ly:"L1",t:"GD"},
+{r:21,n:"CARD / RGI",s:84.5,c:"AMR Gene Database & Analysis",ly:"L2",t:"GD"},
+{r:22,n:"OpenELIS",s:84.5,c:"Laboratory Information System",ly:"L1",t:"GD"},
+{r:23,n:"DARPA P3 (Pandemic Prevention Platform)",s:84,c:"Military Pandemic Countermeasure R&D",ly:"L3",t:"GD"},
+{r:24,n:"Ginkgo Biosecurity",s:84,c:"Integrated Biosurveillance",ly:"L1",t:"GD"},
+{r:25,n:"USAMRIID Biosurveillance",s:84,c:"Military Biodefense Research & Surveillance",ly:"L3",t:"GD"},
+{r:26,n:"WHONET",s:84,c:"AMR Surveillance",ly:"L1",t:"GD"},
+{r:27,n:"CDC TGS",s:83.6,c:"Traveler Genomic Surveillance",ly:"L2",t:"GD"},
+{r:28,n:"BEACON (BU/HealthMap)",s:83.5,c:"Open-Source AI Epidemic Surveillance",ly:"L1",t:"GD"},
+{r:29,n:"NNDSS",s:83.5,c:"Notifiable Disease Reporting",ly:"L1",t:"GD"},
+{r:30,n:"ReportStream",s:83.5,c:"Data Exchange Pipeline",ly:"L1",t:"GD"},
+{r:31,n:"WastewaterSCAN",s:83.5,c:"Wastewater Epidemiology",ly:"L1",t:"GD"},
+{r:32,n:"Bactopia",s:83.2,c:"Bacterial Genome Analysis Pipeline",ly:"L2",t:"GD"},
+{r:33,n:"AMRFinderPlus",s:83,c:"AMR Gene Detection",ly:"L4",t:"GD"},
+{r:34,n:"BioNumerics",s:83,c:"Bioinformatics Suite",ly:"L2",t:"GD"},
+{r:35,n:"GHS Index",s:83,c:"Global Health Security Assessment",ly:"L5",t:"GD"},
+{r:36,n:"IIBR (Israel Institute for Biological Research)",s:83,c:"Israeli National Biodefense Research",ly:"L3",t:"GD"},
+{r:37,n:"MalariaGEN",s:83,c:"Malaria Genomic Epidemiology",ly:"L2",t:"GD"},
+{r:38,n:"Biobot Analytics",s:82.8,c:"Wastewater Epidemiology",ly:"L1",t:"GD"},
+{r:39,n:"DARPA PREEMPT",s:82.5,c:"Military Zoonotic Spillover Prevention",ly:"L3",t:"GD"},
+{r:40,n:"EnteroBase",s:82.5,c:"Bacterial Genomic Database",ly:"L2",t:"GD"},
+{r:41,n:"GPAP (Global Pathogen Analysis Platform)",s:82.5,c:"Global Genomic Pathogen Analysis",ly:"L2",t:"GD"},
+{r:42,n:"ResFinder",s:82.5,c:"AMR Gene Detection",ly:"L4",t:"GD"},
+{r:43,n:"UK Dstl (Porton Down)",s:82.5,c:"UK Military Biodefense Research",ly:"L3",t:"GD"},
+{r:44,n:"BSVE (Biosurveillance Ecosystem)",s:82,c:"Military Integrated Biosurveillance",ly:"L3",t:"GD"},
+{r:45,n:"BioFire Defense (FilmArray)",s:82,c:"Rapid Multiplex Biothreat Diagnostics",ly:"L3",t:"GD"},
+{r:46,n:"EPIWATCH",s:82,c:"AI Epidemic Intelligence",ly:"L1",t:"GD"},
+{r:47,n:"IRIDA",s:82,c:"Genomic Epidemiology Platform",ly:"L2",t:"GD"},
+{r:48,n:"JPEO-CBRND Capabilities",s:82,c:"US DoD CBRN Defense Acquisition Executive",ly:"L3",t:"GD"},
+{r:49,n:"One Codex",s:82,c:"Metagenomic Analysis Platform",ly:"L2",t:"GD"},
+{r:50,n:"Seqera Platform",s:82,c:"Bioinformatics Workflow Management",ly:"L2",t:"GD"},
+{r:51,n:"Solu",s:82,c:"Cloud Genomic Pathogen Surveillance",ly:"L2",t:"GD"},
+{r:52,n:"Taxonium",s:82,c:"Phylogenetic Visualization",ly:"L2",t:"GD"},
+{r:53,n:"BEAST2",s:81.6,c:"Bayesian Phylodynamics",ly:"L1",t:"GD"},
+{r:54,n:"Kraken2 / Bracken",s:81.5,c:"Metagenomic Taxonomic Classification",ly:"L2",t:"GD"},
+{r:55,n:"PHE Sequence Pipeline",s:81.5,c:"National Sequencing Pipeline",ly:"L1",t:"GD"},
+{r:56,n:"Project BioShield / BARDA",s:81.5,c:"National Medical Countermeasure Procurement",ly:"L3",t:"GD"},
+{r:57,n:"GLEWS+",s:81.4,c:"One Health Early Warning",ly:"L1",t:"GD"},
+{r:58,n:"PHoeNIx",s:81.2,c:"CDC WGS Pipeline",ly:"L1",t:"GD"},
+{r:59,n:"DARPA ADEPT",s:81,c:"Military Autonomous Diagnostics",ly:"L3",t:"GD"},
+{r:60,n:"EU HERA",s:81,c:"EU Health Emergency Preparedness Authority",ly:"L1",t:"GD"},
+{r:61,n:"EpiHiper",s:81,c:"High-Performance Pandemic Simulation",ly:"L1",t:"GD"},
+{r:62,n:"F-FAST / FFBS",s:81,c:"Far-Forward Biological Sequencing",ly:"L1",t:"GD"},
+{r:63,n:"GLASS (WHO)",s:81,c:"Global AMR Surveillance",ly:"L1",t:"GD"},
+{r:64,n:"Theiagen PHB",s:81,c:"Public Health Bioinformatics Toolkit",ly:"L2",t:"GD"},
+{r:65,n:"ArboNET",s:80.5,c:"Arboviral Disease Surveillance",ly:"L1",t:"GD"},
+{r:66,n:"DARPA SIGMA+",s:80.5,c:"Urban CBRN Threat Detection Network",ly:"L3",t:"GD"},
+{r:67,n:"DARPA Safe Genes",s:80.5,c:"Gene Drive Biosecurity & Biodefense",ly:"L3",t:"GD"},
+{r:68,n:"NBACC",s:80.5,c:"National Biodefense Analysis & Bioforensics",ly:"L3",t:"GD"},
+{r:69,n:"PulseNet",s:80.5,c:"Foodborne Disease Surveillance",ly:"L1",t:"GD"},
+{r:70,n:"One CDP",s:80.2,c:"Unified Data Modernization",ly:"L1",t:"GD"},
+{r:71,n:"ARTIC Network",s:80,c:"Real-Time Genomic Epidemiology",ly:"L2",t:"GD"},
+{r:72,n:"Arvados",s:80,c:"Bioinformatics Infrastructure",ly:"L2",t:"GD"},
+{r:73,n:"Auspice",s:80,c:"Phylogenetic Visualization",ly:"L2",t:"GD"},
+{r:74,n:"DTRA BTRP",s:80,c:"Global Cooperative Biological Threat Reduction",ly:"L3",t:"GD"},
+{r:75,n:"MetaPhlAn 4",s:80,c:"Metagenomic Species Profiling",ly:"L2",t:"GD"},
+{r:76,n:"SecureBio / NAO",s:80,c:"Metagenomic Biosecurity & AI-Bio Risk",ly:"L2",t:"GD"},
+{r:77,n:"USAID PREDICT",s:80,c:"Global Zoonotic Virus Discovery",ly:"L1",t:"GD"},
+{r:78,n:"Taxonium / Treenome Browser",s:79.8,c:"Genome-Phylogeny Visualization",ly:"L2",t:"AD"},
+{r:79,n:"DARPA INTERCEPT",s:79.5,c:"Adaptive Bio-Countermeasures",ly:"L3",t:"AD"},
+{r:80,n:"DRDC Suffield (Canada)",s:79.5,c:"Canadian Military CBRN Defense Research",ly:"L3",t:"AD"},
+{r:81,n:"Google Earth Engine / Health Map AI",s:79.5,c:"Geospatial AI for Disease Ecology",ly:"L1",t:"AD"},
+{r:82,n:"NATO JCBRN Defence COE",s:79.5,c:"NATO CBRN Knowledge & Capability Hub",ly:"L3",t:"AD"},
+{r:83,n:"PHA4GE",s:79.5,c:"Public Health Bioinformatics Standards",ly:"L2",t:"AD"},
+{r:84,n:"Terra",s:79.5,c:"Cloud Bioinformatics",ly:"L2",t:"AD"},
+{r:85,n:"GrapeTree",s:79.4,c:"MST Visualization",ly:"L1",t:"AD"},
+{r:86,n:"Africa CDC AGARI",s:79,c:"Pan-African Pathogen Genomic Surveillance",ly:"L2",t:"AD"},
+{r:87,n:"Australia DSTG CBRN",s:79,c:"Australian Military CBRN Defense Research",ly:"L3",t:"AD"},
+{r:88,n:"CEIRR / iDPCC",s:79,c:"Respiratory Pathogen Research Network",ly:"L1",t:"AD"},
+{r:89,n:"CoVariants",s:79,c:"Variant Tracking",ly:"L1",t:"AD"},
+{r:90,n:"DARPA NOW",s:79,c:"Mobile Medical Countermeasure Manufacturing",ly:"L3",t:"AD"},
+{r:91,n:"HESN",s:79,c:"National Disease Surveillance",ly:"L1",t:"AD"},
+{r:92,n:"PPX (CEPI Pandemic Preparedness Engine)",s:79,c:"AI-Powered Pandemic Preparedness R&D",ly:"L1",t:"AD"},
+{r:93,n:"SNVPhyl",s:78.6,c:"SNP Phylogenomics",ly:"L2",t:"AD"},
+{r:94,n:"Chemring TACBIO / JBTDS",s:78.5,c:"Advanced Biological Point Detection",ly:"L4",t:"AD"},
+{r:95,n:"DARPA ECHO",s:78.5,c:"WMD Exposure Detection",ly:"L4",t:"AD"},
+{r:96,n:"Korea-US Joint Biosurveillance Portal",s:78.5,c:"Allied Joint Biosurveillance System",ly:"L1",t:"AD"},
+{r:97,n:"Pandemic PACT Tracker",s:78.5,c:"Global Pandemic Research Funding Intelligence",ly:"L1",t:"AD"},
+{r:98,n:"Pangolin",s:78.5,c:"Lineage Classification",ly:"L2",t:"AD"},
+{r:99,n:"Bundeswehr CBRN Defence",s:78,c:"German Military CBRN Defense",ly:"L3",t:"AD"},
+{r:100,n:"DARPA PANACEA",s:78,c:"Multi-Target Military Therapeutics Platform",ly:"L3",t:"AD"},
+{r:101,n:"DARPA RTA",s:78,c:"Rapid Biological Threat Characterization",ly:"L3",t:"AD"},
+{r:102,n:"DORA (Disease Outbreak Risk Assessment)",s:78,c:"AI Outbreak Risk Prediction (Defense)",ly:"L3",t:"AD"},
+{r:103,n:"EMBD (Enhanced Maritime Biological Detection)",s:78,c:"Navy Shipboard Bio-Agent Detection",ly:"L4",t:"AD"},
+{r:104,n:"JEE (WHO Joint External Evaluation)",s:78,c:"IHR Compliance & Biosecurity Assessment",ly:"L5",t:"AD"},
+{r:105,n:"Japan NIID / JSDF CBRN",s:78,c:"Japanese National & Military Biodefense",ly:"L3",t:"AD"},
+{r:106,n:"NBIC (National Biosurveillance Integration Center)",s:78,c:"DHS Integrated Biosurveillance",ly:"L1",t:"AD"},
+{r:107,n:"Nextclade",s:78,c:"Sequence Analysis",ly:"L2",t:"AD"},
+{r:108,n:"Nucleic Acid Observatory",s:78,c:"Pathogen-Agnostic Metagenomic Surveillance",ly:"L2",t:"AD"},
+{r:109,n:"Vivli AMR Register",s:78,c:"AMR Surveillance Data Sharing",ly:"L1",t:"AD"},
+{r:110,n:"HHIS / HEWS",s:77.5,c:"Mass Gathering Disease Surveillance",ly:"L1",t:"AD"},
+{r:111,n:"IARPA B24IC",s:77.5,c:"Intelligence Community Bio-Intelligence",ly:"L1",t:"AD"},
+{r:112,n:"Project Tycho",s:77.5,c:"Historical Disease Data",ly:"L1",t:"AD"},
+{r:113,n:"SAP",s:77.5,c:"Regional Surveillance",ly:"L1",t:"AD"},
+{r:114,n:"Smiths Detection BioFlash",s:77.5,c:"Rapid Biological Agent Identification",ly:"L1",t:"AD"},
+{r:115,n:"Battelle REBS+",s:77,c:"Next-Gen Airborne Bio-Identification",ly:"L1",t:"AD"},
+{r:116,n:"Bruker CBRNE Detection",s:77,c:"Multi-Spectrum CBRNE Detection Systems",ly:"L3",t:"AD"},
+{r:117,n:"COG-UK",s:77,c:"National Genomic Consortium",ly:"L2",t:"AD"},
+{r:118,n:"China CISDCP",s:77,c:"Chinese National Disease Surveillance Network",ly:"L1",t:"AD"},
+{r:119,n:"DGA Maîtrise NRBC",s:77,c:"French Military CBRN Defense",ly:"L3",t:"AD"},
+{r:120,n:"EpiNow2",s:77,c:"Real-Time Epidemic Forecasting R Package",ly:"L1",t:"AD"},
+{r:121,n:"INSaFLU",s:76.5,c:"Influenza Genomic Analysis",ly:"L2",t:"AD"},
+{r:122,n:"Teledyne FLIR IBAC 2",s:76.5,c:"Aerosol Biological Agent Collection & Detection",ly:"L4",t:"AD"},
+{r:123,n:"AVCAD (Aerosol Vapor Chemical Agent Detector)",s:76,c:"Next-Gen Portable CBRN Detection",ly:"L3",t:"AD"},
+{r:124,n:"GECO (ECDC)",s:76,c:"EU Genomic Surveillance",ly:"L2",t:"AD"},
+{r:125,n:"JBPDS (Joint Biological Point Detection System)",s:76,c:"Military Automated Bio-Agent Detection",ly:"L3",t:"AD"},
+{r:126,n:"Rheinmetall NBC Field Lab",s:76,c:"Mobile CBRN Reconnaissance & Analysis",ly:"L3",t:"AD"},
+{r:127,n:"Tawakkalna",s:76,c:"National Digital Health & Pandemic Response",ly:"L1",t:"AD"},
+{r:128,n:"VECTOR (State Research Center of Virology)",s:76,c:"Russian National Virology & Biodefense",ly:"L3",t:"AD"},
+{r:129,n:"APGI",s:75.8,c:"Regional Capacity Building",ly:"L1",t:"AD"},
+{r:130,n:"BioWatch",s:75.5,c:"National Aerosol Bio-Detection Network",ly:"L4",t:"AD"},
+{r:131,n:"EpiVerse",s:75.5,c:"R Package Ecosystem",ly:"L1",t:"AD"},
+{r:132,n:"EWARN (WHO EMRO)",s:75,c:"Crisis Zone Early Warning",ly:"L1",t:"AD"},
+{r:133,n:"EpiTrax",s:75,c:"Disease Surveillance System",ly:"L1",t:"AD"},
+{r:134,n:"India DRDO Biodefense (DFRL/CFEES)",s:75,c:"Indian Military Biodefense Research",ly:"L3",t:"AD"},
+{r:135,n:"Saudi AMR Surveillance",s:75,c:"National AMR Surveillance",ly:"L1",t:"AD"},
+{r:136,n:"Bertin Environics ENVI Assay",s:74.5,c:"Field BWA Immunoassay Detection",ly:"L4",t:"AD"},
+{r:137,n:"Go.Data (WHO)",s:74.5,c:"Outbreak Investigation",ly:"L1",t:"AD"},
+{r:138,n:"KIDA Biosecurity Analysis (Korea)",s:74.5,c:"Korean Defense Biodefense Analysis",ly:"L3",t:"AD"},
+{r:139,n:"China AMMS (Academy of Military Medical Sciences)",s:74,c:"Chinese Military Medical & Biodefense Research",ly:"L3",t:"AD"},
+{r:140,n:"EMPRES-i (FAO)",s:74,c:"Animal Disease Surveillance",ly:"L1",t:"AD"},
+{r:141,n:"Federal Select Agent Program",s:74,c:"US Bioterrorism Agent Regulatory Database",ly:"L5",t:"AD"},
+{r:142,n:"JUPITR",s:74,c:"US Forces Korea Biosurveillance",ly:"L1",t:"AD"},
+{r:143,n:"Epi Info (CDC)",s:73.5,c:"Epidemiological Analysis",ly:"L1",t:"AD"},
+{r:144,n:"KAUST PGL / AssayM",s:73,c:"Pathogen Genomics Research Tools",ly:"L2",t:"AD"},
+{r:145,n:"WAHIS (WOAH)",s:73,c:"Animal Health",ly:"L1",t:"AD"},
+{r:146,n:"GenomeTrakr",s:72.5,c:"FDA Genomic Network",ly:"L2",t:"AD"},
+{r:147,n:"EIOS 2.0 (WHO Enhanced)",s:72,c:"Next-Gen Epidemic Intelligence from Open Sources",ly:"L1",t:"AD"},
+{r:148,n:"OpenHIM",s:72,c:"Health Information Exchange",ly:"L1",t:"AD"},
+{r:149,n:"Russia 48th CBRN Institute (Sergiev Posad-6)",s:72,c:"Russian Military Biological Defense",ly:"L3",t:"AD"},
+{r:150,n:"Santé",s:72,c:"AI Epidemic Intelligence as a Service",ly:"L1",t:"AD"},
+{r:151,n:"Sitrep",s:71.5,c:"Situation Reporting",ly:"L1",t:"AD"},
+{r:152,n:"MedStar",s:71,c:"Clinical Surveillance",ly:"L1",t:"AD"},
+{r:153,n:"EIDSS",s:70.5,c:"Integrated Surveillance",ly:"L1",t:"AD"},
+{r:154,n:"CanPath",s:70,c:"Population Cohort",ly:"L1",t:"AD"},
+{r:155,n:"SatScan",s:69.5,c:"Spatial Cluster Detection",ly:"L4",t:"DV"},
+{r:156,n:"QGIS Health",s:69,c:"GIS for Health",ly:"L1",t:"DV"},
+{r:157,n:"FluNet (WHO)",s:68.5,c:"Influenza Surveillance",ly:"L1",t:"DV"},
+{r:158,n:"EIOS (WHO)",s:68,c:"Epidemic Intelligence",ly:"L1",t:"DV"},
+{r:159,n:"ECDC Hub",s:67.5,c:"EU Disease Surveillance",ly:"L1",t:"DV"},
+{r:160,n:"ABIS",s:67,c:"Biosurveillance Analytics",ly:"L1",t:"DV"},
+{r:161,n:"Disease.sh",s:66.5,c:"Disease Data API",ly:"L1",t:"DV"},
+{r:162,n:"Africa CDC ARES",s:66,c:"Continental Surveillance",ly:"L1",t:"DV"},
+{r:163,n:"BioPortal (PR)",s:65.5,c:"Territorial Surveillance",ly:"L1",t:"DV"},
+{r:164,n:"CIVET",s:65,c:"Cluster Investigation",ly:"L1",t:"DV"},
+{r:165,n:"Prion Surveillance",s:64,c:"Prion Disease Surveillance",ly:"L1",t:"DV"},
+{r:166,n:"RESAOLAB",s:63,c:"Lab Network (W. Africa)",ly:"L1",t:"DV"},
+{r:167,n:"OpenMRS",s:62,c:"Medical Records Surveillance",ly:"L1",t:"DV"},
+{r:168,n:"Dashboard Template",s:60,c:"Dashboard Template",ly:"L1",t:"DV"},
+{r:169,n:"North Korea Bio Program (Assessed)",s:55,c:"Assessed State Biological Weapons Capability",ly:"L1",t:"DV"}
+];
+
+const DIMS = [
+    {key:'data_integration',label:'Data Integration',code:'DI',weight:0.12,color:'#3b82f6',avg:79.3,icon:'database'},
+    {key:'analytics_capability',label:'Analytics',code:'AC',weight:0.12,color:'#06b6d4',avg:79.3,icon:'brain'},
+    {key:'security_compliance',label:'Security & Compliance',code:'SE',weight:0.12,color:'#ef4444',avg:82.5,icon:'shield-alt'},
+    {key:'visualization',label:'Visualization',code:'VZ',weight:0.10,color:'#8b5cf6',avg:76.6,icon:'chart-bar'},
+    {key:'accessibility',label:'Accessibility',code:'AX',weight:0.10,color:'#10b981',avg:73.9,icon:'universal-access'},
+    {key:'scalability',label:'Scalability',code:'SC',weight:0.10,color:'#f59e0b',avg:79.2,icon:'expand-arrows-alt'},
+    {key:'interoperability',label:'Interoperability',code:'IO',weight:0.10,color:'#a855f7',avg:77.3,icon:'network-wired'},
+    {key:'documentation',label:'Documentation',code:'DC',weight:0.08,color:'#f97316',avg:77.9,icon:'book'},
+    {key:'community_support',label:'Community',code:'CS',weight:0.08,color:'#ec4899',avg:75.0,icon:'users'},
+    {key:'real_time_capability',label:'Real-Time',code:'RT',weight:0.08,color:'#14b8a6',avg:77.7,icon:'bolt'},
+];
+
+let activeFilter = 'all';
+let activeLayer = null;
+
+function renderDimList() {
+    document.getElementById('dim-list').innerHTML = DIMS.map(d => `
+        <div class="flex items-center gap-2">
+            <div class="w-5 h-5 rounded flex items-center justify-center text-[10px]" style="background:${d.color}18;color:${d.color}"><i class="fas fa-${d.icon}"></i></div>
+            <div class="flex-1">
+                <div class="flex justify-between text-[11px] mb-0.5"><span class="font-semibold">${d.label}</span><span class="text-gray-500">${(d.weight*100)}% · ${d.avg}</span></div>
+                <div class="dim-bar"><div class="dim-fill" style="width:${d.avg}%;background:${d.color}"></div></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function initRadar() {
+    new Chart(document.getElementById('dim-radar'), {
+        type:'radar',
+        data:{labels:DIMS.map(d=>d.code),datasets:[{label:'Avg',data:DIMS.map(d=>d.avg),backgroundColor:'rgba(6,182,212,.12)',borderColor:'rgba(6,182,212,.6)',borderWidth:2,pointBackgroundColor:DIMS.map(d=>d.color),pointRadius:3,pointBorderWidth:0}]},
+        options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,min:60,max:100,grid:{color:'rgba(30,41,59,.3)'},angleLines:{color:'rgba(30,41,59,.3)'},ticks:{display:false,stepSize:10},pointLabels:{color:'#94a3b8',font:{size:10,weight:'600'}}}}}
+    });
+}
+
+function initBarChart() {
+    const sorted = [...DIMS].sort((a,b) => b.avg - a.avg);
+    new Chart(document.getElementById('dim-bar-chart'), {
+        type:'bar',
+        data:{labels:sorted.map(d=>d.label),datasets:[{data:sorted.map(d=>d.avg),backgroundColor:sorted.map(d=>d.color+'40'),borderColor:sorted.map(d=>d.color),borderWidth:1,borderRadius:4}]},
+        options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{min:70,max:85,grid:{color:'rgba(30,41,59,.3)'},ticks:{color:'#64748b',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:11,weight:'600'}}}}}
+    });
+}
+
+function initLayerChart() {
+    const layers = [
+        {name:'L1 Surveillance',count:63,avg:78.0,color:'#3b82f6'},
+        {name:'L2 Genomic',count:57,avg:79.5,color:'#10b981'},
+        {name:'L3 Defense',count:35,avg:78.4,color:'#ef4444'},
+        {name:'L4 Hardware',count:9,avg:77.2,color:'#f59e0b'},
+        {name:'L5 Policy',count:5,avg:78.5,color:'#a855f7'},
+    ];
+    new Chart(document.getElementById('layer-chart'), {
+        type:'bar',
+        data:{labels:layers.map(l=>l.name),datasets:[
+            {label:'Avg Score',data:layers.map(l=>l.avg),backgroundColor:layers.map(l=>l.color+'40'),borderColor:layers.map(l=>l.color),borderWidth:1,borderRadius:4,yAxisID:'y'},
+            {label:'Platform Count',data:layers.map(l=>l.count),backgroundColor:layers.map(l=>l.color+'20'),borderColor:layers.map(l=>l.color+'60'),borderWidth:1,borderRadius:4,yAxisID:'y1'}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}}},scales:{y:{min:70,max:85,position:'left',grid:{color:'rgba(30,41,59,.3)'},ticks:{color:'#94a3b8',font:{size:10}},title:{display:true,text:'Avg Score',color:'#64748b',font:{size:10}}},y1:{min:0,max:70,position:'right',grid:{display:false},ticks:{color:'#94a3b8',font:{size:10}},title:{display:true,text:'Count',color:'#64748b',font:{size:10}}},x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:11,weight:'600'}}}}}
+    });
+}
+
+function renderTable() {
+    const el = document.getElementById('rankings-table');
+    const search = document.getElementById('search-input').value.toLowerCase();
+    let filtered = ALL_PLATFORMS.filter(p => {
+        if (activeFilter !== 'all' && p.t !== activeFilter) return false;
+        if (activeLayer && p.ly !== activeLayer) return false;
+        if (search && !p.n.toLowerCase().includes(search) && !p.c.toLowerCase().includes(search)) return false;
+        return true;
+    });
+    el.innerHTML = filtered.map(p => `
+        <div class="table-row">
+            <span class="text-gray-600 font-bold">${p.r}</span>
+            <span class="font-semibold text-xs">${p.n}</span>
+            <span class="font-black" style="color:${p.t==='EX'?'#10b981':p.t==='GD'?'#3b82f6':p.t==='AD'?'#f59e0b':'#ef4444'}">${p.s}</span>
+            <span class="text-[10px] text-gray-500 truncate">${p.c}</span>
+            <span><span class="tier-badge tier-${p.t}">${p.t}</span></span>
+        </div>
+    `).join('');
+    document.getElementById('table-count').textContent = `Showing ${filtered.length} of ${ALL_PLATFORMS.length}`;
+}
+
+function setFilter(f, btn) {
+    activeFilter = f;
+    document.querySelectorAll('[data-filter]').forEach(c => c.classList.toggle('active', c.dataset.filter === f));
+    renderTable();
+}
+
+function setLayerFilter(ly, btn) {
+    if (activeLayer === ly) { activeLayer = null; btn.classList.remove('active'); }
+    else { activeLayer = ly; document.querySelectorAll('[data-layer]').forEach(c => c.classList.remove('active')); btn.classList.add('active'); }
+    renderTable();
+}
+
+function filterTable() { renderTable(); }
+
+// Scroll indicator
+window.addEventListener('scroll', () => {
+    const s = document.documentElement.scrollTop;
+    const h = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    document.getElementById('scroll-bar').style.width = (s/h*100)+'%';
+});
+
+// TOC active state
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            document.querySelectorAll('.toc a').forEach(a => {
+                a.style.borderLeftColor = a.getAttribute('href') === '#'+id ? 'var(--cyan)' : 'transparent';
+                a.style.color = a.getAttribute('href') === '#'+id ? 'var(--t1)' : '';
+            });
+        }
+    });
+}, { threshold: 0.1, rootMargin: '-80px 0px -60% 0px' });
+document.querySelectorAll('h2[id]').forEach(h => observer.observe(h));
+
+window.addEventListener('DOMContentLoaded', () => {
+    renderDimList();
+    initRadar();
+    initBarChart();
+    initLayerChart();
+    renderTable();
+});
+</script>
+</body>
+</html>
