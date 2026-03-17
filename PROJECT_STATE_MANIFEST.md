@@ -1,13 +1,13 @@
 # BioR Project — Complete State Manifest
-## Backup Date: 2026-03-16T23:30:00Z
+## Updated: 2026-03-17T05:00:00Z (Deep Research Expansion)
 
 ---
 
 ## PROJECT OVERVIEW
 
 **Project Name**: BioR — Biosurveillance Intelligence for Operational Readiness  
-**Version**: v3.0.0 (PSEF baseline) + v1.0 Deep Research Enrichment  
-**Baseline**: 169 Tier-1 platforms, 1,690 data points (frozen 2026-03-14)  
+**Version**: v3.1.0 (PSEF baseline + Deep Research Expansion)  
+**Baseline**: 189 platforms (169 Tier-1 + 20 CBRN Operational), 1,890 data points  
 **Git Tag**: `baseline-v3.0.0-169`  
 **Purpose**: Strategic intelligence mapping of global biosurveillance landscape for senior military, public-health, intelligence, and policy leaders  
 
@@ -79,7 +79,7 @@
 
 | File | Location | Description | Size |
 |------|----------|-------------|------|
-| `optB_enriched.json` | pathogen-push/ | Master dataset: 169 platforms, all profiles, 10 deep research | 1,042 KB |
+| `optB_enriched.json` | pathogen-push/ | Master dataset: 189 platforms, all profiles, 10 deep research (expanding to 30+) | ~1,186 KB |
 | `optA.json` | pathogen-push/ | Option A scope: 114 platforms | 95 KB |
 | `optB.json` | pathogen-push/ | Option B scope: 169 platforms (original) | 312 KB |
 | `optC.json` | pathogen-push/ | Option C scope: 93 platforms | ~90 KB |
@@ -94,6 +94,7 @@
 | Script | Purpose |
 |--------|---------|
 | `deep_enrich_top10.py` | Deep-research enrichment for top 10 (reusable for batches 11-20, etc.) |
+| `inject_deep_research_11_30.py` | Injection script for AI-extracted deep-research JSON batches (platforms 11-30 + CBRN 170-189) |
 | `enrich_profiles.py` | LLM-based profile enrichment engine (gpt-5-nano + web crawling) |
 | `apply_deep_research.py` | Apply deep-research data to enriched JSON |
 | `rebuild_platforms.py` | Auto-propagate platform changes across all data files |
@@ -148,6 +149,7 @@
 | L2_Genomic | 59 | Sequencing, phylogenetics, AMR detection, genomic analysis |
 | L3_Defense | 39 | Military biodefense, CBRN, bioforensics, countermeasures |
 | L4_Hardware | 9 | Physical sensors, rapid diagnostics, detection devices |
+| L4_CBRN_Operational | 20 | CBRN operational systems: detection, modelling, C2, incident management |
 | L5_Policy | 5 | Governance frameworks, health-security indices |
 
 ---
@@ -196,9 +198,35 @@ tar -xzf /tmp/bior_full_backup_2026-03-16.tar.gz -C /home/user/
 
 ## NEXT STEPS (Recommended)
 
-1. **Enrich platforms #11-20** using `deep_enrich_top10.py` as template
-2. **Deploy webapp to Cloudflare Pages** for permanent URL
-3. **Expand CBRN assessment** to all L3_Defense platforms
-4. **Add adversary platform profiles** (Russia VECTOR, China AMMS, etc.)
-5. **Build investment roadmap** (Phase 2 deliverable)
-6. **Quarterly update cycle** per BioR project plan
+1. **Run extraction prompts through AI model** — Use Batch A/B/C prompts to generate deep-research JSON:
+   - `PROMPT_BATCH_A_11_to_20.md` → saves as `batch_a_response.json`
+   - `PROMPT_BATCH_B_21_to_30.md` → saves as `batch_b_response.json`
+   - `PROMPT_BATCH_C_CBRN_170_to_189.md` → saves as `batch_c_cbrn_response.json`
+2. **Inject extracted data** using: `python3 inject_deep_research_11_30.py batch_a_response.json batch_b_response.json batch_c_cbrn_response.json`
+3. **Validate** — Check for completeness: all 30 platforms should have deep_research blocks
+4. **Update webapp** to display platforms 11-30 deep research
+5. **Deploy webapp to Cloudflare Pages** for permanent URL
+6. **Expand CBRN assessment** to all L3_Defense platforms
+7. **Add adversary platform profiles** (Russia VECTOR, China AMMS, etc.)
+8. **Build investment roadmap** (Phase 2 deliverable)
+9. **Quarterly update cycle** per BioR project plan
+
+---
+
+## EXTRACTION PROMPT FILES
+
+| File | Platforms | Status |
+|------|-----------|--------|
+| `PROMPT_BATCH_A_11_to_20.md` | #11 Galaxy Project – #20 ProMED | Ready for AI extraction |
+| `PROMPT_BATCH_B_21_to_30.md` | #21 CARD/RGI – #30 Bactopia | Ready for AI extraction |
+| `PROMPT_BATCH_C_CBRN_170_to_189.md` | #170 Saab AWR – #189 IMAAC Portal (20 CBRN platforms) | Ready for AI extraction |
+| `PROMPT_DEEP_RESEARCH_11_30.md` | Combined original prompt (all 20 platforms) | Reference only |
+
+### How to Use Extraction Prompts
+
+1. Copy the content of a batch prompt file (e.g., `PROMPT_BATCH_A_11_to_20.md`)
+2. Paste into any capable AI model (ChatGPT, Claude, Gemini, Perplexity)
+3. Save the JSON response as a file (e.g., `batch_a_response.json`)
+4. Run injection: `python3 inject_deep_research_11_30.py batch_a_response.json --dry-run` (preview first)
+5. Then: `python3 inject_deep_research_11_30.py batch_a_response.json` (apply)
+6. Repeat for each batch
