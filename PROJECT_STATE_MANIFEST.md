@@ -1,34 +1,28 @@
 # BioR Project — Complete State Manifest
-## Updated: 2026-03-17T05:00:00Z (Deep Research Expansion)
+## Updated: 2026-03-17T06:00:00Z (Deep Research v2.0 — 50 Platforms Enriched)
 
 ---
 
 ## PROJECT OVERVIEW
 
 **Project Name**: BioR — Biosurveillance Intelligence for Operational Readiness  
-**Version**: v3.1.0 (PSEF baseline + Deep Research Expansion)  
+**Version**: v3.1.0 (PSEF baseline + Deep Research Expansion v2.0)  
 **Baseline**: 189 platforms (169 Tier-1 + 20 CBRN Operational), 1,890 data points  
+**Deep Research**: 50 platforms with full enrichment (top 30 + 20 CBRN)  
+**CBRN Tagged**: 31 platforms with CBRN assessments  
 **Git Tag**: `baseline-v3.0.0-169`  
 **Purpose**: Strategic intelligence mapping of global biosurveillance landscape for senior military, public-health, intelligence, and policy leaders  
 
 ---
 
-## TWO REPOSITORIES
+## REPOSITORY
 
-### 1. pathogen-push (Main Data & Analysis Repository)
+### pathogen-push (Main Data & Analysis Repository)
 - **Local Path**: `/home/user/pathogen-push/`
 - **GitHub**: `https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-`
 - **Branch**: `main`
-- **Latest Commit**: `b729ada` — Add readable deep-research profiles for top 10 platforms (Markdown)
-- **Total Commits**: 27
+- **Latest Commit**: `e6827b9` — Deep research enrichment: 40 platforms (#11-30 + CBRN #170-189)
 - **Size**: ~12 MB (excluding .git)
-
-### 2. webapp (Deep-Research Viewer Web Application)
-- **Local Path**: `/home/user/webapp/`
-- **Branch**: `main`
-- **Latest Commit**: `ea950d7` — BioR Deep-Research Viewer webapp
-- **Size**: ~173 MB (including node_modules)
-- **Live URL**: Sandbox service on port 3000
 
 ---
 
@@ -63,15 +57,25 @@
 ### Phase 4: Quality Assurance & Deep Research (Commits d713633 → b729ada)
 - Layer Intelligence Analysis page
 - QA Phase 2: Applied user decisions (Q1=B, Q2=A+flag, Q3=B)
-- Complete benchmark methodology reference document (BIOR_BENCHMARK_METHODOLOGY.md)
+- Complete benchmark methodology reference document
 - Enrichment Prompt v2.0 with 5-layer model, CBRN tags, ecosystem fields
-- **DEEP RESEARCH ENRICHMENT** for top 10 platforms:
-  - 7-field profiles (200-700 chars each) with real citations
-  - deep_research block: executive_summary, key_publications, official_guidelines, controversies_and_changes, ecosystem_connections, key_urls, timeline, cbrn_assessment
-  - Cross-platform comparison table (6 axes)
-  - BioSense/ESSENCE tagged as `adjacent_enabling_system` for CBRN
+- Deep research enrichment for top 10 platforms
+- Cross-platform comparison table (6 axes)
 - Readable Markdown report: DEEP_RESEARCH_TOP10.md
 - Interactive web viewer (webapp) with 4 views
+
+### Phase 5: Deep Research Expansion v2.0 (Commits afd5780 → e6827b9)
+- Added 20 CBRN operational platforms (#170-189) with 7-field profiles
+- **Deep research enrichment for 40 additional platforms:**
+  - Batch A: Platforms #11-20 (Galaxy, NWSS, BV-BRC, EpiCollect5, Pathoplexus, Airfinity, HealthMap, BlueDot, GEIS, ProMED)
+  - Batch B: Platforms #21-30 (CARD/RGI, OpenELIS, Ginkgo, WHONET, CDC TGS, BEACON, NNDSS, ReportStream, WastewaterSCAN, Bactopia)
+  - Batch C: 20 CBRN platforms #170-189 (Saab AWR through IMAAC Portal)
+- Executive summary with 8 key findings injected into meta
+- Evaluation framework with 10-dimension weights and global means
+- Comparative matrices for platforms 11-30 and CBRN 170-189
+- Recommendations & roadmap with 6-layer sovereign CBRN architecture
+- **Total deep_research: 10 → 50 platforms**
+- **CBRN assessments: 31 platforms tagged**
 
 ---
 
@@ -79,13 +83,12 @@
 
 | File | Location | Description | Size |
 |------|----------|-------------|------|
-| `optB_enriched.json` | pathogen-push/ | Master dataset: 189 platforms, all profiles, 10 deep research (expanding to 30+) | ~1,186 KB |
+| `optB_enriched.json` | pathogen-push/ | Master dataset: 189 platforms, all profiles, 50 deep_research blocks | ~1.2 MB |
 | `optA.json` | pathogen-push/ | Option A scope: 114 platforms | 95 KB |
 | `optB.json` | pathogen-push/ | Option B scope: 169 platforms (original) | 312 KB |
 | `optC.json` | pathogen-push/ | Option C scope: 93 platforms | ~90 KB |
 | `CANONICAL_169_PLATFORMS.json` | pathogen-push/reference_baseline/ | Frozen baseline | ~250 KB |
 | `CANONICAL_169_PLATFORMS.csv` | pathogen-push/reference_baseline/ | CSV version of baseline | ~50 KB |
-| `data.json` | webapp/public/static/ | Extracted top 10 deep-research data for viewer | 88 KB |
 
 ---
 
@@ -93,51 +96,91 @@
 
 | Script | Purpose |
 |--------|---------|
-| `deep_enrich_top10.py` | Deep-research enrichment for top 10 (reusable for batches 11-20, etc.) |
-| `inject_deep_research_11_30.py` | Injection script for AI-extracted deep-research JSON batches (platforms 11-30 + CBRN 170-189) |
+| `enrich_all_40.py` | Deep-research profiles for platforms #11-30 (Batch A: 10 + Batch B: 10) |
+| `cbrn_profiles.py` | Deep-research profiles for 20 CBRN operational platforms #170-189 |
+| `inject_all.py` | Master injection engine: combines all 3 batches + executive summary + framework + matrices + roadmap |
+| `deep_enrich_top10.py` | Deep-research enrichment for top 10 (original, Phase 4) |
+| `inject_deep_research_11_30.py` | Earlier injection script for AI-extracted JSON batches (superseded by inject_all.py) |
 | `enrich_profiles.py` | LLM-based profile enrichment engine (gpt-5-nano + web crawling) |
 | `apply_deep_research.py` | Apply deep-research data to enriched JSON |
 | `rebuild_platforms.py` | Auto-propagate platform changes across all data files |
 | `build_profiles.js` | Build platform profile pages |
-| `build_scope.js` / `build_scope_page.py` | Build scope analysis dashboards |
-| `gen_scope.py` / `gen_scope_final.js` | Generate scope HTML pages |
-| `analyze.js` | Platform analysis utilities |
 
 ---
 
-## WEBSITE PAGES
+## DEEP RESEARCH COVERAGE
 
-| Page | Description |
-|------|-------------|
-| `index.html` | Landing portal |
-| `benchmark.html` | Main interactive benchmark dashboard |
-| `benchmark_a.html` | Option A benchmark (114 platforms) |
-| `benchmark_b.html` | Option B benchmark (169 platforms) |
-| `benchmark_c.html` | Option C benchmark (93 platforms) |
-| `scope.html` | Scope analysis hub |
-| `bior/index.html` | BioR intelligence portal |
-| `bior/phase1/` | Phase 1 deliverables |
-| `bior/phase2/` | Phase 2 deliverables |
-| `bior/phase3/` | Phase 3 deliverables |
-| `bior/platform_directory/` | Platform intelligence directory |
-| `bior/report/` | Full benchmark report |
+### Top 30 Platforms (All Enriched)
+
+| Rank | Platform | Layer | Score | Pubs | CBRN |
+|:----:|----------|-------|:-----:|:----:|:----:|
+| 1 | Nextstrain | L2_Genomic | 95 | 5 | — |
+| 2 | SORMAS | L1_Surveillance | 90 | 4 | — |
+| 3 | outbreak.info | L2_Genomic | 90 | 3 | — |
+| 4 | CZ ID | L2_Genomic | 89.2 | 4 | — |
+| 5 | DHIS2 | L1_Surveillance | 89 | 4 | — |
+| 6 | NCBI Pathogen Detection | L2_Genomic | 88.9 | 4 | — |
+| 7 | GISAID | L2_Genomic | 88.5 | 3 | — |
+| 8 | Microreact | L2_Genomic | 87.5 | 2 | — |
+| 9 | BioSense / ESSENCE | L1_Surveillance | 87.2 | 3 | adjacent |
+| 10 | Pathogenwatch | L2_Genomic | 87 | 3 | — |
+| 11 | Galaxy Project | L2_Genomic | 86.5 | 4 | — |
+| 12 | NWSS | L1_Surveillance | 86.2 | 4 | adjacent |
+| 13 | BV-BRC | L2_Genomic | 85.8 | 4 | adjacent |
+| 14 | EpiCollect5 | L1_Surveillance | 85.6 | 3 | — |
+| 15 | Pathoplexus | L2_Genomic | 85.5 | 2 | — |
+| 16 | Airfinity | L1_Surveillance | 84.7 | 2 | — |
+| 17 | HealthMap | L1_Surveillance | 85.3 | 3 | adjacent |
+| 18 | BlueDot | L1_Surveillance | 84.9 | 3 | adjacent |
+| 19 | GEIS | L3_Defense | 84.0 | 3 | **true CBRN** |
+| 20 | ProMED | L1_Surveillance | 84.8 | 3 | adjacent |
+| 21 | CARD / RGI | L2_Genomic | 84.0 | 3 | adjacent |
+| 22 | OpenELIS Global | L2_Genomic | 84.3 | 2 | — |
+| 23 | Ginkgo Biosecurity | L2_Genomic | 83.9 | 2 | early warning |
+| 24 | WHONET | L1_Surveillance | 83.7 | 2 | — |
+| 25 | CDC TGS | L2_Genomic | 83.5 | 2 | early warning |
+| 26 | BEACON | L1_Surveillance | 82.6 | 1 | adjacent |
+| 27 | NNDSS | L1_Surveillance | 83.8 | 2 | adjacent |
+| 28 | ReportStream | L1_Surveillance | 84.3 | 2 | — |
+| 29 | WastewaterSCAN | L1_Surveillance | 83.4 | 2 | — |
+| 30 | Bactopia | L2_Genomic | 82.4 | 2 | — |
+
+### 20 CBRN Operational Platforms (All Enriched)
+
+| Rank | Platform | Score | CBRN Classification |
+|:----:|----------|:-----:|-------------------|
+| 170 | Saab AWR | 88 | true_cbrn_operational_platform |
+| 171 | ENSCO SENTRY | 87 | true_cbrn_operational_platform |
+| 172 | Two Six SIGMA | 84 | true_cbrn_operational_platform |
+| 173 | Riskaware HASP/UrbanAware | 82 | true_cbrn_operational_platform |
+| 174 | Observis ObSAS | 83 | true_cbrn_operational_platform |
+| 175 | Bruhn NewTech CBRN Suite | 85 | true_cbrn_operational_platform |
+| 176 | HAVELSAN Counter-CBRN | 81 | true_cbrn_operational_platform |
+| 177 | Systematic SitaWare CBRN | 86 | cbrn_specific_module |
+| 178 | FEMA CBRNResponder Network | 85 | true_cbrn_operational_platform |
+| 179 | ARGOS DSS | 86 | true_cbrn_operational_platform |
+| 180 | RODOS / JRODOS | 85 | true_cbrn_operational_platform |
+| 181 | CAMEO Suite (EPA/NOAA) | 80 | true_cbrn_operational_platform |
+| 182 | HPAC | 84 | true_cbrn_operational_platform |
+| 183 | EURDEP / ECURIE | 83 | true_cbrn_operational_platform |
+| 184 | IAEA USIE | 84 | true_cbrn_operational_platform |
+| 185 | CTBTO IDC | 83 | true_cbrn_operational_platform |
+| 186 | SCADACore EnviroLive CBRNE | 76 | adjacent_enabling_system |
+| 187 | Bertin Environics EnviScreen | 80 | true_cbrn_operational_platform |
+| 188 | RadResponder | 82 | true_cbrn_operational_platform |
+| 189 | IMAAC Portal | 83 | true_cbrn_operational_platform |
 
 ---
 
-## TOP 10 DEEP-RESEARCH PLATFORMS
+## META ENRICHMENT (in optB_enriched.json)
 
-| Rank | Platform | Layer | Score | Publications | Ecosystem Links | CBRN |
-|:----:|----------|-------|:-----:|:------------:|:---------------:|:----:|
-| 1 | Nextstrain | L2_Genomic | 95 | 5 | 7 | — |
-| 2 | SORMAS | L1_Surveillance | 90 | 4 | 5 | — |
-| 3 | outbreak.info | L2_Genomic | 90 | 3 | 6 | — |
-| 4 | CZ ID | L2_Genomic | 89.2 | 4 | 5 | — |
-| 5 | DHIS2 | L1_Surveillance | 89 | 4 | 5 | — |
-| 6 | NCBI Pathogen Detection | L2_Genomic | 88.9 | 4 | 6 | — |
-| 7 | GISAID | L2_Genomic | 88.5 | 3 | 6 | — |
-| 8 | Microreact | L2_Genomic | 87.5 | 2 | 5 | — |
-| 9 | BioSense / ESSENCE | L1_Surveillance | 87.2 | 3 | 5 | adjacent_enabling_system |
-| 10 | Pathogenwatch | L2_Genomic | 87 | 3 | 7 | — |
+| Component | Status | Description |
+|-----------|:------:|-------------|
+| Executive Summary | Injected | 8 key findings, methodology, scope |
+| Evaluation Framework | Injected | 10-dimension weights and global means |
+| Comparative Matrix (11-30) | Injected | 4 axes: function, open-source, geographic scope, CBRN relevance |
+| Comparative Matrix (CBRN) | Injected | 4 axes: classification, primary domain, operator country, NATO standards |
+| Recommendations & Roadmap | Injected | 6-layer sovereign CBRN architecture, immediate/medium/long-term actions |
 
 ---
 
@@ -151,23 +194,6 @@
 | L4_Hardware | 9 | Physical sensors, rapid diagnostics, detection devices |
 | L4_CBRN_Operational | 20 | CBRN operational systems: detection, modelling, C2, incident management |
 | L5_Policy | 5 | Governance frameworks, health-security indices |
-
----
-
-## EVALUATION CRITERIA (10 Dimensions)
-
-| Criterion | Weight | Global Mean |
-|-----------|:------:|:-----------:|
-| Data Integration | 12% | 79.3 |
-| Analytics Capability | 12% | 79.3 |
-| Visualization | 10% | 76.6 |
-| Accessibility | 8% | 73.9 |
-| Scalability | 10% | 79.2 |
-| Documentation | 8% | 77.9 |
-| Community Support | 8% | 75.0 |
-| Security & Compliance | 12% | 82.5 |
-| Interoperability | 10% | 77.3 |
-| Real-Time Capability | 10% | 77.7 |
 
 ---
 
@@ -187,46 +213,21 @@
 git clone https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-.git pathogen-push
 
 # From tar.gz backup:
-tar -xzf bior_pathogen_push_backup_2026-03-16.tar.gz -C /home/user/
+tar -xzf bior_pathogen_push_backup_2026-03-17.tar.gz -C /home/user/
 
 # From AI Drive:
-cp /mnt/aidrive/bior_full_backup_2026-03-16.tar.gz /tmp/
-tar -xzf /tmp/bior_full_backup_2026-03-16.tar.gz -C /home/user/
+cp /mnt/aidrive/bior_full_backup_2026-03-17.tar.gz /tmp/
+tar -xzf /tmp/bior_full_backup_2026-03-17.tar.gz -C /home/user/
 ```
 
 ---
 
 ## NEXT STEPS (Recommended)
 
-1. **Run extraction prompts through AI model** — Use Batch A/B/C prompts to generate deep-research JSON:
-   - `PROMPT_BATCH_A_11_to_20.md` → saves as `batch_a_response.json`
-   - `PROMPT_BATCH_B_21_to_30.md` → saves as `batch_b_response.json`
-   - `PROMPT_BATCH_C_CBRN_170_to_189.md` → saves as `batch_c_cbrn_response.json`
-2. **Inject extracted data** using: `python3 inject_deep_research_11_30.py batch_a_response.json batch_b_response.json batch_c_cbrn_response.json`
-3. **Validate** — Check for completeness: all 30 platforms should have deep_research blocks
-4. **Update webapp** to display platforms 11-30 deep research
-5. **Deploy webapp to Cloudflare Pages** for permanent URL
-6. **Expand CBRN assessment** to all L3_Defense platforms
-7. **Add adversary platform profiles** (Russia VECTOR, China AMMS, etc.)
-8. **Build investment roadmap** (Phase 2 deliverable)
-9. **Quarterly update cycle** per BioR project plan
-
----
-
-## EXTRACTION PROMPT FILES
-
-| File | Platforms | Status |
-|------|-----------|--------|
-| `PROMPT_BATCH_A_11_to_20.md` | #11 Galaxy Project – #20 ProMED | Ready for AI extraction |
-| `PROMPT_BATCH_B_21_to_30.md` | #21 CARD/RGI – #30 Bactopia | Ready for AI extraction |
-| `PROMPT_BATCH_C_CBRN_170_to_189.md` | #170 Saab AWR – #189 IMAAC Portal (20 CBRN platforms) | Ready for AI extraction |
-| `PROMPT_DEEP_RESEARCH_11_30.md` | Combined original prompt (all 20 platforms) | Reference only |
-
-### How to Use Extraction Prompts
-
-1. Copy the content of a batch prompt file (e.g., `PROMPT_BATCH_A_11_to_20.md`)
-2. Paste into any capable AI model (ChatGPT, Claude, Gemini, Perplexity)
-3. Save the JSON response as a file (e.g., `batch_a_response.json`)
-4. Run injection: `python3 inject_deep_research_11_30.py batch_a_response.json --dry-run` (preview first)
-5. Then: `python3 inject_deep_research_11_30.py batch_a_response.json` (apply)
-6. Repeat for each batch
+1. **Expand deep research to remaining 139 platforms** (#31-169) — use `inject_all.py` as template
+2. **Update webapp** to display all 50 deep-researched platforms (currently shows top 10 only)
+3. **Deploy webapp to Cloudflare Pages** for permanent public URL
+4. **Expand CBRN assessment** to all L3_Defense platforms (currently 1/39 enriched)
+5. **Add adversary platform profiles** (Russia VECTOR, China AMMS, etc.)
+6. **Build investment roadmap** (Phase 2 deliverable)
+7. **Quarterly update cycle** per BioR project plan
