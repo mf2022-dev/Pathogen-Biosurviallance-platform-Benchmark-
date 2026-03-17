@@ -1,7 +1,10 @@
-// BioR Deep-Research Viewer — app.js
+// BioR Deep-Research Viewer — app.js v3.1.0
+// Supports 50 platforms: Top 30 Biosurveillance + 20 CBRN Operational
 let DATA = null;
 let currentView = 'overview';
 let selectedPlatform = null;
+let filterLayer = 'all';
+let searchQuery = '';
 
 // ── INIT ────────────────────────────────────────────────────────
 async function init() {
@@ -43,9 +46,20 @@ function scoreColor(s) {
 }
 
 function layerBadge(l) {
-  const cls = l.startsWith('L1') ? 'badge-L1' : l.startsWith('L2') ? 'badge-L2' : 'badge-L3';
-  const labels = { L1_Surveillance: 'L1 Surveillance', L2_Genomic: 'L2 Genomic', L3_Defense: 'L3 Defense' };
-  return `<span class="${cls} px-2 py-0.5 rounded text-xs font-medium">${labels[l] || l}</span>`;
+  let cls, label;
+  if (l === 'L4_CBRN_Operational') {
+    cls = 'badge-L4_CBRN';
+    label = 'L4 CBRN';
+  } else if (l && l.startsWith('L1')) {
+    cls = 'badge-L1'; label = 'L1 Surveillance';
+  } else if (l && l.startsWith('L2')) {
+    cls = 'badge-L2'; label = 'L2 Genomic';
+  } else if (l && l.startsWith('L3')) {
+    cls = 'badge-L3'; label = 'L3 Defense';
+  } else {
+    cls = 'badge-L3'; label = l || 'Unknown';
+  }
+  return `<span class="${cls} px-2 py-0.5 rounded text-xs font-medium">${label}</span>`;
 }
 
 function scoreRing(score, size = 72) {
@@ -66,25 +80,50 @@ function truncate(str, len = 200) {
   return str.substring(0, len) + '...';
 }
 
+function getFiltered() {
+  let ps = DATA.platforms;
+  if (filterLayer !== 'all') ps = ps.filter(p => p.layer === filterLayer);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    ps = ps.filter(p => p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q));
+  }
+  return ps;
+}
+
+function setFilter(layer) {
+  filterLayer = layer;
+  showView(currentView);
+}
+
+function doSearch(val) {
+  searchQuery = val;
+  showView(currentView);
+}
+
 // ── OVERVIEW VIEW ───────────────────────────────────────────────
 function renderOverview() {
-  const ps = DATA.platforms;
-  const avgScore = (ps.reduce((a, p) => a + p.s, 0) / ps.length).toFixed(1);
+  const ps = getFiltered();
+  const allPs = DATA.platforms;
+  const avgScore = ps.length ? (ps.reduce((a, p) => a + p.score, 0) / ps.length).toFixed(1) : '0';
   const layers = {};
-  ps.forEach(p => { layers[p.l] = (layers[p.l] || 0) + 1; });
+  allPs.forEach(p => { layers[p.layer] = (layers[p.layer] || 0) + 1; });
+
+  const bioCount = allPs.filter(p => p.rank <= 30).length;
+  const cbrnCount = allPs.filter(p => p.rank >= 170).length;
 
   let cards = ps.map(p => `
-    <div class="platform-card glass rounded-xl p-4 cursor-pointer fade-in" onclick="showPlatformDetail('${p.n.replace(/'/g,"\\'")}')">
+    <div class="platform-card glass rounded-xl p-4 cursor-pointer fade-in" onclick="showPlatformDetail('${p.name.replace(/'/g,"\\'")}')">
       <div class="flex items-start justify-between mb-3">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-1">
-            <span class="text-gray-500 mono text-xs">#${p.r}</span>
-            ${layerBadge(p.l)}
+            <span class="text-gray-500 mono text-xs">#${p.rank}</span>
+            ${layerBadge(p.layer)}
+            ${p.deep_research?.cbrn_assessment ? '<span class="text-xs text-amber-400"><i class="fas fa-radiation"></i></span>' : ''}
           </div>
-          <h3 class="text-white font-bold text-base truncate">${p.n}</h3>
-          <p class="text-gray-400 text-xs mt-1 truncate">${p.c}</p>
+          <h3 class="text-white font-bold text-base truncate">${p.name}</h3>
+          <p class="text-gray-400 text-xs mt-1 truncate">${p.category}</p>
         </div>
-        ${scoreRing(p.s, 60)}
+        ${scoreRing(p.score, 60)}
       </div>
       <p class="text-gray-300 text-xs leading-relaxed line-clamp-3">${truncate(p.deep_research?.executive_summary, 180)}</p>
       <div class="flex items-center gap-3 mt-3 text-xs text-gray-500">
@@ -97,9 +136,9 @@ function renderOverview() {
 
   return `<div class="fade-in">
     <!-- Stats bar -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
       <div class="glass rounded-xl p-4 text-center">
-        <div class="text-3xl font-bold gradient-text">${ps.length}</div>
+        <div class="text-3xl font-bold gradient-text">${allPs.length}</div>
         <div class="text-xs text-gray-400 mt-1">Deep Profiles</div>
       </div>
       <div class="glass rounded-xl p-4 text-center">
@@ -107,19 +146,39 @@ function renderOverview() {
         <div class="text-xs text-gray-400 mt-1">Avg Score</div>
       </div>
       <div class="glass rounded-xl p-4 text-center">
-        <div class="text-3xl font-bold text-bio-green">${ps.reduce((a,p) => a + (p.deep_research?.key_publications?.length||0), 0)}</div>
+        <div class="text-3xl font-bold text-bio-green">${allPs.reduce((a,p) => a + (p.deep_research?.key_publications?.length||0), 0)}</div>
         <div class="text-xs text-gray-400 mt-1">Total Citations</div>
       </div>
       <div class="glass rounded-xl p-4 text-center">
-        <div class="text-3xl font-bold text-bio-purple">${ps.reduce((a,p) => a + (p.deep_research?.ecosystem_connections?.length||0), 0)}</div>
+        <div class="text-3xl font-bold text-bio-purple">${allPs.reduce((a,p) => a + (p.deep_research?.ecosystem_connections?.length||0), 0)}</div>
         <div class="text-xs text-gray-400 mt-1">Ecosystem Links</div>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-bio-amber">${cbrnCount}</div>
+        <div class="text-xs text-gray-400 mt-1">CBRN Platforms</div>
+      </div>
+    </div>
+
+    <!-- Search + Filters -->
+    <div class="glass rounded-xl p-4 mb-6">
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex-1 min-w-[200px]">
+          <input type="text" placeholder="Search platforms..." value="${searchQuery}" oninput="doSearch(this.value)"
+            class="w-full bg-bio-slate/50 border border-bio-accent/20 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-bio-accent/50">
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="setFilter('all')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filterLayer === 'all' ? 'bg-bio-accent/20 text-bio-accent border border-bio-accent/40' : 'text-gray-400 hover:text-white border border-transparent'}">All (${allPs.length})</button>
+          ${Object.entries(layers).map(([l, c]) => `
+            <button onclick="setFilter('${l}')" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${filterLayer === l ? 'bg-bio-accent/20 text-bio-accent border border-bio-accent/40' : 'text-gray-400 hover:text-white border border-transparent'}">${l.replace('_', ' ').replace('Operational','')} (${c})</button>
+          `).join('')}
+        </div>
       </div>
     </div>
 
     <!-- Layer breakdown -->
     <div class="glass rounded-xl p-4 mb-6">
       <h3 class="text-sm font-semibold text-gray-300 mb-3"><i class="fas fa-layer-group mr-2 text-bio-accent"></i>Layer Distribution</h3>
-      <div class="flex gap-6">
+      <div class="flex gap-4 flex-wrap">
         ${Object.entries(layers).map(([l, c]) => `
           <div class="flex items-center gap-2">
             ${layerBadge(l)}
@@ -128,6 +187,8 @@ function renderOverview() {
         `).join('')}
       </div>
     </div>
+
+    ${ps.length === 0 ? '<p class="text-gray-500 text-center py-10">No platforms match your filter.</p>' : ''}
 
     <!-- Platform grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -145,11 +206,11 @@ function showPlatformDetail(name) {
 }
 
 function renderPlatformDetail(name) {
-  const p = DATA.platforms.find(x => x.n === name);
+  const p = DATA.platforms.find(x => x.name === name);
   if (!p) return '<p class="text-red-400">Platform not found</p>';
   const prof = p.profile || {};
   const dr = p.deep_research || {};
-  const sc = p.sc || {};
+  const sc = p.scores || {};
 
   // Sub-scores
   const subScores = Object.entries(sc).sort((a,b) => b[1] - a[1]).map(([k, v]) => {
@@ -193,23 +254,23 @@ function renderPlatformDetail(name) {
 
   // Guidelines
   const guides = (dr.official_guidelines || []).map(g => `
-    <a href="${g.url}" target="_blank" class="block glass-light rounded-lg p-3 mb-2 hover:border-bio-accent/30 transition-all">
-      <div class="text-white text-sm">${g.title}</div>
-      <div class="text-gray-500 text-xs mt-1"><i class="fas fa-building mr-1"></i>${g.org || ''}</div>
+    <a href="${g.url || '#'}" target="_blank" class="block glass-light rounded-lg p-3 mb-2 hover:border-bio-accent/30 transition-all">
+      <div class="text-white text-sm">${g.title || g}</div>
+      <div class="text-gray-500 text-xs mt-1">${g.org ? `<i class="fas fa-building mr-1"></i>${g.org}` : ''}</div>
     </a>
   `).join('');
 
   // Controversies
   const controv = (dr.controversies_and_changes || []).map(c =>
-    `<li class="text-gray-300 text-sm mb-2 pl-2">${c}</li>`
+    `<li class="text-gray-300 text-sm mb-2 pl-2">${typeof c === 'string' ? c : c.description || JSON.stringify(c)}</li>`
   ).join('');
 
   // Ecosystem
   const eco = (dr.ecosystem_connections || []).map(e => `
     <div class="flex items-start gap-3 mb-3 eco-line pl-4 py-2">
       <div>
-        <span class="text-bio-accent font-semibold text-sm">${e.platform}</span>
-        <p class="text-gray-400 text-xs mt-0.5">${e.relationship}</p>
+        <span class="text-bio-accent font-semibold text-sm">${e.platform || e.name || ''}</span>
+        <p class="text-gray-400 text-xs mt-0.5">${e.relationship || e.description || ''}</p>
       </div>
     </div>
   `).join('');
@@ -222,8 +283,8 @@ function renderPlatformDetail(name) {
         <div class="w-0.5 h-full bg-bio-slate"></div>
       </div>
       <div>
-        <span class="text-bio-accent font-bold text-sm">${t.year}</span>
-        <p class="text-gray-300 text-sm">${t.event}</p>
+        <span class="text-bio-accent font-bold text-sm">${t.year || t.date || ''}</span>
+        <p class="text-gray-300 text-sm">${t.event || t.description || ''}</p>
       </div>
     </div>
   `).join('');
@@ -238,13 +299,23 @@ function renderPlatformDetail(name) {
     </a>`
   ).join('');
 
-  // CBRN
+  // CBRN Assessment
   let cbrnHtml = '';
-  if (dr.cbrn_assessment) {
-    cbrnHtml = `<div class="glass rounded-xl p-5 mb-6 border border-red-500/30">
-      <h3 class="text-red-400 font-bold text-sm mb-3"><i class="fas fa-radiation mr-2"></i>CBRN Assessment</h3>
-      <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/40 mb-3">${dr.cbrn_assessment.tag}</span>
-      <p class="text-gray-300 text-sm leading-relaxed">${dr.cbrn_assessment.assessment}</p>
+  const cbrn = dr.cbrn_assessment;
+  if (cbrn) {
+    const classification = typeof cbrn === 'string' ? cbrn : (cbrn.classification || cbrn.tag || '');
+    const assessment = typeof cbrn === 'object' ? (cbrn.assessment || cbrn.description || '') : '';
+    const isOperational = p.layer === 'L4_CBRN_Operational';
+    const borderColor = isOperational ? 'border-amber-500/30' : 'border-red-500/30';
+    const tagColor = isOperational ? 'bg-amber-500/20 text-amber-400 border-amber-500/40' : 'bg-red-500/20 text-red-400 border-red-500/40';
+    const iconColor = isOperational ? 'text-amber-400' : 'text-red-400';
+    
+    cbrnHtml = `<div class="glass rounded-xl p-5 mb-6 border ${borderColor}">
+      <h3 class="${iconColor} font-bold text-sm mb-3"><i class="fas fa-radiation mr-2"></i>CBRN Assessment</h3>
+      <span class="inline-block px-3 py-1 rounded-full text-xs font-bold ${tagColor} mb-3">${classification.replace(/_/g, ' ')}</span>
+      ${assessment ? `<p class="text-gray-300 text-sm leading-relaxed">${assessment}</p>` : ''}
+      ${typeof cbrn === 'object' && cbrn.primary_domain ? `<p class="text-gray-400 text-xs mt-2"><strong>Domain:</strong> ${cbrn.primary_domain}</p>` : ''}
+      ${typeof cbrn === 'object' && cbrn.nato_standards ? `<p class="text-gray-400 text-xs mt-1"><strong>NATO Standards:</strong> ${cbrn.nato_standards}</p>` : ''}
     </div>`;
   }
 
@@ -259,15 +330,14 @@ function renderPlatformDetail(name) {
       <div class="flex items-start justify-between flex-wrap gap-4">
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-3 mb-2">
-            <span class="text-gray-500 mono text-sm">#${p.r}</span>
-            ${layerBadge(p.l)}
-            <span class="text-gray-500 text-xs">${p.biosurveillance_class || ''}</span>
+            <span class="text-gray-500 mono text-sm">#${p.rank}</span>
+            ${layerBadge(p.layer)}
           </div>
-          <h2 class="text-2xl font-bold text-white mb-2">${p.n}</h2>
-          <p class="text-gray-400 text-sm mb-3">${p.c} — ${p.d}</p>
-          <a href="${p.u}" target="_blank" class="text-bio-accent text-sm hover:underline"><i class="fas fa-external-link-alt mr-1"></i>${p.u}</a>
+          <h2 class="text-2xl font-bold text-white mb-2">${p.name}</h2>
+          <p class="text-gray-400 text-sm mb-3">${p.category} — ${p.description}</p>
+          <a href="${p.url}" target="_blank" class="text-bio-accent text-sm hover:underline"><i class="fas fa-external-link-alt mr-1"></i>${p.url}</a>
         </div>
-        ${scoreRing(p.s, 80)}
+        ${scoreRing(p.score, 80)}
       </div>
 
       <!-- Executive Summary -->
@@ -279,11 +349,11 @@ function renderPlatformDetail(name) {
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <div>
           <h4 class="text-bio-green text-xs font-semibold mb-2"><i class="fas fa-check-circle mr-1"></i>Strengths</h4>
-          <ul class="text-sm text-gray-300 space-y-1">${(p.st||[]).map(s=>`<li class="flex items-start gap-2"><span class="text-bio-green mt-1">•</span>${s}</li>`).join('')}</ul>
+          <ul class="text-sm text-gray-300 space-y-1">${(p.strengths||[]).map(s=>`<li class="flex items-start gap-2"><span class="text-bio-green mt-1">•</span>${s}</li>`).join('')}</ul>
         </div>
         <div>
           <h4 class="text-bio-amber text-xs font-semibold mb-2"><i class="fas fa-exclamation-triangle mr-1"></i>Weaknesses</h4>
-          <ul class="text-sm text-gray-300 space-y-1">${(p.wk||[]).map(w=>`<li class="flex items-start gap-2"><span class="text-bio-amber mt-1">•</span>${w}</li>`).join('')}</ul>
+          <ul class="text-sm text-gray-300 space-y-1">${(p.weaknesses||[]).map(w=>`<li class="flex items-start gap-2"><span class="text-bio-amber mt-1">•</span>${w}</li>`).join('')}</ul>
         </div>
       </div>
     </div>
@@ -318,20 +388,20 @@ function renderPlatformDetail(name) {
     </div>
 
     <!-- Controversies -->
-    <div class="glass rounded-xl p-5 mb-6">
-      <h3 class="text-sm font-semibold text-gray-300 mb-3"><i class="fas fa-exclamation-circle mr-2 text-bio-amber"></i>Controversies & Recent Changes (2024–2026)</h3>
+    ${controv ? `<div class="glass rounded-xl p-5 mb-6">
+      <h3 class="text-sm font-semibold text-gray-300 mb-3"><i class="fas fa-exclamation-circle mr-2 text-bio-amber"></i>Controversies & Recent Changes</h3>
       <ul class="list-disc list-inside">${controv}</ul>
-    </div>
+    </div>` : ''}
 
     <!-- Ecosystem + Timeline -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
       <div class="glass rounded-xl p-5">
         <h3 class="text-sm font-semibold text-gray-300 mb-4"><i class="fas fa-project-diagram mr-2 text-bio-accent"></i>Ecosystem Connections (${(dr.ecosystem_connections||[]).length})</h3>
-        ${eco}
+        ${eco || '<p class="text-gray-500 text-sm italic">No ecosystem data</p>'}
       </div>
       <div class="glass rounded-xl p-5">
         <h3 class="text-sm font-semibold text-gray-300 mb-4"><i class="fas fa-clock mr-2 text-bio-accent"></i>Timeline</h3>
-        ${timeline}
+        ${timeline || '<p class="text-gray-500 text-sm italic">No timeline data</p>'}
       </div>
     </div>
 
@@ -345,16 +415,17 @@ function renderPlatformDetail(name) {
 
 // ── PROFILES LIST VIEW ──────────────────────────────────────────
 function renderProfiles() {
-  const rows = DATA.platforms.map(p => `
-    <tr class="border-b border-bio-slate/50 hover:bg-bio-slate/30 cursor-pointer transition-colors" onclick="showPlatformDetail('${p.n.replace(/'/g,"\\'")}')">
-      <td class="py-3 px-3 mono text-xs text-gray-500">${p.r}</td>
+  const ps = getFiltered();
+  const rows = ps.map(p => `
+    <tr class="border-b border-bio-slate/50 hover:bg-bio-slate/30 cursor-pointer transition-colors" onclick="showPlatformDetail('${p.name.replace(/'/g,"\\'")}')">
+      <td class="py-3 px-3 mono text-xs text-gray-500">${p.rank}</td>
       <td class="py-3 px-3">
-        <div class="font-semibold text-white text-sm">${p.n}</div>
-        <div class="text-gray-500 text-xs">${p.c}</div>
+        <div class="font-semibold text-white text-sm">${p.name}</div>
+        <div class="text-gray-500 text-xs">${p.category}</div>
       </td>
-      <td class="py-3 px-3">${layerBadge(p.l)}</td>
+      <td class="py-3 px-3">${layerBadge(p.layer)}</td>
       <td class="py-3 px-3 text-center">
-        <span class="font-bold mono" style="color:${scoreColor(p.s)}">${p.s}</span>
+        <span class="font-bold mono" style="color:${scoreColor(p.score)}">${p.score}</span>
       </td>
       <td class="py-3 px-3 text-xs text-gray-400 max-w-md">${truncate(p.deep_research?.executive_summary, 120)}</td>
       <td class="py-3 px-3 text-center text-xs text-gray-400">${p.deep_research?.key_publications?.length || 0}</td>
@@ -365,6 +436,20 @@ function renderProfiles() {
   `).join('');
 
   return `<div class="fade-in">
+    <!-- Search + Filter -->
+    <div class="glass rounded-xl p-4 mb-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <input type="text" placeholder="Search..." value="${searchQuery}" oninput="doSearch(this.value)"
+          class="flex-1 min-w-[200px] bg-bio-slate/50 border border-bio-accent/20 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-bio-accent/50">
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="setFilter('all')" class="px-3 py-1.5 rounded-lg text-xs font-medium ${filterLayer === 'all' ? 'bg-bio-accent/20 text-bio-accent' : 'text-gray-400'}">All</button>
+          <button onclick="setFilter('L1_Surveillance')" class="px-3 py-1.5 rounded-lg text-xs font-medium ${filterLayer === 'L1_Surveillance' ? 'bg-bio-accent/20 text-bio-accent' : 'text-gray-400'}">L1</button>
+          <button onclick="setFilter('L2_Genomic')" class="px-3 py-1.5 rounded-lg text-xs font-medium ${filterLayer === 'L2_Genomic' ? 'bg-bio-accent/20 text-bio-accent' : 'text-gray-400'}">L2</button>
+          <button onclick="setFilter('L3_Defense')" class="px-3 py-1.5 rounded-lg text-xs font-medium ${filterLayer === 'L3_Defense' ? 'bg-bio-accent/20 text-bio-accent' : 'text-gray-400'}">L3</button>
+          <button onclick="setFilter('L4_CBRN_Operational')" class="px-3 py-1.5 rounded-lg text-xs font-medium ${filterLayer === 'L4_CBRN_Operational' ? 'bg-bio-accent/20 text-bio-accent' : 'text-gray-400'}">CBRN</button>
+        </div>
+      </div>
+    </div>
     <div class="glass rounded-xl overflow-hidden">
       <table class="w-full">
         <thead>
@@ -381,53 +466,86 @@ function renderProfiles() {
         <tbody>${rows}</tbody>
       </table>
     </div>
+    <p class="text-gray-500 text-xs mt-3 text-center">Showing ${ps.length} of ${DATA.platforms.length} platforms</p>
   </div>`;
 }
 
 // ── COMPARISON VIEW ─────────────────────────────────────────────
 function renderComparison() {
   const comp = DATA.comparison;
-  if (!comp || !comp.comparison_axes) return '<p class="text-gray-400">No comparison data</p>';
+  if (!comp) return '<p class="text-gray-400 text-center py-10">No comparison data available</p>';
 
-  const names = DATA.platforms.map(p => p.n);
+  // Top 30 table
+  const top30 = comp.top30 || {};
+  const cbrn = comp.cbrn || {};
 
-  const tables = comp.comparison_axes.map(ax => {
-    const rows = names.map(n => `
-      <tr class="border-b border-bio-slate/30 hover:bg-bio-slate/20">
-        <td class="py-2 px-3 text-sm font-medium text-white whitespace-nowrap">${n}</td>
-        <td class="py-2 px-3 text-sm text-gray-300">${ax.values[n] || '—'}</td>
-      </tr>
-    `).join('');
+  const top30Rows = (top30.platforms || []).map(p => `
+    <tr class="border-b border-bio-slate/30 hover:bg-bio-slate/20 cursor-pointer" onclick="showPlatformDetail('${(DATA.platforms.find(x=>x.rank===p.rank)||{}).name||''}')">
+      <td class="py-2 px-3 mono text-xs text-gray-500">${p.rank}</td>
+      <td class="py-2 px-3 text-sm font-medium text-white">${p.name}</td>
+      <td class="py-2 px-3">${layerBadge(p.layer)}</td>
+      <td class="py-2 px-3 text-center"><span class="font-bold mono" style="color:${scoreColor(p.score)}">${p.score}</span></td>
+      <td class="py-2 px-3 text-xs text-gray-400">${(p.cbrn || '—').replace(/_/g,' ')}</td>
+    </tr>
+  `).join('');
 
-    return `<div class="glass rounded-xl overflow-hidden mb-6">
+  const cbrnRows = (cbrn.platforms || []).map(p => `
+    <tr class="border-b border-bio-slate/30 hover:bg-bio-slate/20 cursor-pointer" onclick="showPlatformDetail('${(DATA.platforms.find(x=>x.rank===p.rank)||{}).name||''}')">
+      <td class="py-2 px-3 mono text-xs text-gray-500">${p.rank}</td>
+      <td class="py-2 px-3 text-sm font-medium text-white">${p.name}</td>
+      <td class="py-2 px-3 text-center"><span class="font-bold mono" style="color:${scoreColor(p.score)}">${p.score}</span></td>
+      <td class="py-2 px-3 text-xs text-amber-400">${(p.classification || '').replace(/_/g,' ')}</td>
+    </tr>
+  `).join('');
+
+  return `<div class="fade-in">
+    <!-- Top 30 Biosurveillance -->
+    <div class="glass rounded-xl overflow-hidden mb-6">
       <div class="bg-bio-slate/40 px-4 py-3 border-b border-bio-accent/10">
-        <h3 class="text-sm font-semibold text-bio-accent"><i class="fas fa-th-list mr-2"></i>${ax.axis}</h3>
+        <h3 class="text-sm font-semibold text-bio-accent"><i class="fas fa-trophy mr-2"></i>Top 30 Biosurveillance Platforms (${top30.count || 0})</h3>
       </div>
       <table class="w-full">
         <thead><tr class="text-xs text-gray-500 uppercase bg-bio-slate/20">
-          <th class="py-2 px-3 text-left w-48">Platform</th>
-          <th class="py-2 px-3 text-left">${ax.axis}</th>
+          <th class="py-2 px-3 text-left w-16">#</th>
+          <th class="py-2 px-3 text-left">Platform</th>
+          <th class="py-2 px-3 text-left">Layer</th>
+          <th class="py-2 px-3 text-center w-20">Score</th>
+          <th class="py-2 px-3 text-left">CBRN Tag</th>
         </tr></thead>
-        <tbody>${rows}</tbody>
+        <tbody>${top30Rows}</tbody>
       </table>
-    </div>`;
-  }).join('');
+    </div>
 
-  return `<div class="fade-in">${tables}</div>`;
+    <!-- CBRN Operational -->
+    <div class="glass rounded-xl overflow-hidden mb-6">
+      <div class="bg-amber-500/10 px-4 py-3 border-b border-amber-500/20">
+        <h3 class="text-sm font-semibold text-amber-400"><i class="fas fa-radiation mr-2"></i>CBRN Operational Platforms (${cbrn.count || 0})</h3>
+      </div>
+      <table class="w-full">
+        <thead><tr class="text-xs text-gray-500 uppercase bg-bio-slate/20">
+          <th class="py-2 px-3 text-left w-16">#</th>
+          <th class="py-2 px-3 text-left">Platform</th>
+          <th class="py-2 px-3 text-center w-20">Score</th>
+          <th class="py-2 px-3 text-left">Classification</th>
+        </tr></thead>
+        <tbody>${cbrnRows}</tbody>
+      </table>
+    </div>
+  </div>`;
 }
 
 // ── ECOSYSTEM MAP VIEW ──────────────────────────────────────────
 function renderEcosystem() {
-  // Build connection map
   const connections = {};
   DATA.platforms.forEach(p => {
     const eco = p.deep_research?.ecosystem_connections || [];
     eco.forEach(e => {
-      const key = [p.n, e.platform].sort().join('↔');
+      const target = e.platform || e.name || '';
+      const key = [p.name, target].sort().join('↔');
       if (!connections[key]) {
-        connections[key] = { from: p.n, to: e.platform, relationships: [] };
+        connections[key] = { from: p.name, to: target, relationships: [] };
       }
-      connections[key].relationships.push({ direction: p.n + ' → ' + e.platform, text: e.relationship });
+      connections[key].relationships.push({ direction: p.name + ' → ' + target, text: e.relationship || e.description || '' });
     });
   });
 
@@ -446,19 +564,18 @@ function renderEcosystem() {
     </div>
   `).join('');
 
-  // Count connections per platform
   const nodeCounts = {};
   DATA.platforms.forEach(p => {
     const eco = p.deep_research?.ecosystem_connections || [];
-    nodeCounts[p.n] = eco.length;
+    nodeCounts[p.name] = eco.length;
   });
 
   const nodeList = Object.entries(nodeCounts).sort((a,b) => b[1] - a[1]).map(([n, c]) => {
-    const p = DATA.platforms.find(x => x.n === n);
+    const p = DATA.platforms.find(x => x.name === n);
     return `<div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-bio-slate/30 cursor-pointer" onclick="showPlatformDetail('${n.replace(/'/g,"\\'")}')">
       <div class="flex items-center gap-3">
-        ${layerBadge(p?.l || '')}
-        <span class="text-white text-sm font-medium">${n}</span>
+        ${layerBadge(p?.layer || '')}
+        <span class="text-white text-sm font-medium truncate">${n}</span>
       </div>
       <span class="text-bio-accent font-bold">${c}</span>
     </div>`;
@@ -469,7 +586,7 @@ function renderEcosystem() {
       <div class="lg:col-span-1">
         <div class="glass rounded-xl p-5 sticky top-20">
           <h3 class="text-sm font-semibold text-gray-300 mb-3"><i class="fas fa-sitemap mr-2 text-bio-accent"></i>Connection Count</h3>
-          ${nodeList}
+          <div class="max-h-[60vh] overflow-y-auto">${nodeList}</div>
           <div class="mt-4 p-3 rounded-lg bg-bio-accent/5 border border-bio-accent/20">
             <p class="text-xs text-gray-400"><strong class="text-bio-accent">${Object.keys(connections).length}</strong> unique connections across ${DATA.platforms.length} platforms</p>
           </div>

@@ -15,7 +15,7 @@ app.get('/', (c) => {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BioR Deep-Research Profiles — Top 10 Biosurveillance Platforms</title>
+<title>BioR Deep-Research Profiles — 50 Biosurveillance & CBRN Platforms</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
 <script>
@@ -55,6 +55,8 @@ tailwind.config = {
   .badge-L1 { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
   .badge-L2 { background: rgba(56,189,248,0.15); color: #38bdf8; border: 1px solid rgba(56,189,248,0.3); }
   .badge-L3 { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+  .badge-L4_CBRN { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+  .layer-L4_CBRN { color: #f59e0b; }
   ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #1e293b; } ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
   .pub-item { border-left: 3px solid #38bdf8; }
   .eco-line { border-left: 2px dashed #475569; }
@@ -73,13 +75,14 @@ tailwind.config = {
       </div>
       <div>
         <h1 class="text-lg font-bold gradient-text">BioR Intelligence</h1>
-        <p class="text-xs text-gray-400">Deep-Research Platform Profiles — Top 10</p>
+        <p class="text-xs text-gray-400">Deep-Research Platform Profiles — 50 Platforms</p>
       </div>
     </div>
     <div class="flex items-center gap-4 text-sm">
-      <span class="text-gray-400"><i class="fas fa-database mr-1"></i> 169 platforms</span>
-      <span class="text-bio-accent"><i class="fas fa-microscope mr-1"></i> 10 deep profiles</span>
-      <span class="text-gray-500 mono text-xs">v1.0 | 2026-03-16</span>
+      <span class="text-gray-400"><i class="fas fa-database mr-1"></i> 189 platforms</span>
+      <span class="text-bio-accent"><i class="fas fa-microscope mr-1"></i> 50 deep profiles</span>
+      <span class="text-bio-amber"><i class="fas fa-radiation mr-1"></i> 20 CBRN</span>
+      <span class="text-gray-500 mono text-xs">v3.1.0 | 2026-03-17</span>
     </div>
   </div>
 </header>
