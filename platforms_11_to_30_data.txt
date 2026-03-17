@@ -1,0 +1,1045 @@
+====================================================================================================
+PLATFORM #11: Galaxy Project
+====================================================================================================
+URL: https://galaxyproject.org
+Composite Score: 86.5/100
+Layer: L2_Genomic
+Category: Bioinformatics Workflow Platform
+Description: Accessible, reproducible computational research
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 88
+  analytics_capability: 91
+  visualization: 84
+  accessibility: 89
+  scalability: 86
+  documentation: 88
+  community_support: 92
+  security_compliance: 80
+  interoperability: 85
+  real_time_capability: 78
+
+STRENGTHS:
+  + Extensive tool library
+  + Reproducible workflows
+  + Training resources
+  + Large community
+
+WEAKNESSES:
+  - General-purpose
+  - Resource-intensive
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Galaxy is an open-source, web-based platform for accessible, reproducible, and transparent computational research. Founded by Anton Nekrutenko (Penn State) and James Taylor (Johns Hopkins), it provides a browser-based environment for running bioinformatics analyses without programming knowledge.
+  functional_scope:
+    Over 10,000 integrated bioinformatics tools covering genomics, transcriptomics, proteomics, metabolomics, metagenomics, and more. Workflow creation and sharing, interactive visualizations, Jupyter/RStudio notebook integration. Specialized COVID-19 analysis workflows, antimicrobial resistance analysis, and variant calling pipelines.
+  tech_stack:
+    Python backend (Galaxy framework), PostgreSQL database, Slurm/HTCondor job scheduling. Frontend in JavaScript/Backbone.js transitioning to Vue.js. Deployable on cloud (AWS, GCP, Azure), HPC, or local infrastructure via Ansible/Docker/Kubernetes. Tools wrapped in Galaxy XML tool definitions. Open-source under Academic Free License.
+  operator:
+    Galaxy Project community, led by teams at Penn State University, Johns Hopkins University, University of Freiburg, and University of Melbourne. Funded by NIH, NSF, and European Commission.
+  data_model:
+    History-based data management tracking complete analysis provenance. Supports any bioinformatics file format (FASTQ, BAM, VCF, etc.). Published workflows and datasets can be shared via DOIs.
+  users_scale:
+    400,000+ registered users, 750,000+ jobs per month, 22,000+ citations, used in 150+ countries. Three major public servers: usegalaxy.org, usegalaxy.eu, usegalaxy.org.au.
+  access_model:
+    Free public servers with generous quotas. Self-hosted deployments for institutions. All code open-source.
+
+
+====================================================================================================
+PLATFORM #12: NWSS
+====================================================================================================
+URL: https://www.cdc.gov/nwss/
+Composite Score: 86.2/100
+Layer: L1_Surveillance
+Category: Wastewater Surveillance
+Description: National Wastewater Surveillance System for pathogen monitoring in municipal wastewater
+Biosurveillance Class: environmental_biosurveillance
+Input Types: environmental
+Primary Input: environmental
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 88
+  analytics_capability: 86
+  visualization: 85
+  accessibility: 86
+  scalability: 87
+  documentation: 85
+  community_support: 84
+  security_compliance: 88
+  interoperability: 85
+  real_time_capability: 88
+
+STRENGTHS:
+  + Population-level monitoring
+  + Multi-pathogen detection
+  + Non-invasive surveillance
+  + CDC coordination
+  + Public dashboard
+
+WEAKNESSES:
+  - US-focused
+  - Infrastructure requirements
+  - Interpretation challenges
+
+CURRENT PROFILE (7 fields):
+  overview:
+    The National Wastewater Surveillance System (NWSS) is CDC's public health infrastructure for monitoring infectious diseases through wastewater testing. Established in September 2020 during COVID-19, it has expanded to track SARS-CoV-2, influenza, RSV, mpox, measles, and H5 bird flu across the United States.
+  functional_scope:
+    Wastewater sample collection and testing for pathogen genetic material, trend analysis and visualization dashboards, community-level disease activity estimation (independent of clinical testing), early warning detection of emerging variants, geographic comparison of viral activity levels across states and territories.
+  tech_stack:
+    Laboratory: RT-qPCR and RT-dPCR for pathogen detection, sequencing for variant identification. Data platform: DCIPHER (Defense Consortium for Health Analytics) for data management, CDC data visualization dashboards (R/Shiny). Biobot Analytics and Verily partnership for laboratory analysis. Cloud-based data infrastructure.
+  operator:
+    CDC (Centers for Disease Control and Prevention), with state and local health departments, wastewater utilities, and laboratory partners (Biobot Analytics, Verily/Google).
+  data_model:
+    Wastewater sampling data: collection date, treatment plant location, population served, pathogen concentration (gene copies/mL), flow rate normalization, variant sequences. Aggregated at community, state, and national levels.
+  users_scale:
+    Covers 1,500+ wastewater sampling sites serving ~140 million Americans. Monitoring for 6+ pathogens. Data published on CDC's public dashboards.
+  access_model:
+    Free. Public dashboards at cdc.gov/nwss. Data downloads available for researchers. Participation open to all U.S. wastewater utilities through state health departments.
+
+
+====================================================================================================
+PLATFORM #13: BV-BRC
+====================================================================================================
+URL: https://bv-brc.org
+Composite Score: 86/100
+Layer: L2_Genomic
+Category: Bacterial & Viral Bioinformatics Resource
+Description: Integrated bacterial and viral bioinformatics resource center (formerly PATRIC + IRD/ViPR)
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 89
+  analytics_capability: 88
+  visualization: 84
+  accessibility: 87
+  scalability: 86
+  documentation: 86
+  community_support: 85
+  security_compliance: 84
+  interoperability: 87
+  real_time_capability: 82
+
+STRENGTHS:
+  + Massive integrated DB
+  + Comprehensive analysis services
+  + NIAID-funded
+  + Free access
+  + Genome annotation
+
+WEAKNESSES:
+  - Complex interface
+  - Steep learning curve
+
+CURRENT PROFILE (7 fields):
+  overview:
+    The Bacterial and Viral Bioinformatics Resource Center (BV-BRC) is a comprehensive NIAID-funded resource for infectious disease research, combining the former PATRIC (bacterial) and IRD/ViPR (viral) databases into a unified platform launched in 2022.
+  functional_scope:
+    Integrated genomic and epidemiological data for bacteria and viruses. Provides genome assembly, annotation (RAST), comparative genomics, phylogenetics, protein family analysis, metabolic modeling, and outbreak tracking (Measles 2025, Mpox 2024, H5N1).
+  tech_stack:
+    Java/Solr backend, React frontend, RAST annotation engine, custom genome assembly pipelines, REST API, CLI tools. Hosted on NIAID cloud infrastructure with high-performance computing cluster.
+  operator:
+    University of Chicago (lead), Virginia Tech, Fellowship for Interpretation of Genomes. Funded by NIAID/NIH contract HHSN272201400027C.
+  data_model:
+    Integrated bacterial/viral genomes with structured metadata (host, geography, isolation source). Supports FASTA, GenBank, GFF3. Over 1.5M bacterial and 1M+ viral genomes indexed.
+  users_scale:
+    Thousands of registered researchers globally. Over 400 peer-reviewed publications cite PATRIC/BV-BRC. Serves NIH, CDC, USDA, academic labs worldwide.
+  access_model:
+    Free public access. Registration required for private workspace and analysis tools. Open-source components on GitHub. No usage limits for registered users.
+
+
+====================================================================================================
+PLATFORM #14: EpiCollect5
+====================================================================================================
+URL: https://five.epicollect.net
+Composite Score: 86/100
+Layer: L1_Surveillance
+Category: Mobile Data Collection
+Description: Free mobile data collection for field epidemiology
+Biosurveillance Class: non_biological
+Input Types: epidemiological
+Primary Input: epidemiological
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 84
+  analytics_capability: 80
+  visualization: 82
+  accessibility: 93
+  scalability: 85
+  documentation: 88
+  community_support: 86
+  security_compliance: 84
+  interoperability: 86
+  real_time_capability: 88
+
+STRENGTHS:
+  + Mobile support
+  + Offline capability
+  + Freely available with no licensing costs
+  + Easy form builder
+
+WEAKNESSES:
+  - Limited analytics
+  - Basic visualization
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Epicollect5 is a free, open-source mobile and web application for data collection developed by Imperial College London and the Big Data Institute at the University of Oxford. It enables researchers and organizations to create customizable data collection forms and deploy them via smartphone apps with offline capability.
+  functional_scope:
+    Customizable form builder (drag-and-drop, conditional logic, photo/audio/video capture, GPS location, barcode scanning), mobile data collection (iOS and Android with offline sync), web-based data viewing and export (JSON, CSV), map visualization of geotagged entries, basic filtering and search.
+  tech_stack:
+    Laravel (PHP) backend, Vue.js web frontend, native Android and iOS mobile apps. MySQL/MariaDB database. REST API for data access and integration. Hosted on cloud infrastructure. Open-source on GitHub.
+  operator:
+    Imperial College London and Big Data Institute, University of Oxford. Funded by Wellcome Trust.
+  data_model:
+    Hierarchical form-based data model with configurable fields (text, numeric, date, location, media, branching). Entries stored with timestamps, GPS coordinates, and user attribution.
+  users_scale:
+    488,000+ registered users, 189,000+ projects, 76+ million entries collected. Used for disease surveillance, ecology, citizen science, and field research worldwide.
+  access_model:
+    Free. No login required for public projects. Free account to create and manage projects. Data export in JSON and CSV.
+
+
+====================================================================================================
+PLATFORM #15: Pathoplexus
+====================================================================================================
+URL: https://pathoplexus.org
+Composite Score: 85.6/100
+Layer: L2_Genomic
+Category: Open-Access Pathogen Genomic Data Sharing
+Description: Next-generation open pathogen sequence data sharing platform
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 88
+  analytics_capability: 84
+  visualization: 83
+  accessibility: 88
+  scalability: 86
+  documentation: 84
+  community_support: 83
+  security_compliance: 87
+  interoperability: 87
+  real_time_capability: 85
+
+STRENGTHS:
+  + Open data sharing
+  + Modern architecture
+  + FAIR principles
+  + Global collaboration
+  + API-first design
+
+WEAKNESSES:
+  - Early stage
+  - Limited organism coverage
+  - Building community
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Pathoplexus is a transparent, non-profit pathogen sequence data sharing platform founded by members from 14 countries across 5 continents. It offers flexible data-sharing options with time-limited protections for proper attribution, integrating smoothly with INSDC databases (NCBI, ENA, DDBJ).
+  functional_scope:
+    Sequence data sharing with flexible access models (open data or restricted-use with time-limited protections up to one year), filtering and searching of sequences, API for computational pipelines, integration with INSDC (open data appears in NCBI/ENA/DDBJ), pathogen-specific databases (currently supports multiple pathogens).
+  tech_stack:
+    Modern web platform with REST API, built in collaboration with PHA4GE (Public Health Alliance for Genomic Epidemiology). Demo instance for testing. Open-source development.
+  operator:
+    Pathoplexus Association (non-profit, registered association). Executive Board from around the globe. Community-driven with no major corporate influence.
+  data_model:
+    Genomic sequences with metadata, submitted per pathogen. Data can be Open (immediately accessible, forwarded to INSDC) or Restricted-Use (protected for up to 1 year with attribution requirements).
+  users_scale:
+    Growing community of researchers and public health institutions. Launched as an alternative/complement to GISAID with focus on transparency and flexibility.
+  access_model:
+    Free. Account required for submission. All data accessible to everyone (browsing/analysis), but Restricted-Use data has publication restrictions during the protection period.
+
+
+====================================================================================================
+PLATFORM #16: Airfinity
+====================================================================================================
+URL: https://airfinity.com
+Composite Score: 85.5/100
+Layer: L1_Surveillance
+Category: AI Health Analytics & Disease Forecasting
+Description: AI-enabled health analytics platform covering 160+ infectious diseases with real-time forecasting and biorisk surveillance
+Biosurveillance Class: environmental_biosurveillance
+Input Types: environmental, signals_intelligence, modeling
+Primary Input: environmental
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 89
+  analytics_capability: 91
+  visualization: 84
+  accessibility: 78
+  scalability: 87
+  documentation: 83
+  community_support: 76
+  security_compliance: 86
+  interoperability: 83
+  real_time_capability: 90
+
+STRENGTHS:
+  + 160+ disease coverage
+  + Proven forecast accuracy (outperformed market consensus)
+  + Used by ~10 governments
+  + 1B+ data points integrated
+  + Always-on predictive modeling
+  + ML-augmented SIR models
+  + One Health multi-source intelligence
+  + Biorisk outbreak risk index
+
+WEAKNESSES:
+  - Commercial subscription only
+  - Proprietary algorithms
+  - No free academic tier
+  - Limited independent validation
+  - Not a bioinformatics/genomic tool
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Airfinity is a commercial predictive analytics and intelligence platform for the life sciences sector, headquartered in London. It provides AI-powered forecasting, simulation, and infectious disease intelligence, serving 9 out of 10 of the world's largest pharmaceutical companies in infectious diseases.
+  functional_scope:
+    Nexa (AI-enabled scenario engine for drug/vaccine demand forecasting), OneID Infectious Disease Intelligence (continuously updated disease intelligence with epidemiological modeling), OneID Biorisk Intelligence (biological threat monitoring for pandemic preparedness), burden of disease modeling, competitive intelligence, and second-opinion commercial forecasts.
+  tech_stack:
+    Proprietary AI/ML forecasting models trained on hundreds of proprietary predictive health signals. Cloud-based SaaS platform with real-time data ingestion from global sources. Custom dashboards and API access for enterprise clients.
+  operator:
+    Airfinity Ltd., London, UK. Independent predictive analytics company, cited over 70,000 times in media including NYT, Reuters, Fortune.
+  data_model:
+    Proprietary data lake integrating epidemiological data, clinical trial registries, regulatory filings, manufacturing capacity data, supply chain data, and real-time news feeds.
+  users_scale:
+    Major pharmaceutical companies (9/10 top infectious disease pharma), government agencies, international organizations. Subscription-based enterprise client base.
+  access_model:
+    Commercial subscription (SaaS). Free public reports and press releases. Enterprise pricing for platform access and API.
+
+
+====================================================================================================
+PLATFORM #17: HealthMap
+====================================================================================================
+URL: https://healthmap.org
+Composite Score: 85.5/100
+Layer: L1_Surveillance
+Category: Disease Intelligence
+Description: Automated real-time disease intelligence system using AI/NLP to mine news, social media, and official reports for early detection of global infectious disease outbreaks
+Biosurveillance Class: non_biological
+Input Types: signals_intelligence
+Primary Input: signals_intelligence
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 87
+  analytics_capability: 84
+  visualization: 88
+  accessibility: 86
+  scalability: 84
+  documentation: 83
+  community_support: 84
+  security_compliance: 83
+  interoperability: 85
+  real_time_capability: 89
+
+STRENGTHS:
+  + Automated news monitoring
+  + Real-time intelligence
+  + Global coverage spanning multiple continents and regions
+
+WEAKNESSES:
+  - Unstructured data
+  - Signal-to-noise
+
+CURRENT PROFILE (7 fields):
+  overview:
+    HealthMap is an automated real-time surveillance system developed at Boston Children's Hospital and Harvard Medical School. Launched in 2006, it aggregates data from diverse online sources to provide a comprehensive view of the global state of infectious diseases and their effects on human and animal health.
+  functional_scope:
+    Automated event-based surveillance: aggregates and classifies disease alerts from news media, government reports, ProMED-mail, WHO, and social media in multiple languages. Interactive global map visualization with disease/location/species filtering. Historical outbreak data archive. Disease Daily news summary. Flu Near You participatory surveillance.
+  tech_stack:
+    Natural language processing (NLP) and machine learning classifiers for automated alert extraction and categorization. GIS mapping (Leaflet/Google Maps), web scraping infrastructure, multi-language text processing. Cloud-hosted web application.
+  operator:
+    Computational Epidemiology Lab, Boston Children's Hospital / Harvard Medical School. Founded by Dr. John Brownstein. Funded by NIH, Google.org, and Skoll Foundation.
+  data_model:
+    Structured alerts with attributes: source, date, disease, location (geocoded), species, case/death counts, significance rating. Temporal and spatial indexing for trend analysis.
+  users_scale:
+    Millions of annual visitors. Used by CDC, WHO, DHS, DoD, and public health agencies worldwide as an early warning tool.
+  access_model:
+    Free, publicly accessible web application. No login required. API available for research use.
+
+
+====================================================================================================
+PLATFORM #18: BlueDot
+====================================================================================================
+URL: https://bluedot.global
+Composite Score: 85/100
+Layer: L1_Surveillance
+Category: AI-Powered Infectious Disease Forecasting
+Description: AI-powered infectious disease intelligence for early warning and prediction
+Biosurveillance Class: non_biological
+Input Types: syndromic, signals_intelligence, modeling
+Primary Input: syndromic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 88
+  analytics_capability: 89
+  visualization: 84
+  accessibility: 80
+  scalability: 86
+  documentation: 82
+  community_support: 78
+  security_compliance: 87
+  interoperability: 84
+  real_time_capability: 91
+
+STRENGTHS:
+  + AI-powered early detection
+  + First to flag COVID-19
+  + Mass gathering risk assessment
+  + NLP multi-language scanning
+  + Global flight data integration
+
+WEAKNESSES:
+  - Commercial platform
+  - Limited public access
+  - Proprietary algorithms
+
+CURRENT PROFILE (7 fields):
+  overview:
+    BlueDot is a Canadian AI-powered infectious disease intelligence company founded in 2013 by Dr. Kamran Khan (University of Toronto). Notably alerted clients to COVID-19 five days before the WHO's official statement in December 2019.
+  functional_scope:
+    Global surveillance monitoring 190+ infectious diseases/syndromes. AI-driven early warning alerts, disease forecasting (weeks to years ahead), risk assessments, outbreak suitability modeling, population vulnerability analysis, and medical countermeasure demand prediction.
+  tech_stack:
+    Proprietary AI/ML platform processing news, airline ticketing data, climate data, and official reports in 65+ languages. Natural language processing, epidemiological modeling, geospatial analytics. Cloud-hosted SaaS platform.
+  operator:
+    BlueDot Inc., Toronto, Canada. VC-backed with investment from Diagram Ventures. 100+ peer-reviewed scientific publications co-authored by the team.
+  data_model:
+    Multi-source data integration: global news feeds, airline passenger itineraries, official surveillance reports, climate/environmental data. Structured disease event objects with geolocation, severity, and trajectory projections.
+  users_scale:
+    Intelligence protects over 840 million people worldwide. Clients include governments, WHO, top 10 pharma companies, major enterprises. Saves users 3+ months annually in curated alert processing.
+  access_model:
+    Commercial SaaS subscription model. Tiered pricing for governments, pharma/life sciences, and enterprise. Demo available via request. Some public-facing reports and research publications freely available.
+
+
+====================================================================================================
+PLATFORM #19: GEIS (Global Emerging Infections Surveillance)
+====================================================================================================
+URL: https://www.health.mil/Military-Health-Topics/Health-Readiness/AFHSD/Global-Emerging-Infections-Surveillance
+Composite Score: 85/100
+Layer: L3_Defense
+Category: DoD Global Disease Surveillance Network
+Description: Defense Health Agency program providing global biosurveillance through network of military laboratories in 30+ countries since 1997
+Biosurveillance Class: non_biological
+Input Types: multi_source
+Primary Input: multi_source
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 87
+  analytics_capability: 85
+  visualization: 82
+  accessibility: 72
+  scalability: 88
+  documentation: 84
+  community_support: 80
+  security_compliance: 93
+  interoperability: 83
+  real_time_capability: 86
+
+STRENGTHS:
+  + 30+ country network since 1997
+  + USAMRIID/WRAIR/NAMRU partnerships
+  + Force health protection
+  + African Lion 2025 demonstrated
+  + DHA-funded operational program
+
+WEAKNESSES:
+  - Military-access primarily
+  - Government bureaucracy
+  - Slow innovation cycle
+  - Relies on partner nation cooperation
+
+CURRENT PROFILE (7 fields):
+  overview:
+    GEIS (Global Emerging Infections Surveillance) is the U.S. Department of Defense's infectious disease surveillance network, established in 1997 under the Armed Forces Health Surveillance Division (AFHSD). It operates through a network of overseas military laboratories and partnerships to detect emerging infectious disease threats to military personnel and global health.
+  functional_scope:
+    Global pathogen surveillance including respiratory diseases, enteric infections, febrile illness, vector-borne diseases, antimicrobial resistance monitoring, and novel pathogen detection. Next-generation sequencing for pathogen characterization. Laboratory capacity building in partner nations. Real-time disease reporting and early warning for force health protection.
+  tech_stack:
+    Laboratory: WGS (Illumina, Oxford Nanopore), RT-PCR, multiplex assays. Informatics: ESSENCE-based surveillance analytics, custom reporting dashboards, DoD Health-related surveillance data repositories. Integrated with Armed Forces Health Surveillance Branch (AFHSB) data systems.
+  operator:
+    Armed Forces Health Surveillance Division (AFHSD), Defense Health Agency, U.S. Department of Defense. Supported by HJFMRI (Henry M. Jackson Foundation for the Advancement of Military Medicine).
+  data_model:
+    Infectious disease event reports, laboratory diagnostic data, pathogen genomic sequences, antimicrobial susceptibility data. Integrated with DoD electronic health records and global disease databases.
+  users_scale:
+    Operates through 10+ DoD overseas research laboratories on 5 continents. Supports force health protection for 2.8+ million active duty and reserve military personnel.
+  access_model:
+    DoD internal system. Data shared with partner nations and international public health agencies (WHO, CDC). Published findings in peer-reviewed journals.
+
+
+====================================================================================================
+PLATFORM #20: ProMED
+====================================================================================================
+URL: https://promedmail.org
+Composite Score: 85/100
+Layer: L1_Surveillance
+Category: Event-Based Surveillance
+Description: Expert-curated global outbreak reporting system operated by ISID since 1994, providing early event-based surveillance of emerging infectious diseases through moderated alerts
+Biosurveillance Class: non_biological
+Input Types: signals_intelligence
+Primary Input: signals_intelligence
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 83
+  analytics_capability: 81
+  visualization: 78
+  accessibility: 90
+  scalability: 86
+  documentation: 85
+  community_support: 88
+  security_compliance: 82
+  interoperability: 84
+  real_time_capability: 91
+
+STRENGTHS:
+  + Expert-curated
+  + Long history
+  + Email-based
+
+WEAKNESSES:
+  - Limited tools
+  - Manual curation
+
+CURRENT PROFILE (7 fields):
+  overview:
+    ProMED (Program for Monitoring Emerging Diseases) is a global electronic reporting system for outbreaks of emerging infectious diseases and toxins, operated by the International Society for Infectious Diseases (ISID). Established in 1994, it is the largest publicly available system conducting global reporting of infectious disease outbreaks.
+  functional_scope:
+    Moderated global disease reporting covering human, animal, and plant diseases. Expert-curated alerts with analysis and commentary from a global network of subject-matter experts. Multilingual reporting (English, Spanish, Portuguese, Russian, others). Covers all infectious agents: bacteria, viruses, fungi, parasites, prions, and toxins.
+  tech_stack:
+    Web-based publishing platform with email distribution system. Expert moderation workflow. Searchable archive database. RSS feeds and email subscriptions for real-time alerts.
+  operator:
+    International Society for Infectious Diseases (ISID), Brookline, MA, USA. Founded by Dr. Jack Woodall and Dr. Stephen Morse. Partly funded by NLM, Google.org, and the Skoll Global Threats Fund.
+  data_model:
+    Structured disease reports with date, disease, location, species, case/death counts, source attribution, and expert commentary. Archive of 100,000+ reports since 1994.
+  users_scale:
+    Over 80,000 subscribers in 185+ countries. Reports are cited by WHO, CDC, FAO, and OIE as primary intelligence sources.
+  access_model:
+    Free and publicly accessible. Email subscription available. Archive searchable online. No login required for reading.
+
+
+====================================================================================================
+PLATFORM #21: CARD / RGI
+====================================================================================================
+URL: https://card.mcmaster.ca
+Composite Score: 84.5/100
+Layer: L2_Genomic
+Category: AMR Gene Database & Analysis
+Description: Comprehensive Antibiotic Resistance Database with Resistance Gene Identifier
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 86
+  analytics_capability: 87
+  visualization: 82
+  accessibility: 85
+  scalability: 84
+  documentation: 86
+  community_support: 84
+  security_compliance: 82
+  interoperability: 85
+  real_time_capability: 79
+
+STRENGTHS:
+  + Curated AMR ontology
+  + RGI analysis tool
+  + Regularly updated
+  + Free academic access
+  + Extensive drug-resistance data
+
+WEAKNESSES:
+  - AMR-specific only
+  - CLI complexity
+  - Database dependency
+
+CURRENT PROFILE (7 fields):
+  overview:
+    The Comprehensive Antibiotic Resistance Database (CARD) and Resistance Gene Identifier (RGI) are developed by the McArthur Lab at McMaster University, Canada. CARD is the gold-standard curated AMR reference database, integrated with the Antibiotic Resistance Ontology (ARO).
+  functional_scope:
+    Curated AMR gene sequences, point mutations, and resistance mechanisms organized via the ARO ontology. RGI provides sequence-based AMR prediction using BLAST, Hidden Markov Models, and curated detection models with defined bitscores. Parallel classification by Drug Class, Resistance Mechanism, and AMR Gene Family.
+  tech_stack:
+    Python-based RGI tool, BLAST+, HMMER3, DIAMOND. ARO ontology in OWL/OBO format. PostgreSQL database backend, Django web interface. Available via Bioconda, Docker, Galaxy. Source on GitHub (arpcard).
+  operator:
+    McArthur Lab, McMaster University, Hamilton, Ontario, Canada. Funded by Genome Canada, CIHR, NSERC, and Ontario Genomics.
+  data_model:
+    Antibiotic Resistance Ontology (ARO) with gene families, drug classes, resistance mechanisms, and detection models. Curated reference sequences with bitscores. Monthly releases with changelog. Integrated with Genomic Epidemiology Ontology and OBO Foundry.
+  users_scale:
+    Among the most-cited AMR databases globally with 3,000+ citations. Used by NCBI Pathogen Detection, WHO GLASS partners, public health labs, and thousands of academic researchers. Integrated into IRIDA, Galaxy, and major bioinformatics pipelines.
+  access_model:
+    Free and open-source. Web interface at card.mcmaster.ca. RGI available via pip, Bioconda, Docker. Database downloadable in JSON/FASTA formats. CC-BY-4.0 license.
+
+
+====================================================================================================
+PLATFORM #22: OpenELIS
+====================================================================================================
+URL: https://openelis-global.org
+Composite Score: 84.5/100
+Layer: L2_Genomic
+Category: Laboratory Information System
+Description: Open-source laboratory information system for managing lab workflows, sample tracking, and result reporting with HL7/FHIR interoperability for public health laboratories
+Biosurveillance Class: laboratory_biosurveillance
+Input Types: laboratory, clinical
+Primary Input: laboratory
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 86
+  analytics_capability: 83
+  visualization: 80
+  accessibility: 85
+  scalability: 85
+  documentation: 84
+  community_support: 83
+  security_compliance: 88
+  interoperability: 87
+  real_time_capability: 82
+
+STRENGTHS:
+  + Open-source LIMS
+  + HL7 FHIR-compliant interoperability for health data exchange
+  + Multi-laboratory network support with centralized management
+
+WEAKNESSES:
+  - Complex deployment
+  - Technical expertise needed
+
+CURRENT PROFILE (7 fields):
+  overview:
+    OpenELIS Global is the leading open-source Laboratory Information System (LIS) for public health laboratory networks. Originally developed by the University of Washington with CDC support, it manages the complete laboratory workflow from sample collection to result reporting with enterprise-grade security.
+  functional_scope:
+    Complete laboratory workflow management: patient registration, sample collection and tracking, work plans, result entry, validation, and reporting. Analyzer integration (bidirectional instrument interfaces), quality control, inventory management, reporting dashboards. Native FHIR R4 interoperability for connecting to EMRs, client registries, and health information exchanges.
+  tech_stack:
+    Java/Spring Boot backend, React.js frontend, PostgreSQL database. HL7 FHIR R4 compliant. Bidirectional analyzer interfaces for laboratory instruments. Docker deployment. REST APIs. Open-source under Mozilla Public License.
+  operator:
+    OpenELIS Global community, supported by University of Washington, CDC, and I-TECH (International Training and Education Center for Health). Implementation partners in multiple countries.
+  data_model:
+    Relational model covering patients, samples, tests, results, quality control, and inventory. FHIR resources for interoperability. HL7v2 messaging for instrument communication.
+  users_scale:
+    1,000+ labs deployed across 20+ countries, supporting 18.7+ million patients. 15+ years of proven deployment.
+  access_model:
+    Free, open-source (zero licensing cost). Self-hosted with Docker. Role-based access control. Demo instance available.
+
+
+====================================================================================================
+PLATFORM #23: Ginkgo Biosecurity
+====================================================================================================
+URL: https://biosecurity.ginkgo.bio
+Composite Score: 84/100
+Layer: L2_Genomic
+Category: Integrated Biosurveillance
+Description: Comprehensive biosurveillance combining genomic and epidemiological intelligence
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic, epidemiological, environmental, signals_intelligence
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 87
+  analytics_capability: 86
+  visualization: 83
+  accessibility: 81
+  scalability: 85
+  documentation: 82
+  community_support: 79
+  security_compliance: 87
+  interoperability: 83
+  real_time_capability: 86
+
+STRENGTHS:
+  + Metagenomic wastewater analysis
+  + Airport surveillance program
+  + Integrated analytics
+  + Government contracts
+
+WEAKNESSES:
+  - Commercial
+  - Limited transparency
+  - US-focused
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Ginkgo Biosecurity (formerly Concentric by Ginkgo) is a biosurveillance division of Ginkgo Bioworks, a leading synthetic biology company. Launched during COVID-19 to provide pathogen monitoring through wastewater and environmental surveillance.
+  functional_scope:
+    Integrated biosurveillance combining genomic sequencing, metagenomic analysis, wastewater monitoring, and epidemiological intelligence. Provides early warning detection, variant tracking, and risk assessment for biological threats including natural pandemics and engineered agents.
+  tech_stack:
+    Ginkgo Bioworks' foundry platform for high-throughput sequencing. Metagenomic pipelines, custom bioinformatics, cloud analytics. Integrates with existing public health laboratory infrastructure.
+  operator:
+    Ginkgo Biosecurity (division of Ginkgo Bioworks Inc.), Boston, MA, USA. Backed by $350M+ in biosecurity-specific contracts from CDC, BARDA, and DoD.
+  data_model:
+    Wastewater pathogen concentration data, genomic sequences, variant frequencies. Structured surveillance reports with geospatial context. Integration with CDC and state/local public health systems.
+  users_scale:
+    Contracted by CDC's national wastewater program, serving hundreds of wastewater treatment facilities. Also serves DoD, BARDA, international governments. School and airport surveillance programs.
+  access_model:
+    Government/enterprise contract model. Public health agencies access through federal contracts. No free public tier. Results shared with contracting agencies and integrated into national surveillance.
+
+
+====================================================================================================
+PLATFORM #24: WHONET
+====================================================================================================
+URL: https://whonet.org
+Composite Score: 84/100
+Layer: L1_Surveillance
+Category: AMR Surveillance
+Description: WHO-supported software for management and analysis of antimicrobial susceptibility testing data from microbiology laboratories, used in 130+ countries
+Biosurveillance Class: non_biological
+Input Types: epidemiological
+Primary Input: epidemiological
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 85
+  analytics_capability: 86
+  visualization: 82
+  accessibility: 84
+  scalability: 82
+  documentation: 86
+  community_support: 85
+  security_compliance: 83
+  interoperability: 84
+  real_time_capability: 80
+
+STRENGTHS:
+  + WHO-supported
+  + Standardized analysis
+  + Global AMR
+
+WEAKNESSES:
+  - Desktop-based
+  - Limited web
+
+CURRENT PROFILE (7 fields):
+  overview:
+    WHONET is a free Windows desktop application for antimicrobial resistance (AMR) surveillance, developed and maintained by the WHO Collaborating Centre for Surveillance of Antimicrobial Resistance at Brigham and Women's Hospital, Boston. Available in 54 languages, it is the standard tool for AMR data management worldwide.
+  functional_scope:
+    Laboratory configuration, microbiology data entry, automated interpretation (CLSI and EUCAST breakpoints, updated annually), data analysis (resistance rates, trends, organism profiles), public health reporting (GLASS, EARS-Net), data encryption. BacLink module for importing data from existing LIS, instruments, and desktop applications.
+  tech_stack:
+    Microsoft Windows desktop application (C++/Visual Basic). Microsoft Access/SQL Server database. BacLink data import utility. Compatible with Windows 10/11 (32-bit and 64-bit versions). Integration with WHONET-SaTScan for spatial cluster detection.
+  operator:
+    WHO Collaborating Centre for Surveillance of Antimicrobial Resistance, Brigham and Women's Hospital, Boston, MA. Led by Dr. John Stelling. Supported by WHO.
+  data_model:
+    Microbiology data: organism identifications, antimicrobial susceptibility test results (MIC, disk diffusion), specimen types, patient demographics. Standardized coding (SNOMED, LOINC, ATC).
+  users_scale:
+    Over 2,300 hospital, public health, animal health, and food laboratories in 130+ countries.
+  access_model:
+    Free download from whonet.org. No login required. Training materials freely available. Community forum for support.
+
+
+====================================================================================================
+PLATFORM #25: CDC TGS
+====================================================================================================
+URL: https://www.cdc.gov/amd/php/about/tgs.html
+Composite Score: 83.6/100
+Layer: L2_Genomic
+Category: Traveler Genomic Surveillance
+Description: CDC Traveler-based Genomic Surveillance for early detection of novel variants
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic, environmental, clinical
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 85
+  analytics_capability: 84
+  visualization: 81
+  accessibility: 80
+  scalability: 84
+  documentation: 83
+  community_support: 81
+  security_compliance: 88
+  interoperability: 83
+  real_time_capability: 86
+
+STRENGTHS:
+  + Airport-based surveillance
+  + Novel variant detection
+  + CDC infrastructure
+  + Wastewater + clinical integration
+
+WEAKNESSES:
+  - US airports only
+  - Limited pathogens
+  - Government-access
+
+CURRENT PROFILE (7 fields):
+  overview:
+    CDC's Travelers' Genomic Surveillance (TGS) program monitors international travelers arriving at U.S. airports for emerging infectious diseases through voluntary nasal swab testing and genomic sequencing. It serves as an early warning system for detecting novel variants and pathogens before they spread domestically.
+  functional_scope:
+    Voluntary sampling of arriving international travelers, PCR testing for respiratory pathogens, whole genome sequencing of positive samples for variant identification, genomic analysis and reporting to CDC surveillance teams, tracking of variant importation patterns by travel origin.
+  tech_stack:
+    Nasal swab collection kits, RT-qPCR testing, whole genome sequencing (Illumina), bioinformatics pipelines for variant calling and lineage assignment (Pangolin, Nextclade), CDC data reporting systems.
+  operator:
+    U.S. Centers for Disease Control and Prevention (CDC), in partnership with XpresCheck and airport authorities.
+  data_model:
+    Traveler demographic data (anonymized), travel origin, sample collection date, pathogen detection results, genomic sequence data, variant classification.
+  users_scale:
+    Operates at multiple major U.S. international airports (JFK, SFO, ATL, IAD, etc.). Screens tens of thousands of travelers annually.
+  access_model:
+    Voluntary participation by travelers. Data used internally by CDC. Aggregate findings published in MMWR and peer-reviewed journals.
+
+
+====================================================================================================
+PLATFORM #26: BEACON (BU/HealthMap)
+====================================================================================================
+URL: https://beaconbio.org
+Composite Score: 83.5/100
+Layer: L1_Surveillance
+Category: Open-Source AI Epidemic Surveillance
+Description: Biothreats Emergence Analysis and Communications Network - open-source AI+human expert global disease surveillance platform launched April 2025 by Boston University CEID
+Biosurveillance Class: non_biological
+Input Types: signals_intelligence
+Primary Input: signals_intelligence
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 85
+  analytics_capability: 84
+  visualization: 82
+  accessibility: 84
+  scalability: 82
+  documentation: 80
+  community_support: 80
+  security_compliance: 82
+  interoperability: 82
+  real_time_capability: 85
+
+STRENGTHS:
+  + Open-source & open-access
+  + PandemIQ LLM-powered
+  + 17 language NLP scanning
+  + $6M NSF/Gates funded
+  + HealthMap co-directed
+  + Near real-time outbreak detection
+  + Human expert verification network
+
+WEAKNESSES:
+  - Launched Apr 2025 (new)
+  - Scaling challenges
+  - Funding sustainability
+  - Event-based not genomic
+
+CURRENT PROFILE (7 fields):
+  overview:
+    BEACON (Biothreats Emergence Analysis and Communications Network) is an open-source AI+human hybrid epidemic intelligence platform developed at Boston University's Center for Emerging Infectious Diseases Policy and Research, building on the HealthMap foundation.
+  functional_scope:
+    AI-powered open-source epidemic surveillance combining automated event detection, natural language processing of news/social media/ProMED reports, human analyst verification, and alert dissemination for emerging biothreats.
+  tech_stack:
+    Python/NLP pipeline for multilingual text mining. Machine learning classifiers for disease event extraction. Web-based analyst dashboard. Open-source codebase. Integration with HealthMap data feeds.
+  operator:
+    Boston University Center for Emerging Infectious Diseases Policy and Research. Funded by DTRA, NIH, and philanthropic sources. Academic partnership with Harvard/Children's Hospital (HealthMap).
+  data_model:
+    Structured disease events extracted from unstructured text sources. Event objects with disease, location, date, source URL, severity, and analyst confidence scores. Historical archive for trend analysis.
+  users_scale:
+    Used by US government agencies (DTRA, DoD), international health organizations, and academic researchers. Thousands of subscribers to alert feeds. Complements HealthMap and ProMED networks.
+  access_model:
+    Open-source platform. Free access to public alerts. Enhanced analytics available to government/institutional partners. API access for integration with other surveillance systems.
+
+
+====================================================================================================
+PLATFORM #27: NNDSS
+====================================================================================================
+URL: https://www.cdc.gov/nndss/
+Composite Score: 83.5/100
+Layer: L1_Surveillance
+Category: Notifiable Disease Reporting
+Description: National Notifiable Diseases Surveillance System for US reportable conditions
+Biosurveillance Class: non_biological
+Input Types: epidemiological
+Primary Input: epidemiological
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 86
+  analytics_capability: 82
+  visualization: 80
+  accessibility: 83
+  scalability: 87
+  documentation: 84
+  community_support: 82
+  security_compliance: 89
+  interoperability: 84
+  real_time_capability: 81
+
+STRENGTHS:
+  + National comprehensive coverage
+  + Legal mandate
+  + Standardized reporting
+  + Long historical data
+
+WEAKNESSES:
+  - Limited to US domestic coverage with no international data integration
+  - Reporting delays
+  - Legacy systems
+
+CURRENT PROFILE (7 fields):
+  overview:
+    The National Notifiable Diseases Surveillance System (NNDSS) is the CDC's foundational case surveillance system collecting reportable disease data from all US states and territories. Operational since 1961 (predecessor system since 1878).
+  functional_scope:
+    Collects case-level surveillance data for 120+ notifiable conditions (infectious and non-infectious) from state/territorial health departments. Produces MMWR weekly reports, annual summary tables, and provisional data. Supports Message Mapping Guide (MMG) standardized reporting.
+  tech_stack:
+    HL7 messaging (transitioning to FHIR). National Electronic Disease Surveillance System (NEDSS) as backend. BioSense Platform integration. CDC WONDER for public data access. EDX (Enterprise Data Exchange) for case notifications.
+  operator:
+    Centers for Disease Control and Prevention (CDC), Atlanta, GA, USA. Division of Health Informatics and Surveillance. All 50 states, DC, and territories report mandatorily.
+  data_model:
+    Case-level surveillance data with standardized fields per condition (demographics, lab results, outcomes). MMG format for electronic transmission. Deidentified aggregates published weekly/annually. Provisional vs finalized data distinction.
+  users_scale:
+    Covers the entire US population (~330M). Every state/territorial health department reports. Data used by thousands of epidemiologists, researchers, and policymakers. MMWR reaches millions of public health professionals.
+  access_model:
+    Public aggregate data via CDC WONDER and MMWR tables. Case-level data restricted to authorized public health personnel. No registration for published tables. Research access through CDC data request process.
+
+
+====================================================================================================
+PLATFORM #28: ReportStream
+====================================================================================================
+URL: https://reportstream.cdc.gov
+Composite Score: 83.5/100
+Layer: L1_Surveillance
+Category: Data Exchange Pipeline
+Description: CDC's free cloud-based data exchange pipeline for routing public health test results from labs to health departments using HL7/FHIR standards
+Biosurveillance Class: clinical_biosurveillance
+Input Types: clinical
+Primary Input: clinical
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 88
+  analytics_capability: 79
+  visualization: 75
+  accessibility: 82
+  scalability: 88
+  documentation: 85
+  community_support: 82
+  security_compliance: 90
+  interoperability: 90
+  real_time_capability: 84
+
+STRENGTHS:
+  + CDC infrastructure
+  + HL7/FHIR native
+  + Automated routing
+
+WEAKNESSES:
+  - US-focused
+  - Limited analytics
+
+CURRENT PROFILE (7 fields):
+  overview:
+    ReportStream is CDC's free, interoperable data platform that connects healthcare organizations, labs, and public health agencies for streamlined electronic reporting of public health data. It is a key component of CDC's Data Modernization Initiative.
+  functional_scope:
+    Automated routing and transformation of public health reports from healthcare providers and labs to state and local health departments. Supports Electronic Lab Reports (ELR), Electronic Case Reports (eCR), and Electronic Test Orders and Results (ETOR). Data format translation between HL7v2, FHIR, and CSV. Universal data pipeline with configurable routing rules.
+  tech_stack:
+    Kotlin/Java backend, React.js frontend, Azure cloud infrastructure. Supports HL7v2.5.1, FHIR R4, CSV data formats. REST API with OAuth 2.0 authentication. Open-source on GitHub (USDS/prime-reportstream). PostgreSQL database.
+  operator:
+    U.S. Centers for Disease Control and Prevention (CDC), built by the U.S. Digital Service (USDS) and contractors.
+  data_model:
+    HL7-structured public health messages with patient, specimen, test, result, and provider data. FHIR Bundle resources for modern interoperability. Configurable schema mapping per jurisdiction.
+  users_scale:
+    Connected to thousands of labs and healthcare facilities. Routes millions of reports monthly to 60+ state and territorial health departments across the United States.
+  access_model:
+    Free for U.S. public health entities. API-based onboarding. Open-source codebase.
+
+
+====================================================================================================
+PLATFORM #29: WastewaterSCAN
+====================================================================================================
+URL: https://data.wastewaterscan.org
+Composite Score: 83.5/100
+Layer: L1_Surveillance
+Category: Academic Wastewater Pathogen Monitoring Network
+Description: Stanford-led national wastewater surveillance tracking 12+ infectious disease targets
+Biosurveillance Class: environmental_biosurveillance
+Input Types: epidemiological, environmental
+Primary Input: epidemiological
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 85
+  analytics_capability: 84
+  visualization: 84
+  accessibility: 85
+  scalability: 83
+  documentation: 82
+  community_support: 81
+  security_compliance: 83
+  interoperability: 82
+  real_time_capability: 85
+
+STRENGTHS:
+  + Multi-pathogen monitoring
+  + Public dashboard
+  + Academic rigor
+  + Stanford-Emory partnership
+  + Rapid target expansion
+
+WEAKNESSES:
+  - US coverage only
+  - Infrastructure dependent
+  - Research-focused
+
+CURRENT PROFILE (7 fields):
+  overview:
+    WastewaterSCAN is a Stanford University-led national wastewater surveillance network launched in 2020 by Professors Alexandria Boehm and Marlene Wolfe. It monitors infectious disease trends through wastewater analysis across the United States.
+  functional_scope:
+    Tracks 12+ infectious disease targets in wastewater including SARS-CoV-2, RSV, Influenza A/B, Norovirus, Mpox, and emerging pathogens. Provides national/regional/site-level trend dashboards with pathogen concentration time series. Regional breakdown (Midwest, Northeast, South, West).
+  tech_stack:
+    RT-qPCR and digital PCR for pathogen quantification. Genomic sequencing for variant tracking. Custom data pipeline and interactive web dashboard (React-based). Statistical normalization methods for population adjustment.
+  operator:
+    Stanford University (Boehm Lab, Wolfe Lab), with Emory University. Funded by CDC, NIAID, Stanford. Academic research network with public health partnerships.
+  data_model:
+    Wastewater pathogen concentration time series, normalized per capita. Site-level metadata (population served, collection frequency). Regional and national aggregations. Downloadable datasets.
+  users_scale:
+    Monitors wastewater from facilities serving millions of Americans. Public dashboard used by health departments, researchers, journalists. Cited in 50+ peer-reviewed publications.
+  access_model:
+    Free public access to dashboard and data at data.wastewaterscan.org. Downloadable datasets. Open publications. Research collaborations welcome.
+
+
+====================================================================================================
+PLATFORM #30: Bactopia
+====================================================================================================
+URL: https://bactopia.github.io
+Composite Score: 83.2/100
+Layer: L2_Genomic
+Category: Bacterial Genome Analysis Pipeline
+Description: Flexible pipeline for complete analysis of bacterial genomes using Nextflow
+Biosurveillance Class: genomic_biosurveillance
+Input Types: genomic
+Primary Input: genomic
+
+SUB-SCORES (10 criteria, each 0-100):
+  data_integration: 83
+  analytics_capability: 86
+  visualization: 79
+  accessibility: 82
+  scalability: 84
+  documentation: 85
+  community_support: 83
+  security_compliance: 80
+  interoperability: 84
+  real_time_capability: 78
+
+STRENGTHS:
+  + Comprehensive bacterial analysis
+  + Nextflow-based
+  + Reproducible workflows
+  + Active development
+  + Multiple analysis modules
+
+WEAKNESSES:
+  - Command-line interface only; no web GUI limits accessibility for non-technical users
+  - Requires compute infrastructure
+  - Bacterial-specific
+
+CURRENT PROFILE (7 fields):
+  overview:
+    Bactopia is a flexible, portable Nextflow pipeline for the complete analysis of bacterial genomes, developed by Robert Petit at the Wyoming Public Health Laboratory. First released in 2020 and actively maintained.
+  functional_scope:
+    End-to-end bacterial genomics: quality control, assembly (Shovill/SPAdes), annotation (Prokka/Bakta), MLST, AMR detection (AMRFinderPlus), variant calling, pangenome analysis, phylogenetics. 50+ Bactopia Tools for extended analyses including serotyping, plasmid detection, and population genomics.
+  tech_stack:
+    Nextflow workflow manager with Conda/Docker/Singularity execution. Python tools. Integrates 60+ bioinformatics tools. Available via Bioconda. Tested CI/CD via GitHub Actions.
+  operator:
+    Robert Petit (Wyoming Public Health Lab), with contributions from Tim Read Lab (Emory University). Open-source community project on GitHub.
+  data_model:
+    Standard bioinformatics formats: FASTQ input, FASTA assemblies, GFF annotations, VCF variants. Structured output directories per sample. Summary reports in TSV/JSON.
+  users_scale:
+    Hundreds of citations in peer-reviewed literature. Used by public health laboratories, academic microbiology labs, and surveillance networks globally. Active GitHub community.
+  access_model:
+    Fully open-source under MIT license. Available via Bioconda, Docker Hub, GitHub. Free to use. Comprehensive documentation at bactopia.github.io.
+
