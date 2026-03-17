@@ -15,7 +15,7 @@ BioR is a strategic intelligence product for global biodefense posture assessmen
 | **Version** | v3.1.0 (Deep Research Expansion) |
 | **Baseline** | 189 platforms (169 Tier-1 + 20 CBRN Operational), 1,890 data points |
 | **Deep Research** | 50 platforms with full enrichment (top 30 + 20 CBRN) |
-| **Git Tag** | `baseline-v3.0.0-169` (original); latest: `e6827b9` |
+| **Git Tag** | `baseline-v3.0.0-169` (original); latest: `1528f84` |
 | **Audience** | Senior military leadership, public health directors, intel analysts, policy makers |
 | **Classification** | Open but authoritative (SBU for adversary-specific sections) |
 | **Time Horizon** | 3-10 year forward-looking strategic assessment |
@@ -28,7 +28,7 @@ BioR is a strategic intelligence product for global biodefense posture assessmen
 |-------|-------|
 | **GitHub** | [github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-](https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-) |
 | **Branch** | `main` |
-| **Latest Commit** | `e6827b9` — Deep research enrichment: 40 platforms (#11-30 + CBRN #170-189) |
+| **Latest Commit** | `1528f84` — Update all documentation for v3.1.0: 189 platforms, 50 deep-research, 20 CBRN |
 
 ---
 

@@ -21,7 +21,7 @@
 - **Local Path**: `/home/user/pathogen-push/`
 - **GitHub**: `https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-`
 - **Branch**: `main`
-- **Latest Commit**: `e6827b9` — Deep research enrichment: 40 platforms (#11-30 + CBRN #170-189)
+- **Latest Commit**: `1528f84` — Update all documentation for v3.1.0: 189 platforms, 50 deep-research, 20 CBRN
 - **Size**: ~12 MB (excluding .git)
 
 ---
@@ -64,7 +64,7 @@
 - Readable Markdown report: DEEP_RESEARCH_TOP10.md
 - Interactive web viewer (webapp) with 4 views
 
-### Phase 5: Deep Research Expansion v2.0 (Commits afd5780 → e6827b9)
+### Phase 5: Deep Research Expansion v2.0 (Commits afd5780 → 1528f84)
 - Added 20 CBRN operational platforms (#170-189) with 7-field profiles
 - **Deep research enrichment for 40 additional platforms:**
   - Batch A: Platforms #11-20 (Galaxy, NWSS, BV-BRC, EpiCollect5, Pathoplexus, Airfinity, HealthMap, BlueDot, GEIS, ProMED)

@@ -2,7 +2,7 @@
 
 ## Master Reference Document for Manual Enrichment
 
-**Version:** v3.0.0 | **Date:** 2026-03-16 | **Baseline:** 169 Platforms | 1,690+ Data Points
+**Version:** v3.1.0 | **Date:** 2026-03-17 | **Baseline:** 189 Platforms (169 Tier-1 + 20 CBRN) | 1,890+ Data Points | 50 Deep-Research Profiles
 
 ---
 
@@ -14,7 +14,7 @@
 |-------|-------|
 | **Name** | BioR — Biosurveillance Intelligence for Operational Readiness |
 | **Purpose** | Strategic intelligence product for global biodefense posture assessment |
-| **Scope** | 169 digital platforms across pathogen surveillance, genomics, defense, hardware & policy |
+| **Scope** | 189 digital platforms (169 Tier-1 + 20 CBRN Operational) across pathogen surveillance, genomics, defense, CBRN operations, hardware & policy |
 | **Audience** | Senior military leadership, public health directors, intel analysts, policy makers |
 | **Time Horizon** | 3–10 year forward-looking strategic assessment |
 | **Classification** | Open but authoritative (comparable to SIPRI, GHS Index) |
@@ -517,5 +517,5 @@ When you research a platform, use this document as your reference frame. For eac
 ---
 
 *BioR — Biosurveillance Intelligence for Operational Readiness*
-*Benchmark Methodology v3.0.0 | 169 Platforms | 14 Dimensions | 5 Layers | 15 Gap Domains | 10 Interop Types*
-*Generated 2026-03-16*
+*Benchmark Methodology v3.1.0 | 189 Platforms | 14 Dimensions | 6 Layers | 15 Gap Domains | 10 Interop Types*
+*Updated 2026-03-17*

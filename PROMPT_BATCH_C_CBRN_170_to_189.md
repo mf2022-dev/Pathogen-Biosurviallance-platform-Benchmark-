@@ -192,7 +192,8 @@ Return a single valid JSON object. NO markdown code fences. NO explanation text.
 - **Key facts:** Canada/Bertin Group. 70+ countries. Sensor + GIS + weather integration. COP workflow.
 
 ### #188 — RadResponder
-- **URL:** https://www.dhs.gov/publication/dhsfemapia-054-radresponder-network
+- **URL:** https://www.radresponder.net/
+- **Alt URL:** https://www.dhs.gov/publication/dhsfemapia-054-radresponder-network
 - **Score:** 82/100 | **Layer:** L4_CBRN_Operational | **Class:** cbrn_monitoring
 - **Description:** FEMA free platform for radiological data management across US responders
 - **Key facts:** DHS PIA-054 (Aug 2019, updated Apr 2025). Multi-agency: FEMA, DHS S&T, EPA, DOE. National standard for radiological data.

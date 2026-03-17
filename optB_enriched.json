@@ -341,7 +341,7 @@
     "deep_researched_count": 30,
     "enrichment_pipeline": {
       "executive_summary": {
-        "title": "BioR Benchmark v3.0 — Deep Research Enrichment Executive Summary",
+        "title": "BioR Benchmark v3.0 \u2014 Deep Research Enrichment Executive Summary",
         "date": "2026-03-17",
         "scope": "189 platforms across 5 layers (L1-L5) including 20 CBRN operational platforms",
         "key_findings": [
@@ -525,7 +525,7 @@
               "key_requirement": "Cross-agency interoperability with training and exercise program"
             }
           ],
-          "reference_data_flow": "SENSORS → EDGE_GW → NATIONAL_BUS → COP + ANALYTICS → EXTERNAL_NETWORKS (EU/IAEA/CTBTO)"
+          "reference_data_flow": "SENSORS \u2192 EDGE_GW \u2192 NATIONAL_BUS \u2192 COP + ANALYTICS \u2192 EXTERNAL_NETWORKS (EU/IAEA/CTBTO)"
         },
         "immediate_actions": [
           "Conduct gap analysis of current national CBRN digital infrastructure against 6-layer reference architecture.",
@@ -982,7 +982,7 @@
           "functional_scope": "SARS-CoV-2 variant surveillance reports with lineage prevalence by location, mutation reports for any lineage or mutation combination, epidemiological case/death tracking by country/region, Research Library with 300,000+ publications searchable by topic and metadata, situation reports for variants of concern/interest, comparison tools for multiple locations/lineages, API access for programmatic data retrieval, customizable data visualizations, and integration of genomic and epidemiological data streams. Supports Pango lineage nomenclature and WHO variant labels.",
           "tech_stack": "Vue.js frontend with D3.js visualizations, Python data processing pipelines, Elasticsearch backend for Research Library, BioThings API framework (developed at Scripps), RESTful API, data sources include GISAID EpiCoV (feed terminated Jan 2025), Johns Hopkins CSSE, NIH LitCovid/PubMed, WHO, bioRxiv/medRxiv preprints. Hosted on cloud infrastructure. Open-source on GitHub under MIT license. Automated daily data ingestion and processing pipelines.",
           "operator": "Center for Viral Systems Biology (CViSB), Scripps Research Institute, La Jolla, California. Led by Laura Hughes, Karthik Gangavarapu, and Andrew Su. Funded by NIH/NIAID, NCATS, and Scripps Research. Part of the NIAID Centers of Excellence for Genomic Sciences. Academic non-profit project.",
-          "data_model": "Standardized JSON schema integrating: (1) genomic data – lineage prevalence, mutation frequencies, per-location temporal trends from GISAID; (2) epidemiological data – daily case counts, deaths, testing rates from JHU CSSE; (3) research publications – structured metadata from LitCovid, preprint servers, clinical trials. BioThings API provides unified query interface. Data updated daily (genomic updates halted Jan 2025 due to GISAID feed termination). Geographic hierarchy: global > country > admin1 > admin2.",
+          "data_model": "Standardized JSON schema integrating: (1) genomic data \u2013 lineage prevalence, mutation frequencies, per-location temporal trends from GISAID; (2) epidemiological data \u2013 daily case counts, deaths, testing rates from JHU CSSE; (3) research publications \u2013 structured metadata from LitCovid, preprint servers, clinical trials. BioThings API provides unified query interface. Data updated daily (genomic updates halted Jan 2025 due to GISAID feed termination). Geographic hierarchy: global > country > admin1 > admin2.",
           "users_scale": "Widely used by researchers, public health officials, journalists, and the general public during the COVID-19 pandemic. Published in Nature Methods (2023) for the Research Library. Cited in hundreds of publications. API serves thousands of queries daily. Situation reports referenced by WHO, CDC, and ECDC for variant monitoring. One of the most-visited COVID-19 data dashboards alongside JHU and Our World in Data.",
           "access_model": "Fully free and open-access. No registration required for web interface. API access available without authentication for most endpoints. Open-source code on GitHub (outbreak-info org). Data reuse governed by source-specific terms (GISAID Data Access Agreement for genomic data). Research Library metadata freely available. MIT license for codebase."
         },
@@ -1135,7 +1135,7 @@
           "operator": "Chan Zuckerberg Initiative (CZI) and Chan Zuckerberg Biohub, San Francisco, CA. Scientific leadership by Joe DeRisi (UCSF/CZ Biohub co-president) and CZI infectious disease team. Funded entirely by CZI (philanthropic arm of Mark Zuckerberg and Priscilla Chan). Free for all researchers globally.",
           "data_model": "Sample-centric: each upload contains raw FASTQ files linked to host organism, sample type, collection location, and date. Pipeline outputs: taxon hit lists with NT/NR rpm (reads per million), z-scores, coverage depth, assembly metrics. AMR module outputs: detected AMR genes mapped to drug classes with organism context. Consensus genomes in FASTA format. All results stored in project workspaces with sharing controls. Supports bulk metadata upload via CSV. Pathogen list curated by CZI epidemiologists.",
           "users_scale": "Used by researchers in 90+ countries. Over 400+ institutions registered. Key deployments in sub-Saharan Africa, Southeast Asia, and Latin America for emerging pathogen detection. Published in Nature Communications, Nature Microbiology, and 200+ citing publications. Used to identify novel pathogens including during COVID-19 and mpox outbreaks. AMR manuscript (Lu et al. 2025) cited 13 times within months. Impact page documents case studies from global health labs.",
-          "access_model": "Free for all researchers globally. Registration required for sample uploads and project creation. No-code web interface at czid.org. Open-source code on GitHub (chanzuckerberg org). No data usage limits. Cloud-based (no local installation needed). Funded entirely by CZI – no licensing fees. Data sharing controls per project (private, shared, public). API available for programmatic access. Published results can be shared via permanent project URLs."
+          "access_model": "Free for all researchers globally. Registration required for sample uploads and project creation. No-code web interface at czid.org. Open-source code on GitHub (chanzuckerberg org). No data usage limits. Cloud-based (no local installation needed). Funded entirely by CZI \u2013 no licensing fees. Data sharing controls per project (private, shared, public). API available for programmatic access. Published results can be shared via permanent project URLs."
         },
         "deep_research": {
           "executive_summary": "CZ ID is a transformative free cloud platform democratizing metagenomic pathogen detection for researchers worldwide, funded by CZI. Score 89.2/100 reflects automated no-code workflows, comprehensive pathogen databases, and global accessibility. The 2024-2025 AMR module addition significantly expanded utility. Key limitation: cloud dependency and potential long-term sustainability questions tied to single philanthropic funder.",
@@ -1448,7 +1448,7 @@
           "overview": "GISAID (Global Initiative on Sharing All Influenza Data) is the world's largest genomic data-sharing platform for respiratory pathogen sequences, established in 2008 as a non-profit (GISAID Initiative e.V., registered in Germany). Originally created for influenza sequences to overcome the reluctance of developing-country labs to share data via fully open databases. Expanded massively during COVID-19 to become the primary repository for SARS-CoV-2 sequences, accumulating >16 million SARS-CoV-2 genomes by early 2024. Also hosts sequences for RSV, hMPV, and other pathogens. Operates on a unique Data Access Agreement (DAA) model requiring acknowledgment of data generators.",
           "functional_scope": "Genomic sequence database with submission, curation, and retrieval for influenza (all types), SARS-CoV-2, RSV, and hMPV. Analytical tools: FluSurver (influenza mutation analysis), CoVsurver (SARS-CoV-2 mutation analysis), EpiCoV (SARS-CoV-2-specific database), EpiFlu (influenza-specific database), AUDACITY (phylogenetic analysis), spike mutation comparisons. Variant tracking dashboards. Data feed agreements for approved downstream platforms. Clade/lineage nomenclature support (GISAID clades for SARS-CoV-2). Metadata includes collection date, location, patient demographics (age, sex), sequencing technology, originating/submitting lab.",
           "tech_stack": "Custom proprietary web platform (not open-source). Java-based backend with custom database infrastructure. FluSurver and CoVsurver are integrated web tools. No public API; data access via web downloads, FASTA/metadata bulk downloads, and approved data feed agreements. Data hosted on servers in Germany and Singapore. Two-factor authentication for registered users. Proprietary accession system (EPI_ISL for SARS-CoV-2, EPI for influenza). GISAID maintains its own clade nomenclature system alongside Pango/Nextstrain.",
-          "operator": "GISAID Initiative e.V. (eingetragener Verein – registered non-profit association, Germany). President: Peter Bogner. Hosted by Freie Universitat Berlin. Founding partners include German government, WHO collaborating centres. Advisory board includes representatives from WHO, US CDC, China CDC, and other national agencies. Funded through a combination of government grants (German Federal Foreign Office), institutional partnerships, and operational support from Freie Universitat Berlin. Independent governance, not directly controlled by any single government or international body.",
+          "operator": "GISAID Initiative e.V. (eingetragener Verein \u2013 registered non-profit association, Germany). President: Peter Bogner. Hosted by Freie Universitat Berlin. Founding partners include German government, WHO collaborating centres. Advisory board includes representatives from WHO, US CDC, China CDC, and other national agencies. Funded through a combination of government grants (German Federal Foreign Office), institutional partnerships, and operational support from Freie Universitat Berlin. Independent governance, not directly controlled by any single government or international body.",
           "data_model": "Sequence-centric: consensus genomes (FASTA) with structured metadata including: accession (EPI_ISL_xxx), virus name, collection date, location (continent/country/region), host, patient age/sex, sequencing technology, originating lab, submitting lab, authors. Clade assignments (GISAID clades, Pango lineages, Nextstrain clades). Influenza: hemagglutinin/neuraminidase subtype classification. Quality metrics: coverage, completeness. Data Access Agreement governs reuse: must acknowledge data generators, cannot redistribute raw sequences without permission.",
           "users_scale": "500,000+ registered users from 200+ countries. >16 million SARS-CoV-2 sequences and >2 million influenza sequences deposited. Cited in >70,000 scientific publications. Used by WHO for global influenza surveillance (GISRS), WHO COVID-19 variant tracking, national public health agencies worldwide. Single largest genomic database for respiratory viruses. During pandemic peak, received >100,000 new SARS-CoV-2 sequences daily.",
           "access_model": "Free registration required. Users must agree to GISAID Data Access Agreement (DAA): sequences can be analyzed and published with proper acknowledgment of data generators, but cannot be redistributed to non-GISAID users or deposited in open databases. Approved downstream platforms (e.g., Nextstrain, outbreak.info) received data feeds under special agreements (several terminated in 2025). No open API. Controversial restricted-access model: criticized by open-science advocates but defended as necessary to incentivize data sharing from countries with limited resources."
@@ -1457,7 +1457,7 @@
           "executive_summary": "GISAID is the world's largest respiratory virus genomic database with 16M+ SARS-CoV-2 and 2M+ influenza sequences, used by 500K+ registered users and cited 70K+ times. Score 88.5/100 reflects unmatched scale and global adoption but penalized for restricted access model and 2025 controversies. Major disruption: terminated data feeds to Nextstrain (Oct 2025) and outbreak.info (Jan 2025), sparking open-science backlash and threatening downstream surveillance platforms.",
           "key_publications": [
             {
-              "title": "Global Initiative on Sharing All Influenza Data – from vision to reality",
+              "title": "Global Initiative on Sharing All Influenza Data \u2013 from vision to reality",
               "authors": "Shu Y, McCauley J",
               "journal": "Eurosurveillance",
               "year": 2017,
@@ -1751,7 +1751,7 @@
           "operator": "Centre for Genomic Pathogen Surveillance (CGPS), Wellcome Sanger Institute & Big Data Institute, University of Oxford. Led by David Aanensen. Funded by Wellcome Trust, Bill & Melinda Gates Foundation, NIHR (UK), European Commission, and WHO. Key partnerships: UKHSA, ECDC, WHO, Africa CDC, national reference laboratories in LMICs.",
           "data_model": "Genome-centric: each uploaded assembly linked to metadata (species, collection date, location, source, patient info). Analysis outputs: MLST profile, AMR predictions (gene + phenotype), virulence factors, clustering membership, phylogenetic position. Collections group genomes for comparative analysis. Public genomes from NCBI integrated as reference context. Organism-specific databases: curated typing schemes from PubMLST, AMR databases from CARD/ResFinder. Supports metadata export as CSV/JSON.",
           "users_scale": "Tens of thousands of registered users worldwide. Thousands of public collections hosted. Used by UKHSA for UK national genomic surveillance. ECDC partnership for EU AMR surveillance. WHO-supported deployment in LMICs for AMR monitoring. Key tool in JUNO project (Global Surveillance of S. pneumoniae). 620,700+ pathogen genomes with geotemporal data in AMR Watch (as of March 2025). Cited in 167+ publications (Argimon et al. 2021 alone). Training deployed through WHO SEARO, Africa CDC workshops.",
-          "access_model": "Free to use for web-based analysis. Registration required for saving collections and accessing advanced features. No software installation needed (browser-based). Open-source components available on GitHub (pathogenwatch-oss). Self-hosting possible via Docker. API access for programmatic queries. Public genomes freely browsable. No data limits for uploads. AMR Watch (amr.watch) publicly accessible. Documentation at next-docs.pathogen.watch. Supported by Wellcome/Gates funding – no commercial licensing."
+          "access_model": "Free to use for web-based analysis. Registration required for saving collections and accessing advanced features. No software installation needed (browser-based). Open-source components available on GitHub (pathogenwatch-oss). Self-hosting possible via Docker. API access for programmatic queries. Public genomes freely browsable. No data limits for uploads. AMR Watch (amr.watch) publicly accessible. Documentation at next-docs.pathogen.watch. Supported by Wellcome/Gates funding \u2013 no commercial licensing."
         },
         "deep_research": {
           "executive_summary": "Pathogenwatch is the leading browser-based platform for automated bacterial genomic surveillance, offering AMR prediction, MLST typing, and phylogenetic clustering for 100+ species. Score 87/100 reflects comprehensive analysis capabilities, strong WHO/ECDC partnerships, and AMR focus. New amr.watch module (2025) expands to global AMR trend monitoring. Developed by CGPS (Wellcome Sanger/Oxford), companion tool to Microreact.",
@@ -3229,7 +3229,7 @@
           "overview": "BEAST 2 (Bayesian Evolutionary Analysis Sampling Trees) is an open-source software platform for Bayesian phylogenetics, molecular clock analysis, and phylodynamics. Successor to BEAST 1, developed by an international team led by Alexei Drummond and Remco Bouckaert.",
           "functional_scope": "Bayesian inference of molecular phylogenies with evolutionary time estimates. Molecular clock models (strict, relaxed), coalescent demographic models, birth-death models, phylogeography, and structured population models. Extensible via packages.",
           "tech_stack": "Java application with XML configuration. MCMC sampling algorithms. BEAUti GUI for model setup. Tracer for convergence diagnostics. FigTree/DensiTree for visualization. 300+ community packages. Open-source on GitHub.",
-          "operator": "International developer community. Led by University of Auckland (Drummond) and ETH Zürich (Stadler). Funded by Marsden Fund, ERC, and community contributions.",
+          "operator": "International developer community. Led by University of Auckland (Drummond) and ETH Z\u00fcrich (Stadler). Funded by Marsden Fund, ERC, and community contributions.",
           "data_model": "Input: aligned sequences (NEXUS/FASTA) with metadata (dates, locations). XML model specification. Output: posterior tree distributions (NEXUS), parameter traces (log files). MCC summary trees.",
           "users_scale": "30,000+ citations. Standard tool for molecular epidemiology and viral phylodynamics. Used by every major genomic surveillance group including Nextstrain, COG-UK, CDC.",
           "access_model": "Fully open-source (LGPL 2.1). Available at beast2.org. Cross-platform (Java). Free to use. Extensive tutorials and documentation."
@@ -4115,7 +4115,7 @@
           "overview": "CIVET (Cluster Investigation and Virus Epidemiology Tool) is a bioinformatics tool from the ARTIC Network for investigating genomic clusters during pathogen outbreaks using phylogenetic context.",
           "functional_scope": "Genomic cluster investigation: places outbreak sequences in broader phylogenetic context, identifies closest relatives in background datasets, generates focused phylogenetic trees, and provides cluster summaries for epidemiological interpretation.",
           "tech_stack": "Python tool using Minimap2, gofasta, snipit, IQTREE2. Requires background alignment and metadata. Open-source on GitHub (artic-network/civet).",
-          "operator": "ARTIC Network. Developed by Áine O'Toole and Andrew Rambaut, University of Edinburgh, UK.",
+          "operator": "ARTIC Network. Developed by \u00c1ine O'Toole and Andrew Rambaut, University of Edinburgh, UK.",
           "data_model": "Input: query FASTA sequences + background alignment + metadata CSV. Output: phylogenetic trees, cluster reports, timeline figures, interactive HTML reports.",
           "users_scale": "Used during COVID-19 for local outbreak investigation. Popular with UK and international genomic surveillance teams. COG-UK standard tool.",
           "access_model": "Free and open-source (GPL-3.0). Available on GitHub and Bioconda. Documentation and tutorials provided."
@@ -4157,7 +4157,7 @@
           "overview": "RESAOLAB is a West African laboratory network strengthening diagnostic capacity across francophone West Africa, improving quality of clinical laboratory services for disease surveillance.",
           "functional_scope": "Laboratory network strengthening: quality management, external quality assessment, training of laboratory technicians, supply chain management, laboratory information system deployment, and AMR surveillance support across West African laboratories.",
           "tech_stack": "Laboratory quality management systems. SLIPTA (Stepwise Laboratory Improvement Process) framework. Electronic sample tracking. LIMS deployment.",
-          "operator": "Fondation Mérieux and partner governments (Senegal, Mali, Burkina Faso, Guinea, Niger, Togo, Benin). Funded by Agence Française de Développement (AFD).",
+          "operator": "Fondation M\u00e9rieux and partner governments (Senegal, Mali, Burkina Faso, Guinea, Niger, Togo, Benin). Funded by Agence Fran\u00e7aise de D\u00e9veloppement (AFD).",
           "data_model": "Laboratory quality indicators, EQA results, testing volumes, supply chain data. Surveillance data from participating laboratories.",
           "users_scale": "Network of 700+ laboratories across 7 West African countries. Training of thousands of laboratory professionals.",
           "access_model": "Institutional program. Access for participating laboratories and health ministries. Aggregate reports published. Website at resaolab.org."
@@ -4281,7 +4281,7 @@
             },
             {
               "title": "SORMAS: Establishing a surveillance and outbreak response system in Ebola-affected countries",
-              "authors": "Fähnrich C, Denecke K, Adeoye O, et al.",
+              "authors": "F\u00e4hnrich C, Denecke K, Adeoye O, et al.",
               "journal": "BMC Medical Informatics and Decision Making",
               "year": 2015,
               "url": "https://doi.org/10.1186/s12911-015-0176-y"
@@ -4576,7 +4576,7 @@
           "functional_scope": "Real-time syndromic surveillance using chief complaint text, discharge diagnosis codes (ICD-10-CM), and clinical data from ED visits. Core capabilities: anomaly detection algorithms (CUSUM, EWMA, regression), customizable syndrome definitions, temporal trend analysis, geographic heat maps, facility-level monitoring, ad-hoc querying, automated alerting, data quality dashboards, myESSENCE for personalized views. Supports CDC-defined syndrome categories (COVID-like illness, influenza-like illness, drug overdose, heat-related illness, firearm injuries, etc.). Weekly NSSP snapshots published. Integration with BioSense Platform for data storage, processing, and sharing.",
           "tech_stack": "ESSENCE analytics engine (Java-based, developed by JHU/APL), BioSense Platform cloud infrastructure (AWS GovCloud), HL7 2.5.1 messaging standard for data ingestion, ICD-10-CM coding, Rhino data processing tools, LOINC for lab data, FHIR adaptation in progress. SAS for statistical analysis. Data visualization via ESSENCE web interface with customizable dashboards. Secure data access via SAMS (Secure Access Management Service). CDC WONDER integration for public aggregate data. Master Facility Table for standardized facility identification.",
           "operator": "CDC Division of Health Informatics and Surveillance (DHIS), Center for Surveillance, Epidemiology, and Laboratory Services (CSELS). ESSENCE engine maintained by Johns Hopkins Applied Physics Laboratory (JHU/APL). Operated under the National Syndromic Surveillance Program (NSSP). Funded by CDC and participating state/local health departments. Data use agreements with each jurisdiction. Recent integration with Navy/Marine Corps Force Health Protection Command (NMCFHPC).",
-          "data_model": "Visit-centric: each record represents an ED/urgent care visit with fields: chief complaint free text, discharge diagnosis (ICD-10-CM), patient demographics (age, sex, race, ethnicity – de-identified), facility ID, visit date/time, disposition. Data transmitted via HL7 2.5.1 ADT messages. Processed through syndrome classifiers (keyword + code-based). Aggregated by syndrome, geography, time period, and facility. Data stored in BioSense Platform with jurisdictional data ownership. Public aggregate data available via CDC WONDER. Master Message Guide (MMG) defines standard fields.",
+          "data_model": "Visit-centric: each record represents an ED/urgent care visit with fields: chief complaint free text, discharge diagnosis (ICD-10-CM), patient demographics (age, sex, race, ethnicity \u2013 de-identified), facility ID, visit date/time, disposition. Data transmitted via HL7 2.5.1 ADT messages. Processed through syndrome classifiers (keyword + code-based). Aggregated by syndrome, geography, time period, and facility. Data stored in BioSense Platform with jurisdictional data ownership. Public aggregate data available via CDC WONDER. Master Message Guide (MMG) defines standard fields.",
           "users_scale": "Covers all 50 US states, DC, and territories. 6,000+ healthcare facilities reporting. ~75% of US ED visits captured. Thousands of epidemiologists and public health analysts as registered users. Used during every major US public health event: COVID-19, opioid crisis, vaping illness (EVALI), heat events, natural disasters. NSSP Community of Practice connects users. Weekly NSSP Update newsletter. Annual NSSP conference. US military (Navy/Marine Corps) recently integrated. Estimated coverage of 250+ million Americans.",
           "access_model": "Access restricted to authorized public health personnel. Jurisdictions must sign Data Use Agreements (DUA) with CDC. Registered users access via SAMS (Secure Access Management Service). Public aggregate data available through CDC WONDER and NSSP weekly snapshots. ESSENCE analytics require approved NSSP account. Data ownership retained by submitting jurisdictions. Not open-source; government-operated platform. Research access possible through NSSP data request process."
         },
@@ -6540,7 +6540,7 @@
       },
       {
         "r": 147,
-        "n": "Santé",
+        "n": "Sant\u00e9",
         "u": "https://entrepreneurship.columbia.edu/startup/sante/",
         "s": 72,
         "c": "AI Epidemic Intelligence as a Service",
@@ -6578,10 +6578,10 @@
         "primary_input_type": "signals_intelligence",
         "biosurveillance_class": "non_biological",
         "profile": {
-          "overview": "Santé is a Columbia University health technology startup delivering AI-powered epidemic intelligence as a service for public health decision-making.",
+          "overview": "Sant\u00e9 is a Columbia University health technology startup delivering AI-powered epidemic intelligence as a service for public health decision-making.",
           "functional_scope": "AI epidemic intelligence: automated disease trend analysis, outbreak risk prediction, integrated epidemiological-genomic analytics, and decision support for public health authorities.",
           "tech_stack": "AI/ML analytics platform. Cloud-based SaaS. Integration with multiple data sources. Web dashboard for visualization.",
-          "operator": "Santé Health Tech, affiliated with Columbia University, New York, NY, USA.",
+          "operator": "Sant\u00e9 Health Tech, affiliated with Columbia University, New York, NY, USA.",
           "data_model": "Multi-source epidemiological data integration. AI-generated risk scores and predictions. Dashboard visualizations.",
           "users_scale": "Emerging platform serving public health organizations. Academic research foundation from Columbia University.",
           "access_model": "Commercial SaaS model. Partnerships with public health agencies. Academic research component."
@@ -7345,7 +7345,7 @@
         },
         "st": [
           "27-member state coverage",
-          "€158M health grants 2025",
+          "\u20ac158M health grants 2025",
           "CBRN MCM procurement authority",
           "EU4Health program integration",
           "Threat assessment pipeline"
@@ -7538,7 +7538,7 @@
           "BSL-4 capability",
           "Novichok identification expertise",
           "DASA innovation programs",
-          "£1B+ annual revenue"
+          "\u00a31B+ annual revenue"
         ],
         "wk": [
           "UK MoD restricted",
@@ -8597,11 +8597,11 @@
       },
       {
         "r": 130,
-        "n": "DGA Maîtrise NRBC",
+        "n": "DGA Ma\u00eetrise NRBC",
         "u": "https://www.defense.gouv.fr",
         "s": 74.9,
         "c": "French Military CBRN Defense",
-        "d": "French Direction Générale de l'Armement NRBC division providing biological threat detection and CBRN defense capabilities to French armed forces",
+        "d": "French Direction G\u00e9n\u00e9rale de l'Armement NRBC division providing biological threat detection and CBRN defense capabilities to French armed forces",
         "sc": {
           "data_integration": 76,
           "analytics_capability": 78,
@@ -8633,10 +8633,10 @@
         "primary_input_type": "laboratory",
         "biosurveillance_class": "laboratory_biosurveillance",
         "profile": {
-          "overview": "The French Direction Générale de l'Armement (DGA) NRBC (Nuclear, Radiological, Biological, Chemical) division manages France's military CBRN defense research, development, and procurement programs.",
-          "functional_scope": "French military CBRN defense: develops and procures detection systems, protective equipment, decontamination technologies, and medical countermeasures. Manages DGA Maîtrise NRBC test center at Vert-le-Petit.",
-          "tech_stack": "CBRN detection and identification systems, protective equipment, decontamination platforms. DGA Maîtrise NRBC test and evaluation facilities.",
-          "operator": "Direction Générale de l'Armement (DGA), French Ministry of Armed Forces. DGA Maîtrise NRBC center at Vert-le-Petit, Essonne.",
+          "overview": "The French Direction G\u00e9n\u00e9rale de l'Armement (DGA) NRBC (Nuclear, Radiological, Biological, Chemical) division manages France's military CBRN defense research, development, and procurement programs.",
+          "functional_scope": "French military CBRN defense: develops and procures detection systems, protective equipment, decontamination technologies, and medical countermeasures. Manages DGA Ma\u00eetrise NRBC test center at Vert-le-Petit.",
+          "tech_stack": "CBRN detection and identification systems, protective equipment, decontamination platforms. DGA Ma\u00eetrise NRBC test and evaluation facilities.",
+          "operator": "Direction G\u00e9n\u00e9rale de l'Armement (DGA), French Ministry of Armed Forces. DGA Ma\u00eetrise NRBC center at Vert-le-Petit, Essonne.",
           "data_model": "Defense acquisition program data, test and evaluation results, threat characterization reports. Classified military intelligence.",
           "users_scale": "Serves French Armed Forces (200,000+ active). Supports NATO and EU CBRN operations. Coordinates with UK Dstl, German WIS.",
           "access_model": "French military program. Classified operations. Some published research. International cooperation through NATO and EU frameworks."
@@ -9221,7 +9221,7 @@
         "u": "https://www.biofiredx.com",
         "s": 82,
         "c": "Rapid Multiplex Biothreat Diagnostics",
-        "d": "bioMérieux defense division providing FDA-cleared rapid multiplex PCR panels for field-forward biothreat agent identification",
+        "d": "bioM\u00e9rieux defense division providing FDA-cleared rapid multiplex PCR panels for field-forward biothreat agent identification",
         "sc": {
           "data_integration": 80,
           "analytics_capability": 83,
@@ -9596,7 +9596,7 @@
           "overview": "Rheinmetall mobile NBC Field Laboratories provide military forces with deployable biological and chemical analysis capability for CBRN reconnaissance, sample analysis, and threat identification in the field.",
           "functional_scope": "Mobile CBRN reconnaissance and analysis: deployable containerized laboratory for biological sample analysis, chemical agent identification, environmental monitoring, and forensic sampling. Rapid deployment capability.",
           "tech_stack": "Containerized/vehicle-mounted laboratory. PCR, immunoassay, chemical analysis instruments, biosafety containment. NBC reconnaissance vehicles (Fuchs/Boxer integration).",
-          "operator": "Rheinmetall Defence, Düsseldorf, Germany. Customers include Bundeswehr, NATO allies, and Middle Eastern/Asian militaries.",
+          "operator": "Rheinmetall Defence, D\u00fcsseldorf, Germany. Customers include Bundeswehr, NATO allies, and Middle Eastern/Asian militaries.",
           "data_model": "Laboratory analysis results, sample chain-of-custody, CBRN reconnaissance reports. NATO STANAG-compatible reporting.",
           "users_scale": "Deployed by German Bundeswehr and exported to 10+ NATO and partner nations. Part of NATO CBRN battalion capabilities.",
           "access_model": "Military procurement through Rheinmetall Defence. Export controlled. Training and lifecycle support included."
@@ -13071,7 +13071,7 @@
           },
           {
             "title": "SORMAS: Establishing a surveillance and outbreak response system in Ebola-affected countries",
-            "authors": "Fähnrich C, Denecke K, Adeoye O, et al.",
+            "authors": "F\u00e4hnrich C, Denecke K, Adeoye O, et al.",
             "journal": "BMC Medical Informatics and Decision Making",
             "year": 2015,
             "url": "https://doi.org/10.1186/s12911-015-0176-y"
@@ -13203,7 +13203,7 @@
         "functional_scope": "SARS-CoV-2 variant surveillance reports with lineage prevalence by location, mutation reports for any lineage or mutation combination, epidemiological case/death tracking by country/region, Research Library with 300,000+ publications searchable by topic and metadata, situation reports for variants of concern/interest, comparison tools for multiple locations/lineages, API access for programmatic data retrieval, customizable data visualizations, and integration of genomic and epidemiological data streams. Supports Pango lineage nomenclature and WHO variant labels.",
         "tech_stack": "Vue.js frontend with D3.js visualizations, Python data processing pipelines, Elasticsearch backend for Research Library, BioThings API framework (developed at Scripps), RESTful API, data sources include GISAID EpiCoV (feed terminated Jan 2025), Johns Hopkins CSSE, NIH LitCovid/PubMed, WHO, bioRxiv/medRxiv preprints. Hosted on cloud infrastructure. Open-source on GitHub under MIT license. Automated daily data ingestion and processing pipelines.",
         "operator": "Center for Viral Systems Biology (CViSB), Scripps Research Institute, La Jolla, California. Led by Laura Hughes, Karthik Gangavarapu, and Andrew Su. Funded by NIH/NIAID, NCATS, and Scripps Research. Part of the NIAID Centers of Excellence for Genomic Sciences. Academic non-profit project.",
-        "data_model": "Standardized JSON schema integrating: (1) genomic data – lineage prevalence, mutation frequencies, per-location temporal trends from GISAID; (2) epidemiological data – daily case counts, deaths, testing rates from JHU CSSE; (3) research publications – structured metadata from LitCovid, preprint servers, clinical trials. BioThings API provides unified query interface. Data updated daily (genomic updates halted Jan 2025 due to GISAID feed termination). Geographic hierarchy: global > country > admin1 > admin2.",
+        "data_model": "Standardized JSON schema integrating: (1) genomic data \u2013 lineage prevalence, mutation frequencies, per-location temporal trends from GISAID; (2) epidemiological data \u2013 daily case counts, deaths, testing rates from JHU CSSE; (3) research publications \u2013 structured metadata from LitCovid, preprint servers, clinical trials. BioThings API provides unified query interface. Data updated daily (genomic updates halted Jan 2025 due to GISAID feed termination). Geographic hierarchy: global > country > admin1 > admin2.",
         "users_scale": "Widely used by researchers, public health officials, journalists, and the general public during the COVID-19 pandemic. Published in Nature Methods (2023) for the Research Library. Cited in hundreds of publications. API serves thousands of queries daily. Situation reports referenced by WHO, CDC, and ECDC for variant monitoring. One of the most-visited COVID-19 data dashboards alongside JHU and Our World in Data.",
         "access_model": "Fully free and open-access. No registration required for web interface. API access available without authentication for most endpoints. Open-source code on GitHub (outbreak-info org). Data reuse governed by source-specific terms (GISAID Data Access Agreement for genomic data). Research Library metadata freely available. MIT license for codebase."
       },
@@ -13357,7 +13357,7 @@
         "operator": "Chan Zuckerberg Initiative (CZI) and Chan Zuckerberg Biohub, San Francisco, CA. Scientific leadership by Joe DeRisi (UCSF/CZ Biohub co-president) and CZI infectious disease team. Funded entirely by CZI (philanthropic arm of Mark Zuckerberg and Priscilla Chan). Free for all researchers globally.",
         "data_model": "Sample-centric: each upload contains raw FASTQ files linked to host organism, sample type, collection location, and date. Pipeline outputs: taxon hit lists with NT/NR rpm (reads per million), z-scores, coverage depth, assembly metrics. AMR module outputs: detected AMR genes mapped to drug classes with organism context. Consensus genomes in FASTA format. All results stored in project workspaces with sharing controls. Supports bulk metadata upload via CSV. Pathogen list curated by CZI epidemiologists.",
         "users_scale": "Used by researchers in 90+ countries. Over 400+ institutions registered. Key deployments in sub-Saharan Africa, Southeast Asia, and Latin America for emerging pathogen detection. Published in Nature Communications, Nature Microbiology, and 200+ citing publications. Used to identify novel pathogens including during COVID-19 and mpox outbreaks. AMR manuscript (Lu et al. 2025) cited 13 times within months. Impact page documents case studies from global health labs.",
-        "access_model": "Free for all researchers globally. Registration required for sample uploads and project creation. No-code web interface at czid.org. Open-source code on GitHub (chanzuckerberg org). No data usage limits. Cloud-based (no local installation needed). Funded entirely by CZI – no licensing fees. Data sharing controls per project (private, shared, public). API available for programmatic access. Published results can be shared via permanent project URLs."
+        "access_model": "Free for all researchers globally. Registration required for sample uploads and project creation. No-code web interface at czid.org. Open-source code on GitHub (chanzuckerberg org). No data usage limits. Cloud-based (no local installation needed). Funded entirely by CZI \u2013 no licensing fees. Data sharing controls per project (private, shared, public). API available for programmatic access. Published results can be shared via permanent project URLs."
       },
       "deep_research": {
         "executive_summary": "CZ ID is a transformative free cloud platform democratizing metagenomic pathogen detection for researchers worldwide, funded by CZI. Score 89.2/100 reflects automated no-code workflows, comprehensive pathogen databases, and global accessibility. The 2024-2025 AMR module addition significantly expanded utility. Key limitation: cloud dependency and potential long-term sustainability questions tied to single philanthropic funder.",
@@ -13837,7 +13837,7 @@
         "overview": "GISAID (Global Initiative on Sharing All Influenza Data) is the world's largest genomic data-sharing platform for respiratory pathogen sequences, established in 2008 as a non-profit (GISAID Initiative e.V., registered in Germany). Originally created for influenza sequences to overcome the reluctance of developing-country labs to share data via fully open databases. Expanded massively during COVID-19 to become the primary repository for SARS-CoV-2 sequences, accumulating >16 million SARS-CoV-2 genomes by early 2024. Also hosts sequences for RSV, hMPV, and other pathogens. Operates on a unique Data Access Agreement (DAA) model requiring acknowledgment of data generators.",
         "functional_scope": "Genomic sequence database with submission, curation, and retrieval for influenza (all types), SARS-CoV-2, RSV, and hMPV. Analytical tools: FluSurver (influenza mutation analysis), CoVsurver (SARS-CoV-2 mutation analysis), EpiCoV (SARS-CoV-2-specific database), EpiFlu (influenza-specific database), AUDACITY (phylogenetic analysis), spike mutation comparisons. Variant tracking dashboards. Data feed agreements for approved downstream platforms. Clade/lineage nomenclature support (GISAID clades for SARS-CoV-2). Metadata includes collection date, location, patient demographics (age, sex), sequencing technology, originating/submitting lab.",
         "tech_stack": "Custom proprietary web platform (not open-source). Java-based backend with custom database infrastructure. FluSurver and CoVsurver are integrated web tools. No public API; data access via web downloads, FASTA/metadata bulk downloads, and approved data feed agreements. Data hosted on servers in Germany and Singapore. Two-factor authentication for registered users. Proprietary accession system (EPI_ISL for SARS-CoV-2, EPI for influenza). GISAID maintains its own clade nomenclature system alongside Pango/Nextstrain.",
-        "operator": "GISAID Initiative e.V. (eingetragener Verein – registered non-profit association, Germany). President: Peter Bogner. Hosted by Freie Universitat Berlin. Founding partners include German government, WHO collaborating centres. Advisory board includes representatives from WHO, US CDC, China CDC, and other national agencies. Funded through a combination of government grants (German Federal Foreign Office), institutional partnerships, and operational support from Freie Universitat Berlin. Independent governance, not directly controlled by any single government or international body.",
+        "operator": "GISAID Initiative e.V. (eingetragener Verein \u2013 registered non-profit association, Germany). President: Peter Bogner. Hosted by Freie Universitat Berlin. Founding partners include German government, WHO collaborating centres. Advisory board includes representatives from WHO, US CDC, China CDC, and other national agencies. Funded through a combination of government grants (German Federal Foreign Office), institutional partnerships, and operational support from Freie Universitat Berlin. Independent governance, not directly controlled by any single government or international body.",
         "data_model": "Sequence-centric: consensus genomes (FASTA) with structured metadata including: accession (EPI_ISL_xxx), virus name, collection date, location (continent/country/region), host, patient age/sex, sequencing technology, originating lab, submitting lab, authors. Clade assignments (GISAID clades, Pango lineages, Nextstrain clades). Influenza: hemagglutinin/neuraminidase subtype classification. Quality metrics: coverage, completeness. Data Access Agreement governs reuse: must acknowledge data generators, cannot redistribute raw sequences without permission.",
         "users_scale": "500,000+ registered users from 200+ countries. >16 million SARS-CoV-2 sequences and >2 million influenza sequences deposited. Cited in >70,000 scientific publications. Used by WHO for global influenza surveillance (GISRS), WHO COVID-19 variant tracking, national public health agencies worldwide. Single largest genomic database for respiratory viruses. During pandemic peak, received >100,000 new SARS-CoV-2 sequences daily.",
         "access_model": "Free registration required. Users must agree to GISAID Data Access Agreement (DAA): sequences can be analyzed and published with proper acknowledgment of data generators, but cannot be redistributed to non-GISAID users or deposited in open databases. Approved downstream platforms (e.g., Nextstrain, outbreak.info) received data feeds under special agreements (several terminated in 2025). No open API. Controversial restricted-access model: criticized by open-science advocates but defended as necessary to incentivize data sharing from countries with limited resources."
@@ -13846,7 +13846,7 @@
         "executive_summary": "GISAID is the world's largest respiratory virus genomic database with 16M+ SARS-CoV-2 and 2M+ influenza sequences, used by 500K+ registered users and cited 70K+ times. Score 88.5/100 reflects unmatched scale and global adoption but penalized for restricted access model and 2025 controversies. Major disruption: terminated data feeds to Nextstrain (Oct 2025) and outbreak.info (Jan 2025), sparking open-science backlash and threatening downstream surveillance platforms.",
         "key_publications": [
           {
-            "title": "Global Initiative on Sharing All Influenza Data – from vision to reality",
+            "title": "Global Initiative on Sharing All Influenza Data \u2013 from vision to reality",
             "authors": "Shu Y, McCauley J",
             "journal": "Eurosurveillance",
             "year": 2017,
@@ -14140,7 +14140,7 @@
         "functional_scope": "Real-time syndromic surveillance using chief complaint text, discharge diagnosis codes (ICD-10-CM), and clinical data from ED visits. Core capabilities: anomaly detection algorithms (CUSUM, EWMA, regression), customizable syndrome definitions, temporal trend analysis, geographic heat maps, facility-level monitoring, ad-hoc querying, automated alerting, data quality dashboards, myESSENCE for personalized views. Supports CDC-defined syndrome categories (COVID-like illness, influenza-like illness, drug overdose, heat-related illness, firearm injuries, etc.). Weekly NSSP snapshots published. Integration with BioSense Platform for data storage, processing, and sharing.",
         "tech_stack": "ESSENCE analytics engine (Java-based, developed by JHU/APL), BioSense Platform cloud infrastructure (AWS GovCloud), HL7 2.5.1 messaging standard for data ingestion, ICD-10-CM coding, Rhino data processing tools, LOINC for lab data, FHIR adaptation in progress. SAS for statistical analysis. Data visualization via ESSENCE web interface with customizable dashboards. Secure data access via SAMS (Secure Access Management Service). CDC WONDER integration for public aggregate data. Master Facility Table for standardized facility identification.",
         "operator": "CDC Division of Health Informatics and Surveillance (DHIS), Center for Surveillance, Epidemiology, and Laboratory Services (CSELS). ESSENCE engine maintained by Johns Hopkins Applied Physics Laboratory (JHU/APL). Operated under the National Syndromic Surveillance Program (NSSP). Funded by CDC and participating state/local health departments. Data use agreements with each jurisdiction. Recent integration with Navy/Marine Corps Force Health Protection Command (NMCFHPC).",
-        "data_model": "Visit-centric: each record represents an ED/urgent care visit with fields: chief complaint free text, discharge diagnosis (ICD-10-CM), patient demographics (age, sex, race, ethnicity – de-identified), facility ID, visit date/time, disposition. Data transmitted via HL7 2.5.1 ADT messages. Processed through syndrome classifiers (keyword + code-based). Aggregated by syndrome, geography, time period, and facility. Data stored in BioSense Platform with jurisdictional data ownership. Public aggregate data available via CDC WONDER. Master Message Guide (MMG) defines standard fields.",
+        "data_model": "Visit-centric: each record represents an ED/urgent care visit with fields: chief complaint free text, discharge diagnosis (ICD-10-CM), patient demographics (age, sex, race, ethnicity \u2013 de-identified), facility ID, visit date/time, disposition. Data transmitted via HL7 2.5.1 ADT messages. Processed through syndrome classifiers (keyword + code-based). Aggregated by syndrome, geography, time period, and facility. Data stored in BioSense Platform with jurisdictional data ownership. Public aggregate data available via CDC WONDER. Master Message Guide (MMG) defines standard fields.",
         "users_scale": "Covers all 50 US states, DC, and territories. 6,000+ healthcare facilities reporting. ~75% of US ED visits captured. Thousands of epidemiologists and public health analysts as registered users. Used during every major US public health event: COVID-19, opioid crisis, vaping illness (EVALI), heat events, natural disasters. NSSP Community of Practice connects users. Weekly NSSP Update newsletter. Annual NSSP conference. US military (Navy/Marine Corps) recently integrated. Estimated coverage of 250+ million Americans.",
         "access_model": "Access restricted to authorized public health personnel. Jurisdictions must sign Data Use Agreements (DUA) with CDC. Registered users access via SAMS (Secure Access Management Service). Public aggregate data available through CDC WONDER and NSSP weekly snapshots. ESSENCE analytics require approved NSSP account. Data ownership retained by submitting jurisdictions. Not open-source; government-operated platform. Research access possible through NSSP data request process."
       },
@@ -14304,7 +14304,7 @@
         "operator": "Centre for Genomic Pathogen Surveillance (CGPS), Wellcome Sanger Institute & Big Data Institute, University of Oxford. Led by David Aanensen. Funded by Wellcome Trust, Bill & Melinda Gates Foundation, NIHR (UK), European Commission, and WHO. Key partnerships: UKHSA, ECDC, WHO, Africa CDC, national reference laboratories in LMICs.",
         "data_model": "Genome-centric: each uploaded assembly linked to metadata (species, collection date, location, source, patient info). Analysis outputs: MLST profile, AMR predictions (gene + phenotype), virulence factors, clustering membership, phylogenetic position. Collections group genomes for comparative analysis. Public genomes from NCBI integrated as reference context. Organism-specific databases: curated typing schemes from PubMLST, AMR databases from CARD/ResFinder. Supports metadata export as CSV/JSON.",
         "users_scale": "Tens of thousands of registered users worldwide. Thousands of public collections hosted. Used by UKHSA for UK national genomic surveillance. ECDC partnership for EU AMR surveillance. WHO-supported deployment in LMICs for AMR monitoring. Key tool in JUNO project (Global Surveillance of S. pneumoniae). 620,700+ pathogen genomes with geotemporal data in AMR Watch (as of March 2025). Cited in 167+ publications (Argimon et al. 2021 alone). Training deployed through WHO SEARO, Africa CDC workshops.",
-        "access_model": "Free to use for web-based analysis. Registration required for saving collections and accessing advanced features. No software installation needed (browser-based). Open-source components available on GitHub (pathogenwatch-oss). Self-hosting possible via Docker. API access for programmatic queries. Public genomes freely browsable. No data limits for uploads. AMR Watch (amr.watch) publicly accessible. Documentation at next-docs.pathogen.watch. Supported by Wellcome/Gates funding – no commercial licensing."
+        "access_model": "Free to use for web-based analysis. Registration required for saving collections and accessing advanced features. No software installation needed (browser-based). Open-source components available on GitHub (pathogenwatch-oss). Self-hosting possible via Docker. API access for programmatic queries. Public genomes freely browsable. No data limits for uploads. AMR Watch (amr.watch) publicly accessible. Documentation at next-docs.pathogen.watch. Supported by Wellcome/Gates funding \u2013 no commercial licensing."
       },
       "deep_research": {
         "executive_summary": "Pathogenwatch is the leading browser-based platform for automated bacterial genomic surveillance, offering AMR prediction, MLST typing, and phylogenetic clustering for 100+ species. Score 87/100 reflects comprehensive analysis capabilities, strong WHO/ECDC partnerships, and AMR focus. New amr.watch module (2025) expands to global AMR trend monitoring. Developed by CGPS (Wellcome Sanger/Oxford), companion tool to Microreact.",
@@ -14491,7 +14491,7 @@
             "url": "https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-8-r86"
           },
           {
-            "title": "Using Galaxy to Perform Large-Scale Interactive Data Analyses—an Update",
+            "title": "Using Galaxy to Perform Large-Scale Interactive Data Analyses\u2014an Update",
             "authors": "Jalili V et al.",
             "journal": "Current Protocols",
             "year": 2021,
@@ -14510,7 +14510,7 @@
         ],
         "official_guidelines": [
           {
-            "title": "Galaxy Training Network — Genomics and Surveillance tutorials",
+            "title": "Galaxy Training Network \u2014 Genomics and Surveillance tutorials",
             "url": "https://training.galaxyproject.org/training-material/topics/variant-analysis/",
             "org": "Galaxy Training Network"
           },
@@ -14696,7 +14696,7 @@
             "org": "CDC"
           },
           {
-            "title": "CDC Wastewater Surveillance — Technical Guidance",
+            "title": "CDC Wastewater Surveillance \u2014 Technical Guidance",
             "url": "https://www.cdc.gov/nwss/about/how.html",
             "org": "CDC"
           },
@@ -15029,7 +15029,7 @@
             "org": "Imperial College London"
           },
           {
-            "title": "WHO Field Epidemiology Manual — Digital Data Collection",
+            "title": "WHO Field Epidemiology Manual \u2014 Digital Data Collection",
             "url": "https://www.who.int/publications/i/item/9789241511827",
             "org": "WHO"
           }
@@ -15424,7 +15424,7 @@
             "url": "https://academic.oup.com/jamia/article/15/2/150/779408"
           },
           {
-            "title": "Digital disease detection — harnessing the Web for public health surveillance",
+            "title": "Digital disease detection \u2014 harnessing the Web for public health surveillance",
             "authors": "Brownstein JS, Freifeld CC, Madoff LC",
             "journal": "New England Journal of Medicine",
             "year": 2009,
@@ -15433,7 +15433,7 @@
             "url": "https://www.nejm.org/doi/full/10.1056/NEJMp0900702"
           },
           {
-            "title": "Surveillance Sans Frontières: internet-based emerging infectious disease intelligence and the HealthMap project",
+            "title": "Surveillance Sans Fronti\u00e8res: internet-based emerging infectious disease intelligence and the HealthMap project",
             "authors": "Brownstein JS et al.",
             "journal": "PLoS Medicine",
             "year": 2008,
@@ -15443,12 +15443,12 @@
         ],
         "official_guidelines": [
           {
-            "title": "CDC Epidemic Intelligence — digital disease detection references",
+            "title": "CDC Epidemic Intelligence \u2014 digital disease detection references",
             "url": "https://www.cdc.gov/eis/field-epi-manual/chapters/Surveillance.html",
             "org": "CDC"
           },
           {
-            "title": "WHO Epidemic Intelligence from Open Sources (EIOS) — includes HealthMap as source",
+            "title": "WHO Epidemic Intelligence from Open Sources (EIOS) \u2014 includes HealthMap as source",
             "url": "https://www.who.int/initiatives/eios",
             "org": "WHO"
           }
@@ -15566,7 +15566,7 @@
         "access_model": "Commercial SaaS subscription model. Tiered pricing for governments, pharma/life sciences, and enterprise. Demo available via request. Some public-facing reports and research publications freely available."
       },
       "deep_research": {
-        "executive_summary": "BlueDot is a commercial AI-powered infectious disease intelligence platform that famously flagged COVID-19 on Dec 31, 2019 — days before WHO. Score 84.9/100. Integrates NLP, flight data, climate data, and animal disease reports. Protects 840M+ people through government and enterprise contracts. Key limitation: commercial subscription only with no public access. Pioneer in predictive epidemic analytics.",
+        "executive_summary": "BlueDot is a commercial AI-powered infectious disease intelligence platform that famously flagged COVID-19 on Dec 31, 2019 \u2014 days before WHO. Score 84.9/100. Integrates NLP, flight data, climate data, and animal disease reports. Protects 840M+ people through government and enterprise contracts. Key limitation: commercial subscription only with no public access. Pioneer in predictive epidemic analytics.",
         "key_publications": [
           {
             "title": "Pneumonia of unknown aetiology in Wuhan, China: potential for international spread via commercial air travel",
@@ -15600,7 +15600,7 @@
             "org": "BlueDot"
           },
           {
-            "title": "Government of Canada — infectious disease intelligence partnerships",
+            "title": "Government of Canada \u2014 infectious disease intelligence partnerships",
             "url": "https://www.canada.ca/en/public-health.html",
             "org": "PHAC Canada"
           }
@@ -15744,12 +15744,12 @@
         ],
         "official_guidelines": [
           {
-            "title": "GEIS Program — Defense Health Agency",
+            "title": "GEIS Program \u2014 Defense Health Agency",
             "url": "https://www.health.mil/Military-Health-Topics/Health-Readiness/AFHSD/Global-Emerging-Infections-Surveillance-and-Response",
             "org": "DHA/DoD"
           },
           {
-            "title": "DoD Directive 6200.04 — Force Health Protection",
+            "title": "DoD Directive 6200.04 \u2014 Force Health Protection",
             "url": "https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodd/620004p.pdf",
             "org": "DoD"
           }
@@ -15895,12 +15895,12 @@
         ],
         "official_guidelines": [
           {
-            "title": "ProMED — About and Submission Guidelines",
+            "title": "ProMED \u2014 About and Submission Guidelines",
             "url": "https://promedmail.org/about/",
             "org": "ISID"
           },
           {
-            "title": "WHO Early Warning and Event-Based Surveillance — references ProMED",
+            "title": "WHO Early Warning and Event-Based Surveillance \u2014 references ProMED",
             "url": "https://www.who.int/initiatives/eios",
             "org": "WHO"
           }
@@ -16585,7 +16585,7 @@
             "url": "https://www.cdc.gov/mmwr/volumes/72/wr/mm7207a2.htm"
           },
           {
-            "title": "CDC Advanced Molecular Detection Program — TGS",
+            "title": "CDC Advanced Molecular Detection Program \u2014 TGS",
             "authors": "CDC",
             "journal": "CDC.gov",
             "year": 2024,
@@ -16599,7 +16599,7 @@
             "org": "CDC"
           },
           {
-            "title": "CDC Traveler Health — Genomic Surveillance",
+            "title": "CDC Traveler Health \u2014 Genomic Surveillance",
             "url": "https://wwwnc.cdc.gov/travel",
             "org": "CDC"
           }
@@ -16975,7 +16975,7 @@
             "url": "https://reportstream.cdc.gov/about"
           },
           {
-            "title": "CDC Data Modernization Initiative — ReportStream",
+            "title": "CDC Data Modernization Initiative \u2014 ReportStream",
             "authors": "CDC CSELS",
             "journal": "CDC Report",
             "year": 2024,
@@ -17804,7 +17804,7 @@
       "u": "https://www.biofiredx.com",
       "s": 82,
       "c": "Rapid Multiplex Biothreat Diagnostics",
-      "d": "bioMérieux defense division providing FDA-cleared rapid multiplex PCR panels for field-forward biothreat agent identification",
+      "d": "bioM\u00e9rieux defense division providing FDA-cleared rapid multiplex PCR panels for field-forward biothreat agent identification",
       "sc": {
         "data_integration": 80,
         "analytics_capability": 83,
@@ -18433,7 +18433,7 @@
       },
       "st": [
         "27-member state coverage",
-        "€158M health grants 2025",
+        "\u20ac158M health grants 2025",
         "CBRN MCM procurement authority",
         "EU4Health program integration",
         "Threat assessment pipeline"
@@ -19087,7 +19087,7 @@
         "BSL-4 capability",
         "Novichok identification expertise",
         "DASA innovation programs",
-        "£1B+ annual revenue"
+        "\u00a31B+ annual revenue"
       ],
       "wk": [
         "UK MoD restricted",
@@ -19152,7 +19152,7 @@
         "overview": "BEAST 2 (Bayesian Evolutionary Analysis Sampling Trees) is an open-source software platform for Bayesian phylogenetics, molecular clock analysis, and phylodynamics. Successor to BEAST 1, developed by an international team led by Alexei Drummond and Remco Bouckaert.",
         "functional_scope": "Bayesian inference of molecular phylogenies with evolutionary time estimates. Molecular clock models (strict, relaxed), coalescent demographic models, birth-death models, phylogeography, and structured population models. Extensible via packages.",
         "tech_stack": "Java application with XML configuration. MCMC sampling algorithms. BEAUti GUI for model setup. Tracer for convergence diagnostics. FigTree/DensiTree for visualization. 300+ community packages. Open-source on GitHub.",
-        "operator": "International developer community. Led by University of Auckland (Drummond) and ETH Zürich (Stadler). Funded by Marsden Fund, ERC, and community contributions.",
+        "operator": "International developer community. Led by University of Auckland (Drummond) and ETH Z\u00fcrich (Stadler). Funded by Marsden Fund, ERC, and community contributions.",
         "data_model": "Input: aligned sequences (NEXUS/FASTA) with metadata (dates, locations). XML model specification. Output: posterior tree distributions (NEXUS), parameter traces (log files). MCC summary trees.",
         "users_scale": "30,000+ citations. Standard tool for molecular epidemiology and viral phylodynamics. Used by every major genomic surveillance group including Nextstrain, COG-UK, CDC.",
         "access_model": "Fully open-source (LGPL 2.1). Available at beast2.org. Cross-platform (Java). Free to use. Extensive tutorials and documentation."
@@ -21584,7 +21584,7 @@
         "overview": "Rheinmetall mobile NBC Field Laboratories provide military forces with deployable biological and chemical analysis capability for CBRN reconnaissance, sample analysis, and threat identification in the field.",
         "functional_scope": "Mobile CBRN reconnaissance and analysis: deployable containerized laboratory for biological sample analysis, chemical agent identification, environmental monitoring, and forensic sampling. Rapid deployment capability.",
         "tech_stack": "Containerized/vehicle-mounted laboratory. PCR, immunoassay, chemical analysis instruments, biosafety containment. NBC reconnaissance vehicles (Fuchs/Boxer integration).",
-        "operator": "Rheinmetall Defence, Düsseldorf, Germany. Customers include Bundeswehr, NATO allies, and Middle Eastern/Asian militaries.",
+        "operator": "Rheinmetall Defence, D\u00fcsseldorf, Germany. Customers include Bundeswehr, NATO allies, and Middle Eastern/Asian militaries.",
         "data_model": "Laboratory analysis results, sample chain-of-custody, CBRN reconnaissance reports. NATO STANAG-compatible reporting.",
         "users_scale": "Deployed by German Bundeswehr and exported to 10+ NATO and partner nations. Part of NATO CBRN battalion capabilities.",
         "access_model": "Military procurement through Rheinmetall Defence. Export controlled. Training and lifecycle support included."
@@ -22012,11 +22012,11 @@
     },
     {
       "r": 130,
-      "n": "DGA Maîtrise NRBC",
+      "n": "DGA Ma\u00eetrise NRBC",
       "u": "https://www.defense.gouv.fr",
       "s": 74.9,
       "c": "French Military CBRN Defense",
-      "d": "French Direction Générale de l'Armement NRBC division providing biological threat detection and CBRN defense capabilities to French armed forces",
+      "d": "French Direction G\u00e9n\u00e9rale de l'Armement NRBC division providing biological threat detection and CBRN defense capabilities to French armed forces",
       "sc": {
         "data_integration": 76,
         "analytics_capability": 78,
@@ -22049,10 +22049,10 @@
       "biosurveillance_class": "laboratory_biosurveillance",
       "l": "L3_Defense",
       "profile": {
-        "overview": "The French Direction Générale de l'Armement (DGA) NRBC (Nuclear, Radiological, Biological, Chemical) division manages France's military CBRN defense research, development, and procurement programs.",
-        "functional_scope": "French military CBRN defense: develops and procures detection systems, protective equipment, decontamination technologies, and medical countermeasures. Manages DGA Maîtrise NRBC test center at Vert-le-Petit.",
-        "tech_stack": "CBRN detection and identification systems, protective equipment, decontamination platforms. DGA Maîtrise NRBC test and evaluation facilities.",
-        "operator": "Direction Générale de l'Armement (DGA), French Ministry of Armed Forces. DGA Maîtrise NRBC center at Vert-le-Petit, Essonne.",
+        "overview": "The French Direction G\u00e9n\u00e9rale de l'Armement (DGA) NRBC (Nuclear, Radiological, Biological, Chemical) division manages France's military CBRN defense research, development, and procurement programs.",
+        "functional_scope": "French military CBRN defense: develops and procures detection systems, protective equipment, decontamination technologies, and medical countermeasures. Manages DGA Ma\u00eetrise NRBC test center at Vert-le-Petit.",
+        "tech_stack": "CBRN detection and identification systems, protective equipment, decontamination platforms. DGA Ma\u00eetrise NRBC test and evaluation facilities.",
+        "operator": "Direction G\u00e9n\u00e9rale de l'Armement (DGA), French Ministry of Armed Forces. DGA Ma\u00eetrise NRBC center at Vert-le-Petit, Essonne.",
         "data_model": "Defense acquisition program data, test and evaluation results, threat characterization reports. Classified military intelligence.",
         "users_scale": "Serves French Armed Forces (200,000+ active). Supports NATO and EU CBRN operations. Coordinates with UK Dstl, German WIS.",
         "access_model": "French military program. Classified operations. Some published research. International cooperation through NATO and EU frameworks."
@@ -22812,7 +22812,7 @@
     },
     {
       "r": 147,
-      "n": "Santé",
+      "n": "Sant\u00e9",
       "u": "https://entrepreneurship.columbia.edu/startup/sante/",
       "s": 72,
       "c": "AI Epidemic Intelligence as a Service",
@@ -22851,10 +22851,10 @@
       "biosurveillance_class": "non_biological",
       "l": "L1_Surveillance",
       "profile": {
-        "overview": "Santé is a Columbia University health technology startup delivering AI-powered epidemic intelligence as a service for public health decision-making.",
+        "overview": "Sant\u00e9 is a Columbia University health technology startup delivering AI-powered epidemic intelligence as a service for public health decision-making.",
         "functional_scope": "AI epidemic intelligence: automated disease trend analysis, outbreak risk prediction, integrated epidemiological-genomic analytics, and decision support for public health authorities.",
         "tech_stack": "AI/ML analytics platform. Cloud-based SaaS. Integration with multiple data sources. Web dashboard for visualization.",
-        "operator": "Santé Health Tech, affiliated with Columbia University, New York, NY, USA.",
+        "operator": "Sant\u00e9 Health Tech, affiliated with Columbia University, New York, NY, USA.",
         "data_model": "Multi-source epidemiological data integration. AI-generated risk scores and predictions. Dashboard visualizations.",
         "users_scale": "Emerging platform serving public health organizations. Academic research foundation from Columbia University.",
         "access_model": "Commercial SaaS model. Partnerships with public health agencies. Academic research component."
@@ -23602,7 +23602,7 @@
         "overview": "CIVET (Cluster Investigation and Virus Epidemiology Tool) is a bioinformatics tool from the ARTIC Network for investigating genomic clusters during pathogen outbreaks using phylogenetic context.",
         "functional_scope": "Genomic cluster investigation: places outbreak sequences in broader phylogenetic context, identifies closest relatives in background datasets, generates focused phylogenetic trees, and provides cluster summaries for epidemiological interpretation.",
         "tech_stack": "Python tool using Minimap2, gofasta, snipit, IQTREE2. Requires background alignment and metadata. Open-source on GitHub (artic-network/civet).",
-        "operator": "ARTIC Network. Developed by Áine O'Toole and Andrew Rambaut, University of Edinburgh, UK.",
+        "operator": "ARTIC Network. Developed by \u00c1ine O'Toole and Andrew Rambaut, University of Edinburgh, UK.",
         "data_model": "Input: query FASTA sequences + background alignment + metadata CSV. Output: phylogenetic trees, cluster reports, timeline figures, interactive HTML reports.",
         "users_scale": "Used during COVID-19 for local outbreak investigation. Popular with UK and international genomic surveillance teams. COG-UK standard tool.",
         "access_model": "Free and open-source (GPL-3.0). Available on GitHub and Bioconda. Documentation and tutorials provided."
@@ -23688,7 +23688,7 @@
         "overview": "RESAOLAB is a West African laboratory network strengthening diagnostic capacity across francophone West Africa, improving quality of clinical laboratory services for disease surveillance.",
         "functional_scope": "Laboratory network strengthening: quality management, external quality assessment, training of laboratory technicians, supply chain management, laboratory information system deployment, and AMR surveillance support across West African laboratories.",
         "tech_stack": "Laboratory quality management systems. SLIPTA (Stepwise Laboratory Improvement Process) framework. Electronic sample tracking. LIMS deployment.",
-        "operator": "Fondation Mérieux and partner governments (Senegal, Mali, Burkina Faso, Guinea, Niger, Togo, Benin). Funded by Agence Française de Développement (AFD).",
+        "operator": "Fondation M\u00e9rieux and partner governments (Senegal, Mali, Burkina Faso, Guinea, Niger, Togo, Benin). Funded by Agence Fran\u00e7aise de D\u00e9veloppement (AFD).",
         "data_model": "Laboratory quality indicators, EQA results, testing volumes, supply chain data. Surveillance data from participating laboratories.",
         "users_scale": "Network of 700+ laboratories across 7 West African countries. Training of thousands of laboratory professionals.",
         "access_model": "Institutional program. Access for participating laboratories and health ministries. Aggregate reports published. Website at resaolab.org."
@@ -23884,7 +23884,7 @@
         "executive_summary": "Saab AWR (Automatic Warning and Reporting) is a modular CBRN detection, warning, monitoring and reporting system capable of national-scale sensor network deployment. Score 88/100 (highest among CBRN operational platforms). Delivered to Kuwait National Guard (2015); first national CBRN centre operational (2017) with fixed and mobile sensors across the country. Sensor-agnostic architecture integrates a wide range of detection equipment. Decision support and simulated training capabilities. True CBRN Operational Platform.",
         "key_publications": [
           {
-            "title": "Saab CBRN Detection and Warning Systems — Product Overview",
+            "title": "Saab CBRN Detection and Warning Systems \u2014 Product Overview",
             "authors": "Saab AB",
             "journal": "Saab Defence & Security",
             "year": 2024,
@@ -24015,7 +24015,7 @@
         "executive_summary": "ENSCO SENTRY is a CBRNe warning and decision support system for enterprise/facility protection. Installed at the Pentagon since 2002. PFPA awarded ENSCO a US$8.2M 5-year contract (2017) for software development and on-site support. Plug-in architecture supports unlimited sensor types. Provides time-series data, alarms, and situational awareness. Score 87/100. True CBRN Operational Platform.",
         "key_publications": [
           {
-            "title": "ENSCO SENTRY — National Security Solutions",
+            "title": "ENSCO SENTRY \u2014 National Security Solutions",
             "authors": "ENSCO Inc.",
             "journal": "ENSCO Product Brief",
             "year": 2024,
@@ -24144,7 +24144,7 @@
         "executive_summary": "Two Six Technologies SIGMA is a sensor-agnostic data aggregation and cloud analytics platform for CBRN/security detection networks. Score 84/100. Available via AWS Marketplace as SaaS. DARPA heritage. Ingests continuous sensor streams or packaged alerts; applies advanced analysis for automated anomaly detection; outputs web situational awareness display and smartphone app. True CBRN Operational Platform.",
         "key_publications": [
           {
-            "title": "SIGMA Platform — Two Six Technologies",
+            "title": "SIGMA Platform \u2014 Two Six Technologies",
             "authors": "Two Six Technologies",
             "journal": "Product Documentation",
             "year": 2024,
@@ -24165,7 +24165,7 @@
             "org": "Two Six Technologies"
           },
           {
-            "title": "AWS Marketplace — SIGMA",
+            "title": "AWS Marketplace \u2014 SIGMA",
             "url": "https://aws.amazon.com/marketplace/seller-profile?id=two-six-technologies",
             "org": "AWS"
           }
@@ -24273,7 +24273,7 @@
         "executive_summary": "Riskaware's UrbanAware with HASP (Hazard Assessment Simulation and Prediction) Suite provides CBRN hazard modelling and decision support, with Dstl heritage. Score 82/100. Urban dispersion modelling, evacuation and cordon planning. 2024 partnership with Smiths Detection. UK Ministry of Defence provenance via Ploughshare Innovations licensing.",
         "key_publications": [
           {
-            "title": "HASP Suite — Hazard Assessment, Simulation & Prediction",
+            "title": "HASP Suite \u2014 Hazard Assessment, Simulation & Prediction",
             "authors": "Riskaware Ltd",
             "journal": "Product Documentation",
             "year": 2024,
@@ -24406,7 +24406,7 @@
             "url": "https://www.observis.fi/en/home/"
           },
           {
-            "title": "ObSAS LINK — Mobile CBRNe Integration",
+            "title": "ObSAS LINK \u2014 Mobile CBRNe Integration",
             "authors": "Observis Oy",
             "journal": "Product Brief",
             "year": 2024,
@@ -24523,21 +24523,21 @@
         "executive_summary": "Bruhn NewTech provides a NATO-aligned CBRN software family: CBRN-Analysis (hazard prediction and W&R), CBRNE-Frontline (tactical app), SCIM (sensor integration), and SafeVita (50+ sensors from 20+ manufacturers). Score 85/100. Danish company with strong NATO STANAG 2103/ATP-45/AEP-45 alignment. True CBRN Operational Platform.",
         "key_publications": [
           {
-            "title": "CBRN-Analysis — Hazard Prediction and Warning & Reporting",
+            "title": "CBRN-Analysis \u2014 Hazard Prediction and Warning & Reporting",
             "authors": "Bruhn NewTech A/S",
             "journal": "Product Documentation",
             "year": 2024,
             "url": "https://bruhn-newtech.com/cbrn-analysis/"
           },
           {
-            "title": "SafeVita — Sensor Integration for CBRN Protection",
+            "title": "SafeVita \u2014 Sensor Integration for CBRN Protection",
             "authors": "Bruhn NewTech A/S",
             "journal": "Product Documentation",
             "year": 2024,
             "url": "https://bruhn-newtech.com/safevita/"
           },
           {
-            "title": "CBRNE-Frontline — Tactical CBRN Mobile Application",
+            "title": "CBRNE-Frontline \u2014 Tactical CBRN Mobile Application",
             "authors": "Bruhn NewTech A/S",
             "journal": "Product Documentation",
             "year": 2024,
@@ -24557,7 +24557,7 @@
           }
         ],
         "controversies_and_changes": [
-          "50+ sensors from 20+ manufacturers integrated via SafeVita — most extensive CBRN sensor integration publicly documented.",
+          "50+ sensors from 20+ manufacturers integrated via SafeVita \u2014 most extensive CBRN sensor integration publicly documented.",
           "NATO-standard alignment (STANAG 2103/ATP-45/AEP-45) ensures interoperability but creates standard-version dependency.",
           "Danish defence procurement context; export to NATO/partner nations under Danish export controls.",
           "SCIM sensor integration middleware is a key differentiator for multi-vendor environments."
@@ -24792,7 +24792,7 @@
             "url": "https://systematic.com/int/industries/defence/products/sitaware-suite/sitaware-modules/sitaware-cbrn/"
           },
           {
-            "title": "SitaWare Suite — C4ISR Solutions",
+            "title": "SitaWare Suite \u2014 C4ISR Solutions",
             "authors": "Systematic A/S",
             "journal": "Product Overview",
             "year": 2024,
@@ -24926,7 +24926,7 @@
             "url": "https://www.fema.gov/emergency-managers/practitioners/hazardous-response-capabilities/cbrn-tools"
           },
           {
-            "title": "RadResponder Network — Standardized Radiological Data",
+            "title": "RadResponder Network \u2014 Standardized Radiological Data",
             "authors": "FEMA/DHS",
             "journal": "DHS Publication",
             "year": 2023,
@@ -25327,7 +25327,7 @@
         "executive_summary": "CAMEO (Computer-Aided Management of Emergency Operations) Suite is EPA/NOAA's set of free software tools for chemical emergency planning and response. Score 80/100. Includes CAMEO Data Manager, CAMEO Chemicals, MARPLOT (mapping), and ALOHA (atmospheric dispersion). Updated Feb 2026. Used by thousands of US first responders and LEPCs. True CBRN Operational Platform (chemical domain).",
         "key_publications": [
           {
-            "title": "CAMEO Suite — EPA Chemical Emergency Tools",
+            "title": "CAMEO Suite \u2014 EPA Chemical Emergency Tools",
             "authors": "US EPA / NOAA",
             "journal": "EPA.gov",
             "year": 2026,
@@ -25410,7 +25410,7 @@
     },
     {
       "n": "HPAC",
-      "u": "https://www.epa.gov/emergency-response-research/biological-response-tools",
+      "u": "https://www.dtra.mil/",
       "s": 84,
       "c": "CBRN Dispersion Modelling",
       "d": "US DoD/DTRA CBRN dispersion modelling system, primary model for IMAAC emergency response plumes",
@@ -25462,7 +25462,7 @@
         "executive_summary": "HPAC (Hazard Prediction and Assessment Capability) is the US DoD/DTRA's premier CBRN dispersion modelling system. Score 84/100. Used for IMAAC plume modelling products. Supports chemical, biological, nuclear, and radiological release scenarios. Meteorology and geography-based dispersion prediction. Restricted military/government access only.",
         "key_publications": [
           {
-            "title": "HPAC — Hazard Prediction and Assessment Capability",
+            "title": "HPAC \u2014 Hazard Prediction and Assessment Capability",
             "authors": "DTRA",
             "journal": "DTRA Documentation",
             "year": 2024,
@@ -25725,7 +25725,7 @@
         "executive_summary": "IAEA USIE (Unified System for Information Exchange in Incidents and Emergencies) is the secure portal for urgent information exchange during nuclear/radiological incidents. Score 84/100. 1,000+ users from 150+ Member States. Operated by IAEA Incident and Emergency Centre (IEC). Supports emergency notifications, follow-ups, assistance requests, and INES reporting. Treaty-based international notification obligation.",
         "key_publications": [
           {
-            "title": "IAEA Notification and Reporting — USIE",
+            "title": "IAEA Notification and Reporting \u2014 USIE",
             "authors": "IAEA",
             "journal": "IAEA.org",
             "year": 2024,
@@ -25751,7 +25751,7 @@
             "org": "IAEA"
           },
           {
-            "title": "IRIX — International Radiological Information Exchange Format",
+            "title": "IRIX \u2014 International Radiological Information Exchange Format",
             "url": "https://www.iaea.org/topics/emergency-preparedness-and-response/international-radiological-information-exchange-irix-format",
             "org": "IAEA"
           }
@@ -25870,7 +25870,7 @@
         "executive_summary": "CTBTO International Data Centre processes data from the International Monitoring System (IMS) into automated event lists (SEL) and analyst-reviewed Reviewed Event Bulletins (REB) for nuclear test treaty verification. Score 83/100. 337 monitoring facilities worldwide (seismic, hydroacoustic, infrasound, radionuclide). Operated by CTBTO Preparatory Commission in Vienna. Treaty verification foundation with dual civilian applications.",
         "key_publications": [
           {
-            "title": "CTBTO International Data Centre — Overview",
+            "title": "CTBTO International Data Centre \u2014 Overview",
             "authors": "CTBTO",
             "journal": "CTBTO.org",
             "year": 2024,
@@ -26186,7 +26186,7 @@
     },
     {
       "n": "RadResponder",
-      "u": "https://www.dhs.gov/publication/dhsfemapia-054-radresponder-network",
+      "u": "https://www.radresponder.net/",
       "s": 82,
       "c": "Radiological Data Management",
       "d": "FEMA-supported free platform for standardised collection and management of radiological data across US responders",
@@ -26234,7 +26234,7 @@
         "executive_summary": "RadResponder is a FEMA-supported free platform for standardised radiological data collection and management across US responders. Score 82/100. Standardises radiological data practices to analyse site dangers and support mitigation decisions. Part of the FEMA CBRNResponder Network. Free for US government and response organisations.",
         "key_publications": [
           {
-            "title": "RadResponder Network — DHS/FEMA",
+            "title": "RadResponder Network \u2014 DHS/FEMA",
             "authors": "DHS/FEMA",
             "journal": "DHS Publications",
             "year": 2023,
@@ -26285,9 +26285,10 @@
           }
         ],
         "key_urls": {
-          "main_site": "https://www.dhs.gov/publication/dhsfemapia-054-radresponder-network",
+          "main_site": "https://www.radresponder.net/",
           "fema_cbrn": "https://www.fema.gov/emergency-managers/practitioners/hazardous-response-capabilities/cbrn-tools",
-          "radresponder_app": "https://www.radresponder.net/"
+          "radresponder_app": "https://www.radresponder.net/",
+          "dhs_page": "https://www.dhs.gov/publication/dhsfemapia-054-radresponder-network"
         },
         "timeline": [
           {
@@ -26359,7 +26360,7 @@
         "executive_summary": "IMAAC (Interagency Modeling and Atmospheric Assessment Center) Portal is the US federal capability providing no-cost plume modelling support for hazmat/CBRNE incidents via coordinated atmospheric assessment. Score 83/100. FEMA-led federal interagency effort. Interfaces with CBRNResponder Network. Uses HPAC and other models for dispersion prediction.",
         "key_publications": [
           {
-            "title": "IMAAC — Interagency Modeling and Atmospheric Assessment Center",
+            "title": "IMAAC \u2014 Interagency Modeling and Atmospheric Assessment Center",
             "authors": "FEMA",
             "journal": "FEMA.gov",
             "year": 2024,
