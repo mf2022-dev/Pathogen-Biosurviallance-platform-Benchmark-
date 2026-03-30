@@ -302,7 +302,7 @@ function getMethodology() {
 // ============== MAIN HTML ==============
 function getMainHTML() {
   return `<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -310,15 +310,18 @@ function getMainHTML() {
     <meta name="description" content="BioR-Pathogen: A Multi-Dimensional Benchmarking Framework for Integrated Pathogen Genomic Surveillance Platforms with One Health and Mass Gathering Intelligence">
     <meta name="keywords" content="pathogen genomics, biosurveillance, benchmark, One Health, MERS-CoV, AMR, Hajj, Saudi Arabia">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <!-- BioR Design System -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mf2022-dev/BioR-ToolKit@main/public/static/bior-design-system.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              bio: { 50:'#f0fdfa',100:'#ccfbf1',200:'#99f6e4',300:'#5eead4',400:'#2dd4bf',500:'#14b8a6',600:'#0d9488',700:'#0f766e',800:'#115e59',900:'#134e4a' },
+              bio: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#00A86B',500:'#008F5B',600:'#007850',700:'#006241',800:'#064e3b',900:'#022c22' },
               patho: { 50:'#fdf2f8',100:'#fce7f3',200:'#fbcfe8',300:'#f9a8d4',400:'#f472b6',500:'#ec4899',600:'#db2777',700:'#be185d',800:'#9d174d',900:'#831843' }
             }
           }
@@ -326,72 +329,76 @@ function getMainHTML() {
       }
     </script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
-      body{font-family:'Inter',sans-serif}
-      .mono{font-family:'JetBrains Mono',monospace}
-      .gradient-text{background:linear-gradient(135deg,#14b8a6 0%,#3b82f6 50%,#8b5cf6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-      .gradient-bg{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0c0a09 100%)}
-      .glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1)}
-      .glow{box-shadow:0 0 40px rgba(20,184,166,0.15)}
-      .glow-hover:hover{box-shadow:0 0 60px rgba(20,184,166,0.25);transform:translateY(-2px)}
-      .pulse-dot{animation:pulse-dot 2s infinite}
-      @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
-      .fade-in{animation:fadeIn 0.6s ease-out}
-      @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-      .score-bar{transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-      .tab-btn{transition:all .2s}
-      .tab-btn.active{border-bottom:3px solid #14b8a6;color:#14b8a6;background:rgba(20,184,166,0.08)}
-      ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#1e293b}::-webkit-scrollbar-thumb{background:#475569;border-radius:3px}
-      .nav-link{position:relative}.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:#14b8a6;transition:width .3s}.nav-link:hover::after{width:100%}
+      /* BioR Design System Integration Overrides */
+      body{font-family:var(--bior-font);background:var(--bior-bg-page);color:var(--bior-text-primary)}
+      .mono{font-family:var(--bior-font-mono)}
+      .gradient-text{background:linear-gradient(135deg,var(--bior-primary) 0%,var(--bior-info) 50%,var(--bior-special) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .gradient-bg{background:linear-gradient(135deg,#060b14 0%,#0a1628 50%,#060b14 100%)}
+      .glass{background:var(--bior-glass-bg);backdrop-filter:blur(var(--bior-glass-blur));border:1px solid var(--bior-glass-border)}
+      .glow{box-shadow:var(--bior-shadow-glow)}
+      .glow-hover:hover{box-shadow:var(--bior-shadow-glow-lg);transform:translateY(-2px)}
+      .pulse-dot{animation:biorPulse 2s infinite}
+      .fade-in{animation:biorFadeUp 0.6s ease-out}
+      .score-bar{transition:width 1.2s var(--bior-ease)}
+      .tab-btn{transition:all var(--bior-duration-normal) var(--bior-ease);padding:8px 16px;border-radius:var(--bior-radius-md);font-size:13px;font-weight:500;color:var(--bior-text-muted);border:1px solid transparent}
+      .tab-btn:hover{color:var(--bior-text-secondary);background:var(--bior-bg-elevated)}
+      .tab-btn.active{background:rgba(var(--bior-primary-rgb),0.15);color:var(--bior-primary);border-color:rgba(var(--bior-primary-rgb),0.3);border-bottom:none}
+      .nav-link{position:relative}.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--bior-primary);transition:width var(--bior-duration-normal) var(--bior-ease)}.nav-link:hover::after{width:100%}
       .counter{font-variant-numeric:tabular-nums}
-      .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#14b8a6,#3b82f6,#8b5cf6,#ec4899,#f59e0b)}
+      .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--bior-primary),var(--bior-info),var(--bior-special),#ec4899,var(--bior-warning))}
       @media(max-width:768px){.timeline-line{left:24px}}
-      .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+      .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:var(--z-modal);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
       .modal-overlay.show{display:flex}
-      .heatmap-cell{transition:all .3s;cursor:pointer}
+      .heatmap-cell{transition:all var(--bior-duration-normal) var(--bior-ease);cursor:pointer}
       .heatmap-cell:hover{transform:scale(1.15);z-index:10}
-      .feature-check{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;font-size:12px}
+      .feature-check{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:var(--bior-radius-sm);font-size:12px}
+      /* BioR accent for primary actions */
+      .bior-accent{color:var(--bior-primary)}
+      .bior-accent-bg{background:rgba(var(--bior-primary-rgb),0.15)}
+      /* Section backgrounds using BioR tokens */
+      .section-dark{background:var(--bior-bg-page)}
+      .section-elevated{background:rgba(255,255,255,0.02)}
     </style>
 </head>
-<body class="bg-slate-950 text-white">
+<body class="bior-scroll">
 
     <!-- NAV -->
-    <nav class="fixed top-0 w-full z-50 glass border-b border-white/10">
+    <nav class="fixed top-0 w-full z-30 bior-glass border-b" style="border-color:var(--bior-border-subtle)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center shadow-lg shadow-teal-500/20">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:linear-gradient(135deg,var(--bior-primary),var(--bior-info));box-shadow:0 4px 16px rgba(var(--bior-primary-rgb),0.3)">
                         <i class="fas fa-dna text-white text-lg"></i>
                     </div>
                     <div>
-                        <span class="text-lg font-bold">BioR<span class="text-teal-400">-Pathogen</span></span>
-                        <span class="hidden sm:inline text-xs text-slate-400 ml-2">v1.0</span>
+                        <span class="text-lg font-bold" style="color:var(--bior-text-primary)">BioR<span style="color:var(--bior-primary)">-Pathogen</span></span>
+                        <span class="hidden sm:inline text-xs ml-2" style="color:var(--bior-text-faint)">v1.0</span>
                     </div>
                 </div>
                 <div class="hidden lg:flex items-center gap-5">
-                    <a href="#benchmark" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Benchmark</a>
-                    <a href="#platforms" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Platforms</a>
-                    <a href="#threats" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Threats</a>
-                    <a href="#gaps" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Gap Analysis</a>
-                    <a href="#architecture" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Architecture</a>
-                    <a href="#roadmap" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Roadmap</a>
-                    <a href="#methodology" class="nav-link text-sm text-slate-300 hover:text-teal-400 transition">Methodology</a>
-                    <a href="https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-" target="_blank" class="text-sm bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-lg transition flex items-center gap-2">
+                    <a href="#benchmark" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Benchmark</a>
+                    <a href="#platforms" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Platforms</a>
+                    <a href="#threats" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Threats</a>
+                    <a href="#gaps" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Gap Analysis</a>
+                    <a href="#architecture" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Architecture</a>
+                    <a href="#roadmap" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Roadmap</a>
+                    <a href="#methodology" class="nav-link text-sm transition" style="color:var(--bior-text-secondary)">Methodology</a>
+                    <a href="https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-" target="_blank" class="bior-btn text-sm flex items-center gap-2">
                         <i class="fab fa-github"></i> GitHub
                     </a>
                 </div>
-                <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="lg:hidden text-slate-300">
+                <button onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="lg:hidden" style="color:var(--bior-text-secondary)">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
             <div id="mobileMenu" class="hidden lg:hidden pb-4 space-y-2">
-                <a href="#benchmark" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Benchmark</a>
-                <a href="#platforms" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Platforms</a>
-                <a href="#threats" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Threats</a>
-                <a href="#gaps" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Gap Analysis</a>
-                <a href="#architecture" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Architecture</a>
-                <a href="#roadmap" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Roadmap</a>
-                <a href="#methodology" class="block py-2 text-sm text-slate-300 hover:text-teal-400">Methodology</a>
+                <a href="#benchmark" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Benchmark</a>
+                <a href="#platforms" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Platforms</a>
+                <a href="#threats" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Threats</a>
+                <a href="#gaps" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Gap Analysis</a>
+                <a href="#architecture" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Architecture</a>
+                <a href="#roadmap" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Roadmap</a>
+                <a href="#methodology" class="block py-2 text-sm" style="color:var(--bior-text-secondary)">Methodology</a>
             </div>
         </div>
     </nav>
@@ -399,15 +406,15 @@ function getMainHTML() {
     <!-- HERO -->
     <section class="gradient-bg min-h-screen flex items-center pt-16 relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-20 left-10 w-72 h-72 bg-teal-500 rounded-full filter blur-[120px]"></div>
-            <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-600 rounded-full filter blur-[150px]"></div>
-            <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-600 rounded-full filter blur-[100px]"></div>
+            <div class="absolute top-20 left-10 w-72 h-72 rounded-full filter blur-[120px]" style="background:var(--bior-primary)"></div>
+            <div class="absolute bottom-20 right-10 w-96 h-96 rounded-full filter blur-[150px]" style="background:var(--bior-info)"></div>
+            <div class="absolute top-1/2 left-1/2 w-64 h-64 rounded-full filter blur-[100px]" style="background:var(--bior-special)"></div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div class="text-center max-w-4xl mx-auto">
-                <div class="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 rounded-full px-4 py-1.5 mb-8">
-                    <span class="w-2 h-2 bg-teal-400 rounded-full pulse-dot"></span>
-                    <span class="text-sm text-teal-300 mono">Phase 0 — Active Development</span>
+                <div class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-8" style="background:rgba(var(--bior-primary-rgb),0.1);border:1px solid rgba(var(--bior-primary-rgb),0.3)">
+                    <span class="w-2 h-2 rounded-full pulse-dot" style="background:var(--bior-primary)"></span>
+                    <span class="text-sm mono" style="color:var(--bior-primary-light)">Phase 0 — Active Development</span>
                 </div>
                 <h1 class="text-5xl sm:text-7xl font-black mb-6 leading-tight">
                     <span class="gradient-text">BioR-Pathogen</span>
@@ -422,32 +429,32 @@ function getMainHTML() {
                     The world's first multi-dimensional benchmarking framework for integrated pathogen genomic surveillance platforms — designed with mass gathering intelligence and One Health integration from Saudi Arabia.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4 mb-16">
-                    <a href="#benchmark" class="bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white px-8 py-3.5 rounded-xl font-semibold transition flex items-center gap-2 shadow-lg shadow-teal-500/20">
+                    <a href="#benchmark" class="bior-btn px-8 py-3.5 rounded-xl text-base flex items-center gap-2">
                         <i class="fas fa-chart-simple"></i> Explore Benchmark
                     </a>
-                    <a href="#architecture" class="glass hover:bg-white/10 text-white px-8 py-3.5 rounded-xl font-semibold transition flex items-center gap-2">
+                    <a href="#architecture" class="bior-btn-sec px-8 py-3.5 rounded-xl text-base font-semibold transition flex items-center gap-2">
                         <i class="fas fa-sitemap"></i> View Architecture
                     </a>
-                    <a href="#methodology" class="glass hover:bg-white/10 text-white px-8 py-3.5 rounded-xl font-semibold transition flex items-center gap-2">
+                    <a href="#methodology" class="bior-btn-sec px-8 py-3.5 rounded-xl text-base font-semibold transition flex items-center gap-2">
                         <i class="fas fa-book-open"></i> Methodology
                     </a>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
-                    <div class="glass rounded-xl p-4 glow-hover transition">
-                        <div class="text-3xl font-black text-teal-400 counter" data-target="10">0</div>
-                        <div class="text-xs text-slate-400 mt-1">Platforms Evaluated</div>
+                    <div class="bior-kpi accent-green text-center">
+                        <div class="text-3xl font-black counter" style="color:var(--bior-primary)" data-target="10">0</div>
+                        <div class="text-xs mt-1" style="color:var(--bior-text-muted)">Platforms Evaluated</div>
                     </div>
-                    <div class="glass rounded-xl p-4 glow-hover transition">
-                        <div class="text-3xl font-black text-blue-400 counter" data-target="8">0</div>
-                        <div class="text-xs text-slate-400 mt-1">Benchmark Dimensions</div>
+                    <div class="bior-kpi accent-blue text-center">
+                        <div class="text-3xl font-black counter" style="color:var(--bior-info)" data-target="8">0</div>
+                        <div class="text-xs mt-1" style="color:var(--bior-text-muted)">Benchmark Dimensions</div>
                     </div>
-                    <div class="glass rounded-xl p-4 glow-hover transition">
-                        <div class="text-3xl font-black text-purple-400 counter" data-target="7">0</div>
-                        <div class="text-xs text-slate-400 mt-1">Innovation Pillars</div>
+                    <div class="bior-kpi accent-purple text-center">
+                        <div class="text-3xl font-black counter" style="color:var(--bior-special)" data-target="7">0</div>
+                        <div class="text-xs mt-1" style="color:var(--bior-text-muted)">Innovation Pillars</div>
                     </div>
-                    <div class="glass rounded-xl p-4 glow-hover transition">
-                        <div class="text-3xl font-black text-pink-400 counter" data-target="40">0</div>
-                        <div class="text-xs text-slate-400 mt-1">Evaluation Criteria</div>
+                    <div class="bior-kpi accent-amber text-center">
+                        <div class="text-3xl font-black counter" style="color:var(--bior-warning)" data-target="40">0</div>
+                        <div class="text-xs mt-1" style="color:var(--bior-text-muted)">Evaluation Criteria</div>
                     </div>
                 </div>
             </div>
@@ -455,10 +462,10 @@ function getMainHTML() {
     </section>
 
     <!-- BENCHMARK -->
-    <section id="benchmark" class="py-20 bg-slate-900">
+    <section id="benchmark" class="py-20 section-elevated">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">COMPARATIVE ANALYSIS</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">COMPARATIVE ANALYSIS</span>
                 <h2 class="text-4xl font-bold mb-4">Multi-Dimensional Benchmark</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">Comprehensive evaluation of 10 global pathogen genomic surveillance platforms across 8 standardized dimensions</p>
             </div>
@@ -466,7 +473,7 @@ function getMainHTML() {
             <div id="dimensionCards" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"></div>
 
             <!-- Tabs -->
-            <div class="flex flex-wrap gap-1 mb-8 border-b border-white/10">
+            <div class="flex flex-wrap gap-1 mb-8" style="border-bottom:1px solid var(--bior-border-subtle)">
                 <button class="tab-btn active px-4 py-3 text-sm font-medium rounded-t-lg" data-tab="radar" onclick="switchTab('radar')">
                     <i class="fas fa-chart-simple mr-1"></i> Radar
                 </button>
@@ -484,14 +491,14 @@ function getMainHTML() {
             <!-- Tab: Radar -->
             <div id="tab-radar" class="tab-content">
                 <div class="grid lg:grid-cols-5 gap-8">
-                    <div class="lg:col-span-3 glass rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-2 flex items-center gap-2"><i class="fas fa-chart-simple text-teal-400"></i> Platform Comparison Radar</h3>
-                        <p class="text-xs text-slate-400 mb-4">Select platforms to compare (max 5)</p>
+                    <div class="lg:col-span-3 bior-panel">
+                        <h3 class="text-lg font-semibold mb-2 flex items-center gap-2"><i class="fas fa-chart-simple" style="color:var(--bior-primary)"></i> Platform Comparison Radar</h3>
+                        <p class="text-xs mb-4" style="color:var(--bior-text-muted)">Select platforms to compare (max 5)</p>
                         <div class="flex flex-wrap gap-2 mb-4" id="platformSelector"></div>
                         <div class="radar-container" style="max-height:420px"><canvas id="radarChart"></canvas></div>
                     </div>
-                    <div class="lg:col-span-2 glass rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ranking-star text-teal-400"></i> Overall Rankings</h3>
+                    <div class="lg:col-span-2 bior-panel">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ranking-star" style="color:var(--bior-primary)"></i> Overall Rankings</h3>
                         <div id="rankingList" class="space-y-3"></div>
                     </div>
                 </div>
@@ -499,26 +506,26 @@ function getMainHTML() {
 
             <!-- Tab: Heatmap -->
             <div id="tab-heatmap" class="tab-content hidden">
-                <div class="glass rounded-2xl p-6 overflow-x-auto">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-th text-teal-400"></i> Score Heatmap Matrix</h3>
-                    <p class="text-xs text-slate-400 mb-4">Hover over cells for details. Color intensity = score strength.</p>
+                <div class="bior-panel overflow-x-auto">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-th" style="color:var(--bior-primary)"></i> Score Heatmap Matrix</h3>
+                    <p class="text-xs mb-4" style="color:var(--bior-text-muted)">Hover over cells for details. Color intensity = score strength.</p>
                     <div id="heatmapContainer"></div>
                 </div>
             </div>
 
             <!-- Tab: Features -->
             <div id="tab-features" class="tab-content hidden">
-                <div class="glass rounded-2xl p-6 overflow-x-auto">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-list-check text-teal-400"></i> Feature Comparison Matrix</h3>
+                <div class="bior-panel overflow-x-auto">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-list-check" style="color:var(--bior-primary)"></i> Feature Comparison Matrix</h3>
                     <div id="featureTable"></div>
                 </div>
             </div>
 
             <!-- Tab: Rankings -->
             <div id="tab-rankings" class="tab-content hidden">
-                <div class="glass rounded-2xl p-6">
-                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ranking-star text-teal-400"></i> Weighted Score Ranking</h3>
-                    <p class="text-xs text-slate-400 mb-4">Platforms ranked by dimension-weighted composite score</p>
+                <div class="bior-panel">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ranking-star" style="color:var(--bior-primary)"></i> Weighted Score Ranking</h3>
+                    <p class="text-xs mb-4" style="color:var(--bior-text-muted)">Platforms ranked by dimension-weighted composite score</p>
                     <div id="fullRankingList" class="space-y-4"></div>
                 </div>
             </div>
@@ -526,10 +533,10 @@ function getMainHTML() {
     </section>
 
     <!-- PLATFORMS -->
-    <section id="platforms" class="py-20 bg-slate-950">
+    <section id="platforms" class="py-20 section-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">PLATFORM PROFILES</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">PLATFORM PROFILES</span>
                 <h2 class="text-4xl font-bold mb-4">10 Platforms Evaluated</h2>
                 <p class="text-slate-400">In-depth analysis of each platform's capabilities and limitations</p>
             </div>
@@ -538,10 +545,10 @@ function getMainHTML() {
     </section>
 
     <!-- THREATS -->
-    <section id="threats" class="py-20 bg-slate-900">
+    <section id="threats" class="py-20 section-elevated">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">THREAT INTELLIGENCE</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">THREAT INTELLIGENCE</span>
                 <h2 class="text-4xl font-bold mb-4">Saudi Arabia Pathogen Landscape</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">Priority pathogen threats requiring genomic surveillance in the Kingdom of Saudi Arabia</p>
             </div>
@@ -569,60 +576,60 @@ function getMainHTML() {
     </section>
 
     <!-- GAPS -->
-    <section id="gaps" class="py-20 bg-slate-950">
+    <section id="gaps" class="py-20 section-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">INNOVATION GAP</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">INNOVATION GAP</span>
                 <h2 class="text-4xl font-bold mb-4">What No Platform Solves</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">8 critical capabilities missing from all existing global platforms — uniquely addressed by BioR-Pathogen</p>
             </div>
             <div class="grid lg:grid-cols-2 gap-6 mb-8">
-                <div class="glass rounded-2xl p-6 border border-red-500/20">
-                    <h3 class="text-lg font-semibold text-red-300 mb-4 flex items-center gap-2"><i class="fas fa-xmark-circle"></i> Missing Globally</h3>
+                <div class="bior-panel" style="border-color:var(--bior-badge-danger-border)">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:var(--bior-badge-danger-text)"><i class="fas fa-xmark-circle"></i> Missing Globally</h3>
                     <div id="gapMissing" class="space-y-3"></div>
                 </div>
-                <div class="glass rounded-2xl p-6 border border-teal-500/20">
-                    <h3 class="text-lg font-semibold text-teal-300 mb-4 flex items-center gap-2"><i class="fas fa-check-circle"></i> Available Globally</h3>
+                <div class="bior-panel" style="border-color:var(--bior-badge-success-border)">
+                    <h3 class="text-lg font-semibold mb-4 flex items-center gap-2" style="color:var(--bior-badge-success-text)"><i class="fas fa-check-circle"></i> Available Globally</h3>
                     <div id="gapExisting" class="space-y-3"></div>
                 </div>
             </div>
-            <div class="glass rounded-2xl p-6 border border-teal-500/30 bg-teal-500/5 text-center">
-                <div class="text-sm text-teal-300 mb-2">BioR-Pathogen fills ALL gaps</div>
-                <div class="text-3xl font-black text-teal-400">12/12 capabilities</div>
-                <div class="text-xs text-slate-400 mt-2">Including 8 innovations not found in any existing platform</div>
+            <div class="bior-panel border" style="border-color:var(--bior-border-primary)">
+                <div class="text-sm mb-2" style="color:var(--bior-primary)">BioR-Pathogen fills ALL gaps</div>
+                <div class="text-3xl font-black" style="color:var(--bior-primary)">12/12 capabilities</div>
+                <div class="text-xs mt-2" style="color:var(--bior-text-muted)">Including 8 innovations not found in any existing platform</div>
             </div>
         </div>
     </section>
 
     <!-- ARCHITECTURE -->
-    <section id="architecture" class="py-20 bg-slate-900">
+    <section id="architecture" class="py-20 section-elevated">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">SYSTEM DESIGN</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">SYSTEM DESIGN</span>
                 <h2 class="text-4xl font-bold mb-4">BioR-Pathogen Architecture</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">7 Innovation Pillars designed to fill every gap in global pathogen genomic surveillance</p>
             </div>
             <div id="pillarGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
             <!-- Data Flow -->
-            <div class="glass rounded-2xl p-8">
-                <h3 class="text-xl font-bold mb-8 text-center">Integrated Data Architecture</h3>
+            <div class="bior-panel">
+                <h3 class="text-xl font-bold mb-8 text-center" style="color:var(--bior-text-primary)">Integrated Data Architecture</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="dataSourceCards"></div>
                 <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-teal-400 animate-bounce"></i></div>
-                <div class="glass rounded-xl p-6 text-center mb-4 border border-teal-500/30 bg-teal-500/5">
-                    <div class="mono text-teal-400 text-sm mb-1 font-bold">UNIFIED GENOMIC DATA LAKE</div>
-                    <div class="text-slate-400 text-xs">Sequences + Metadata + Geolocation + Temporal + Climate + Mobility Data</div>
+                <div class="bior-panel text-center mb-4" style="border-color:rgba(var(--bior-primary-rgb),0.3);background:rgba(var(--bior-primary-rgb),0.05)">
+                    <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-primary)">UNIFIED GENOMIC DATA LAKE</div>
+                    <div class="text-xs" style="color:var(--bior-text-muted)">Sequences + Metadata + Geolocation + Temporal + Climate + Mobility Data</div>
                 </div>
                 <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-purple-400 animate-bounce" style="animation-delay:.3s"></i></div>
-                <div class="glass rounded-xl p-6 text-center mb-4 border border-purple-500/30 bg-purple-500/5">
-                    <div class="mono text-purple-400 text-sm mb-1 font-bold">AI PATHOGEN INTELLIGENCE ENGINE</div>
-                    <div class="text-slate-400 text-xs">Genomic Foundation Model | Outbreak Prediction | Mutation Impact | AMR Forecasting</div>
+                <div class="bior-panel text-center mb-4" style="border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.05)">
+                    <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-special)">AI PATHOGEN INTELLIGENCE ENGINE</div>
+                    <div class="text-xs" style="color:var(--bior-text-muted)">Genomic Foundation Model | Outbreak Prediction | Mutation Impact | AMR Forecasting</div>
                 </div>
                 <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-blue-400 animate-bounce" style="animation-delay:.6s"></i></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="glass rounded-lg p-3 text-center border border-green-500/20 bg-green-500/5"><i class="fas fa-mosque text-green-400 text-lg mb-1"></i><div class="text-xs mono text-green-400">Mass Gathering Monitor</div></div>
-                    <div class="glass rounded-lg p-3 text-center border border-blue-500/20 bg-blue-500/5"><i class="fas fa-paw text-blue-400 text-lg mb-1"></i><div class="text-xs mono text-blue-400">One Health Nexus</div></div>
-                    <div class="glass rounded-lg p-3 text-center border border-amber-500/20 bg-amber-500/5"><i class="fas fa-shield-virus text-amber-400 text-lg mb-1"></i><div class="text-xs mono text-amber-400">AMR Tracker</div></div>
-                    <div class="glass rounded-lg p-3 text-center border border-pink-500/20 bg-pink-500/5"><i class="fas fa-chart-bar text-pink-400 text-lg mb-1"></i><div class="text-xs mono text-pink-400">Benchmark Scorecard</div></div>
+                    <div class="bior-card p-3 text-center" style="border-color:rgba(0,168,107,0.2)"><i class="fas fa-mosque text-lg mb-1" style="color:var(--bior-success)"></i><div class="text-xs mono" style="color:var(--bior-success)">Mass Gathering Monitor</div></div>
+                    <div class="bior-card p-3 text-center" style="border-color:rgba(59,130,246,0.2)"><i class="fas fa-paw text-lg mb-1" style="color:var(--bior-info)"></i><div class="text-xs mono" style="color:var(--bior-info)">One Health Nexus</div></div>
+                    <div class="bior-card p-3 text-center" style="border-color:rgba(245,158,11,0.2)"><i class="fas fa-shield-virus text-lg mb-1" style="color:var(--bior-warning)"></i><div class="text-xs mono" style="color:var(--bior-warning)">AMR Tracker</div></div>
+                    <div class="bior-card p-3 text-center" style="border-color:rgba(236,72,153,0.2)"><i class="fas fa-chart-bar text-lg mb-1" style="color:#ec4899"></i><div class="text-xs mono" style="color:#ec4899">Benchmark Scorecard</div></div>
                 </div>
             </div>
             <!-- Partners -->
@@ -634,27 +641,27 @@ function getMainHTML() {
     </section>
 
     <!-- VISION 2030 -->
-    <section class="py-20 bg-slate-950">
+    <section class="py-20 section-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">STRATEGIC ALIGNMENT</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">STRATEGIC ALIGNMENT</span>
                 <h2 class="text-4xl font-bold mb-4">Vision 2030 Integration</h2>
                 <p class="text-slate-400">Directly supports 3 national strategic programs</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass rounded-2xl p-6 glow-hover transition border border-green-500/20">
-                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4"><i class="fas fa-dna text-green-400 text-xl"></i></div>
-                    <h3 class="font-bold text-green-300 mb-2">National Biotechnology Strategy</h3>
+                <div class="bior-card-strategy accent-green p-6">
+                    <div class="card-icon mb-4" style="background:rgba(0,168,107,0.2)"><i class="fas fa-dna text-xl" style="color:var(--bior-success)"></i></div>
+                    <h3 class="font-bold mb-2" style="color:var(--bior-badge-success-text)">National Biotechnology Strategy</h3>
                     <p class="text-slate-400 text-sm">Expands the national genomic database and analytics platform. Aligns with the $34.6B GDP target by 2040 through genomics innovation and biomanufacturing.</p>
                 </div>
-                <div class="glass rounded-2xl p-6 glow-hover transition border border-blue-500/20">
-                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4"><i class="fas fa-hospital text-blue-400 text-xl"></i></div>
-                    <h3 class="font-bold text-blue-300 mb-2">Health Sector Transformation</h3>
+                <div class="bior-card-strategy accent-blue p-6">
+                    <div class="card-icon mb-4" style="background:rgba(59,130,246,0.2)"><i class="fas fa-hospital text-xl" style="color:var(--bior-info)"></i></div>
+                    <h3 class="font-bold mb-2" style="color:var(--bior-badge-info-text)">Health Sector Transformation</h3>
                     <p class="text-slate-400 text-sm">Digital health infrastructure for preventive care. Real-time genomic surveillance reduces outbreak detection time from weeks to hours.</p>
                 </div>
-                <div class="glass rounded-2xl p-6 glow-hover transition border border-purple-500/20">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4"><i class="fas fa-shield-virus text-purple-400 text-xl"></i></div>
-                    <h3 class="font-bold text-purple-300 mb-2">National AMR Action Plan</h3>
+                <div class="bior-card-strategy accent-purple p-6">
+                    <div class="card-icon mb-4" style="background:rgba(139,92,246,0.2)"><i class="fas fa-shield-virus text-xl" style="color:var(--bior-special)"></i></div>
+                    <h3 class="font-bold mb-2" style="color:var(--bior-badge-special-text)">National AMR Action Plan</h3>
                     <p class="text-slate-400 text-sm">Fills the largest gap in the 2022-2025 national action plan with genomic AMR surveillance and real-time resistome tracking across clinical and environmental sources.</p>
                 </div>
             </div>
@@ -662,10 +669,10 @@ function getMainHTML() {
     </section>
 
     <!-- ROADMAP -->
-    <section id="roadmap" class="py-20 bg-slate-900">
+    <section id="roadmap" class="py-20 section-elevated">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <span class="mono text-sm text-teal-400 mb-2 block">IMPLEMENTATION PLAN</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">IMPLEMENTATION PLAN</span>
                 <h2 class="text-4xl font-bold mb-4">Development Roadmap</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">5-phase implementation plan from prototype to MENA-wide deployment</p>
             </div>
@@ -674,31 +681,31 @@ function getMainHTML() {
     </section>
 
     <!-- METHODOLOGY -->
-    <section id="methodology" class="py-20 bg-slate-950">
+    <section id="methodology" class="py-20 section-dark">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="mono text-sm text-teal-400 mb-2 block">SCIENTIFIC FRAMEWORK</span>
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">SCIENTIFIC FRAMEWORK</span>
                 <h2 class="text-4xl font-bold mb-4">Benchmark Methodology</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">Transparent, reproducible evaluation framework grounded in published standards</p>
             </div>
             <div class="grid lg:grid-cols-2 gap-8">
                 <div>
-                    <div class="glass rounded-2xl p-6 mb-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ruler text-teal-400"></i> Scoring Rubric</h3>
+                    <div class="bior-panel mb-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-ruler" style="color:var(--bior-primary)"></i> Scoring Rubric</h3>
                         <div id="scoringRubric" class="space-y-3"></div>
                     </div>
-                    <div class="glass rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-weight-scale text-teal-400"></i> Dimension Weights</h3>
+                    <div class="bior-panel">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-weight-scale" style="color:var(--bior-primary)"></i> Dimension Weights</h3>
                         <div id="dimensionWeights"></div>
                     </div>
                 </div>
                 <div>
-                    <div class="glass rounded-2xl p-6 mb-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-database text-teal-400"></i> Data Sources</h3>
+                    <div class="bior-panel mb-6">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-database" style="color:var(--bior-primary)"></i> Data Sources</h3>
                         <div id="methodSources" class="space-y-2"></div>
                     </div>
-                    <div class="glass rounded-2xl p-6">
-                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-book text-teal-400"></i> Key References</h3>
+                    <div class="bior-panel">
+                        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-book" style="color:var(--bior-primary)"></i> Key References</h3>
                         <div id="methodRefs" class="space-y-3"></div>
                     </div>
                 </div>
@@ -707,15 +714,15 @@ function getMainHTML() {
     </section>
 
     <!-- FOOTER -->
-    <footer class="py-12 bg-slate-900 border-t border-white/10">
+    <footer class="py-12 section-elevated" style="border-top:1px solid var(--bior-border-subtle)">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-3 gap-8 mb-8">
                 <div>
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-blue-600 flex items-center justify-center"><i class="fas fa-dna text-white text-sm"></i></div>
-                        <span class="text-lg font-bold">BioR<span class="text-teal-400">-Pathogen</span></span>
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--bior-primary),var(--bior-info))"><i class="fas fa-dna text-white text-sm"></i></div>
+                        <span class="text-lg font-bold" style="color:var(--bior-text-primary)">BioR<span style="color:var(--bior-primary)">-Pathogen</span></span>
                     </div>
-                    <p class="text-slate-400 text-sm">Biosurveillance Intelligence & One-health Real-time Pathogen Genomics Platform</p>
+                    <p class="text-sm" style="color:var(--bior-text-muted)">Biosurveillance Intelligence & One-health Real-time Pathogen Genomics Platform</p>
                 </div>
                 <div>
                     <h4 class="font-semibold text-sm mb-3">Quick Links</h4>
@@ -733,16 +740,16 @@ function getMainHTML() {
                     </div>
                 </div>
             </div>
-            <div class="border-t border-white/10 pt-6 text-center">
-                <p class="text-slate-500 text-xs">&copy; 2026 BioR-Pathogen Project | Saudi Arabia | Open Science Initiative</p>
-                <p class="text-slate-600 text-xs mt-1">Built for the advancement of global pathogen genomic surveillance</p>
+            <div class="pt-6 text-center" style="border-top:1px solid var(--bior-border-subtle)">
+                <p class="text-xs" style="color:var(--bior-text-faint)">&copy; 2026 BioR-Pathogen Project | Saudi Arabia | Open Science Initiative</p>
+                <p class="text-xs mt-1" style="color:var(--bior-text-disabled)">Built for the advancement of global pathogen genomic surveillance</p>
             </div>
         </div>
     </footer>
 
     <!-- PLATFORM DETAIL MODAL -->
     <div id="platformModal" class="modal-overlay" onclick="if(event.target===this)closePlatformModal()">
-        <div class="glass rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto">
+        <div class="bior-modal p-8 max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto bior-scroll">
             <div class="flex justify-between items-center mb-6">
                 <h3 id="modalTitle" class="text-2xl font-bold"></h3>
                 <button onclick="closePlatformModal()" class="text-slate-400 hover:text-white text-xl"><i class="fas fa-times"></i></button>
@@ -790,25 +797,25 @@ function getMainHTML() {
     function renderDimensions(){
         const c=document.getElementById('dimensionCards');
         c.innerHTML=dimensionData.dimensions.map(d=>\`
-            <div class="glass rounded-xl p-4 glow-hover transition cursor-pointer group" title="\${d.description}">
+            <div class="bior-card p-4 cursor-pointer group" title="\${d.description}">
                 <div class="flex items-center gap-3 mb-2">
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:\${d.color}20">
                         <i class="fas fa-\${d.icon}" style="color:\${d.color}"></i>
                     </div>
-                    <span class="text-sm font-semibold">\${d.name}</span>
+                    <span class="text-sm font-semibold" style="color:var(--bior-text-primary)">\${d.name}</span>
                 </div>
-                <p class="text-xs text-slate-400 line-clamp-2">\${d.description}</p>
-                <div class="mt-2 text-xs text-slate-500">Weight: <span class="mono" style="color:\${d.color}">\${d.weight}%</span></div>
+                <p class="text-xs line-clamp-2" style="color:var(--bior-text-muted)">\${d.description}</p>
+                <div class="mt-2 text-xs" style="color:var(--bior-text-faint)">Weight: <span class="mono" style="color:\${d.color}">\${d.weight}%</span></div>
             </div>
         \`).join('');
     }
 
     function renderPlatformSelector(){
         const c=document.getElementById('platformSelector');
-        const colors=['#14b8a6','#3b82f6','#8b5cf6','#ef4444','#f97316','#22c55e','#ec4899','#06b6d4','#eab308','#64748b'];
+        const colors=['#00A86B','#3b82f6','#8b5cf6','#ef4444','#f97316','#22c55e','#ec4899','#06b6d4','#eab308','#64748b'];
         c.innerHTML=platformData.platforms.map((p,i)=>{
             const sel=selectedPlatforms.has(p.id);
-            return \`<button onclick="togglePlatform('\${p.id}')" class="text-xs px-3 py-1.5 rounded-lg transition font-medium border \${sel?'text-white':'text-slate-400 border-slate-600 hover:border-slate-400'}" style="\${sel?'background:'+colors[i]+'30;border-color:'+colors[i]+';color:'+colors[i]:''}">\${p.name}</button>\`;
+            return \`<button onclick="togglePlatform('\${p.id}')" class="text-xs px-3 py-1.5 rounded-lg transition font-medium" style="border:1px solid \${sel?colors[i]:'var(--bior-border-default)'};background:\${sel?colors[i]+'20':'transparent'};color:\${sel?colors[i]:'var(--bior-text-muted)'}">\${p.name}</button>\`;
         }).join('');
     }
 
@@ -822,7 +829,7 @@ function getMainHTML() {
         const ctx=document.getElementById('radarChart').getContext('2d');
         if(radarChart)radarChart.destroy();
         const labels=dimensionData.dimensions.map(d=>d.name);
-        const colors=['#14b8a6','#3b82f6','#8b5cf6','#ef4444','#f97316','#22c55e','#ec4899','#06b6d4','#eab308','#64748b'];
+        const colors=['#00A86B','#3b82f6','#8b5cf6','#ef4444','#f97316','#22c55e','#ec4899','#06b6d4','#eab308','#64748b'];
         const sel=platformData.platforms.filter(p=>selectedPlatforms.has(p.id));
         const datasets=sel.map((p,i)=>({
             label:p.name,
@@ -939,15 +946,15 @@ function getMainHTML() {
     function renderPlatformGrid(){
         document.getElementById('platformGrid').innerHTML=platformData.platforms.map(p=>{
             const total=sum(p.scores);const a=avg(p.scores);
-            return \`<div class="glass rounded-2xl p-6 glow-hover transition cursor-pointer" onclick="openPlatformModal('\${p.id}')">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-lg font-bold">\${p.name}</h3>
-                    <span class="mono text-sm bg-teal-500/20 text-teal-300 px-3 py-1 rounded-lg">\${a}/10</span>
-                </div>
-                <p class="text-xs text-slate-500 mb-3">\${p.developer} | \${p.type} | \${p.year}</p>
-                <div class="mb-3"><div class="text-xs text-green-400 mb-1 font-medium">Strengths:</div><div class="flex flex-wrap gap-1">\${p.strengths.slice(0,3).map(s=>\`<span class="text-[10px] bg-green-500/10 text-green-300 px-2 py-0.5 rounded">\${s}</span>\`).join('')}</div></div>
-                <div class="mb-3"><div class="text-xs text-red-400 mb-1 font-medium">Gaps:</div><div class="flex flex-wrap gap-1">\${p.weaknesses.slice(0,3).map(w=>\`<span class="text-[10px] bg-red-500/10 text-red-300 px-2 py-0.5 rounded">\${w}</span>\`).join('')}</div></div>
-                <div class="flex items-center justify-between"><a href="\${p.url}" target="_blank" class="text-xs text-teal-400 hover:underline flex items-center gap-1" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> Visit</a><span class="text-xs text-slate-500">Click for details</span></div>
+            return \`<div class="bior-card-strategy p-6 cursor-pointer" onclick="openPlatformModal('\${p.id}')">
+                <div class="card-header" style="margin-bottom:12px"><div class="flex items-center justify-between w-full">
+                    <h3 class="card-title">\${p.name}</h3>
+                    <span class="bior-badge bior-badge-success mono">\${a}/10</span>
+                </div></div>
+                <p class="text-xs mb-3" style="color:var(--bior-text-faint)">\${p.developer} | \${p.type} | \${p.year}</p>
+                <div class="mb-3"><div class="text-xs mb-1 font-medium" style="color:var(--bior-badge-success-text)">Strengths:</div><div class="flex flex-wrap gap-1">\${p.strengths.slice(0,3).map(s=>\`<span class="bior-badge bior-badge-success" style="font-size:9px;text-transform:none">\${s}</span>\`).join('')}</div></div>
+                <div class="mb-3"><div class="text-xs mb-1 font-medium" style="color:var(--bior-badge-danger-text)">Gaps:</div><div class="flex flex-wrap gap-1">\${p.weaknesses.slice(0,3).map(w=>\`<span class="bior-badge bior-badge-danger" style="font-size:9px;text-transform:none">\${w}</span>\`).join('')}</div></div>
+                <div class="card-footer"><a href="\${p.url}" target="_blank" class="text-xs flex items-center gap-1" style="color:var(--bior-primary)" onclick="event.stopPropagation()"><i class="fas fa-external-link-alt"></i> Visit</a><span class="text-xs" style="color:var(--bior-text-faint)">Click for details</span></div>
             </div>\`;
         }).join('');
     }
@@ -957,14 +964,14 @@ function getMainHTML() {
         document.getElementById('modalTitle').textContent=p.name;
         const dims=dimensionData.dimensions;
         document.getElementById('modalContent').innerHTML=\`
-            <div class="flex items-center gap-3 mb-4"><span class="text-sm text-slate-400">\${p.developer}</span><span class="text-xs bg-slate-700 px-2 py-0.5 rounded">\${p.type}</span><span class="text-xs bg-slate-700 px-2 py-0.5 rounded">\${p.year}</span><span class="text-xs bg-slate-700 px-2 py-0.5 rounded">\${p.license}</span></div>
-            <a href="\${p.url}" target="_blank" class="text-sm text-teal-400 hover:underline block mb-6"><i class="fas fa-external-link-alt mr-1"></i>\${p.url}</a>
-            <h4 class="font-semibold mb-3">Dimension Scores</h4>
-            <div class="space-y-2 mb-6">\${dims.map(d=>{const v=p.scores[d.id];const pct=v*10;return \`<div class="flex items-center gap-3"><div class="w-28 text-xs flex items-center gap-1.5"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i><span>\${d.name.split(' ')[0]}</span></div><div class="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:\${pct}%;background:\${d.color}"></div></div><span class="mono text-xs w-8 text-right" style="color:\${d.color}">\${v}/10</span></div>\`}).join('')}</div>
-            <div class="grid grid-cols-2 gap-4 mb-6"><div><h4 class="text-green-400 font-semibold text-sm mb-2">Strengths</h4><ul class="space-y-1">\${p.strengths.map(s=>\`<li class="text-xs text-slate-300 flex items-start gap-2"><i class="fas fa-check text-green-400 mt-0.5 text-[10px]"></i>\${s}</li>\`).join('')}</ul></div><div><h4 class="text-red-400 font-semibold text-sm mb-2">Weaknesses</h4><ul class="space-y-1">\${p.weaknesses.map(w=>\`<li class="text-xs text-slate-300 flex items-start gap-2"><i class="fas fa-xmark text-red-400 mt-0.5 text-[10px]"></i>\${w}</li>\`).join('')}</ul></div></div>
-            <h4 class="font-semibold text-sm mb-2">Supported Pathogens</h4>
-            <div class="flex flex-wrap gap-1 mb-4">\${p.pathogens.map(x=>\`<span class="text-xs bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded">\${x}</span>\`).join('')}</div>
-            <div class="flex gap-2 text-xs">\${[{k:'oneHealth',l:'One Health'},{k:'massGathering',l:'Mass Gathering'},{k:'wastewater',l:'Wastewater'},{k:'aiPrediction',l:'AI Prediction'}].map(f=>\`<span class="px-2 py-1 rounded \${p[f.k]?'bg-teal-500/20 text-teal-300':'bg-red-500/10 text-red-300'}">\${p[f.k]?'\\u2713':'\\u2717'} \${f.l}</span>\`).join('')}</div>
+            <div class="flex items-center gap-3 mb-4"><span class="text-sm" style="color:var(--bior-text-secondary)">\${p.developer}</span><span class="bior-badge bior-badge-info">\${p.type}</span><span class="bior-badge bior-badge-info">\${p.year}</span><span class="bior-badge bior-badge-info">\${p.license}</span></div>
+            <a href="\${p.url}" target="_blank" class="text-sm block mb-6" style="color:var(--bior-primary)"><i class="fas fa-external-link-alt mr-1"></i>\${p.url}</a>
+            <h4 class="font-semibold mb-3" style="color:var(--bior-text-primary)">Dimension Scores</h4>
+            <div class="space-y-2 mb-6">\${dims.map(d=>{const v=p.scores[d.id];const pct=v*10;return \`<div class="flex items-center gap-3"><div class="w-28 text-xs flex items-center gap-1.5"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i><span style="color:var(--bior-text-secondary)">\${d.name.split(' ')[0]}</span></div><div class="flex-1 h-2 rounded-full overflow-hidden" style="background:var(--bior-bg-elevated)"><div class="h-full rounded-full" style="width:\${pct}%;background:\${d.color}"></div></div><span class="mono text-xs w-8 text-right" style="color:\${d.color}">\${v}/10</span></div>\`}).join('')}</div>
+            <div class="grid grid-cols-2 gap-4 mb-6"><div><h4 class="font-semibold text-sm mb-2" style="color:var(--bior-badge-success-text)">Strengths</h4><ul class="space-y-1">\${p.strengths.map(s=>\`<li class="text-xs flex items-start gap-2" style="color:var(--bior-text-secondary)"><i class="fas fa-check mt-0.5 text-[10px]" style="color:var(--bior-success)"></i>\${s}</li>\`).join('')}</ul></div><div><h4 class="font-semibold text-sm mb-2" style="color:var(--bior-badge-danger-text)">Weaknesses</h4><ul class="space-y-1">\${p.weaknesses.map(w=>\`<li class="text-xs flex items-start gap-2" style="color:var(--bior-text-secondary)"><i class="fas fa-xmark mt-0.5 text-[10px]" style="color:var(--bior-danger)"></i>\${w}</li>\`).join('')}</ul></div></div>
+            <h4 class="font-semibold text-sm mb-2" style="color:var(--bior-text-primary)">Supported Pathogens</h4>
+            <div class="flex flex-wrap gap-1 mb-4">\${p.pathogens.map(x=>\`<span class="bior-badge bior-badge-success" style="text-transform:none">\${x}</span>\`).join('')}</div>
+            <div class="flex gap-2 text-xs">\${[{k:'oneHealth',l:'One Health'},{k:'massGathering',l:'Mass Gathering'},{k:'wastewater',l:'Wastewater'},{k:'aiPrediction',l:'AI Prediction'}].map(f=>\`<span class="bior-badge \${p[f.k]?'bior-badge-success':'bior-badge-danger'}">\${p[f.k]?'\\u2713':'\\u2717'} \${f.l}</span>\`).join('')}</div>
         \`;
         document.getElementById('platformModal').classList.add('show');
     }
@@ -972,23 +979,24 @@ function getMainHTML() {
     function closePlatformModal(){document.getElementById('platformModal').classList.remove('show')}
 
     function renderThreats(){
-        const rc={critical:'border-red-500/40 bg-red-500/5',high:'border-amber-500/40 bg-amber-500/5',medium:'border-yellow-500/40 bg-yellow-500/5'};
-        const rb={critical:'bg-red-500/20 text-red-300',high:'bg-amber-500/20 text-amber-300',medium:'bg-yellow-500/20 text-yellow-300'};
-        document.getElementById('threatGrid').innerHTML=threatData.threats.map(t=>\`
-            <div class="glass rounded-xl p-5 border \${rc[t.risk]} glow-hover transition">
+        document.getElementById('threatGrid').innerHTML=threatData.threats.map(t=>{
+            const riskColor={critical:'var(--bior-danger)',high:'var(--bior-warning)',medium:'#eab308'};
+            const riskBadge={critical:'bior-badge-danger',high:'bior-badge-warning',medium:'bior-badge-warning'};
+            return \`
+            <div class="bior-card p-5" style="border-color:\${riskColor[t.risk]}30">
                 <div class="flex items-start justify-between mb-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center"><i class="fas fa-\${t.icon} text-slate-300"></i></div>
-                        <div><h3 class="font-bold">\${t.name}</h3><span class="text-xs text-slate-400">\${t.category}</span></div>
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:var(--bior-bg-elevated)"><i class="fas fa-\${t.icon}" style="color:var(--bior-text-secondary)"></i></div>
+                        <div><h3 class="font-bold" style="color:var(--bior-text-primary)">\${t.name}</h3><span class="text-xs" style="color:var(--bior-text-muted)">\${t.category}</span></div>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-lg uppercase font-bold \${rb[t.risk]}">\${t.risk}</span>
+                    <span class="bior-badge \${riskBadge[t.risk]}">\${t.risk}</span>
                 </div>
-                <p class="text-sm text-slate-400 mb-3">\${t.description}</p>
-                <div class="flex items-center gap-2 mb-2"><span class="text-xs text-slate-500">Prevalence:</span><span class="mono text-xs text-teal-400">\${t.prevalence}</span></div>
-                <div class="bg-slate-800/50 rounded-lg p-2 mb-2"><div class="text-[10px] text-purple-400 font-medium mb-1">Genomic Need:</div><div class="text-[11px] text-slate-300">\${t.genomicNeed}</div></div>
-                <div class="flex flex-wrap gap-1">\${t.sources.map(s=>\`<span class="text-[10px] bg-white/5 text-slate-400 px-2 py-0.5 rounded">\${s}</span>\`).join('')}</div>
+                <p class="text-sm mb-3" style="color:var(--bior-text-muted)">\${t.description}</p>
+                <div class="flex items-center gap-2 mb-2"><span class="text-xs" style="color:var(--bior-text-faint)">Prevalence:</span><span class="mono text-xs" style="color:var(--bior-primary)">\${t.prevalence}</span></div>
+                <div class="rounded-lg p-2 mb-2" style="background:var(--bior-bg-elevated)"><div class="text-[10px] font-medium mb-1" style="color:var(--bior-badge-special-text)">Genomic Need:</div><div class="text-[11px]" style="color:var(--bior-text-secondary)">\${t.genomicNeed}</div></div>
+                <div class="flex flex-wrap gap-1">\${t.sources.map(s=>\`<span class="bior-badge bior-badge-info" style="text-transform:none">\${s}</span>\`).join('')}</div>
             </div>
-        \`).join('');
+        \`}).join('');
     }
 
     function renderGaps(){
@@ -996,40 +1004,40 @@ function getMainHTML() {
         const existing=gapData.capabilities.filter(c=>c.global);
         const impactColors={critical:'text-red-400',high:'text-amber-400',medium:'text-yellow-400',baseline:'text-slate-400'};
         document.getElementById('gapMissing').innerHTML=missing.map(c=>\`
-            <div class="flex items-start gap-3 p-3 rounded-lg bg-red-500/5 border border-red-500/10">
-                <div class="w-6 h-6 rounded flex items-center justify-center bg-red-500/20 flex-shrink-0 mt-0.5"><i class="fas fa-xmark text-red-400 text-xs"></i></div>
-                <div><div class="flex items-center gap-2 flex-wrap"><h4 class="font-semibold text-sm">\${c.name}</h4><span class="text-[10px] px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300">BioR-Pathogen</span><span class="text-[10px] \${impactColors[c.impact]}">\${c.impact}</span></div><p class="text-xs text-slate-400 mt-1">\${c.description}</p></div>
+            <div class="flex items-start gap-3 p-3 rounded-lg" style="background:var(--bior-badge-danger-bg);border:1px solid var(--bior-badge-danger-border)">
+                <div class="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(239,68,68,0.2)"><i class="fas fa-xmark text-xs" style="color:var(--bior-danger)"></i></div>
+                <div><div class="flex items-center gap-2 flex-wrap"><h4 class="font-semibold text-sm" style="color:var(--bior-text-primary)">\${c.name}</h4><span class="bior-badge bior-badge-success" style="text-transform:none">BioR-Pathogen</span><span class="text-[10px] \${impactColors[c.impact]}">\${c.impact}</span></div><p class="text-xs mt-1" style="color:var(--bior-text-muted)">\${c.description}</p></div>
             </div>
         \`).join('');
         document.getElementById('gapExisting').innerHTML=existing.map(c=>\`
-            <div class="flex items-start gap-3 p-3 rounded-lg bg-green-500/5 border border-green-500/10">
-                <div class="w-6 h-6 rounded flex items-center justify-center bg-green-500/20 flex-shrink-0 mt-0.5"><i class="fas fa-check text-green-400 text-xs"></i></div>
-                <div><h4 class="font-semibold text-sm">\${c.name}</h4><p class="text-xs text-slate-400 mt-1">\${c.description}</p></div>
+            <div class="flex items-start gap-3 p-3 rounded-lg" style="background:var(--bior-badge-success-bg);border:1px solid var(--bior-badge-success-border)">
+                <div class="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(0,168,107,0.2)"><i class="fas fa-check text-xs" style="color:var(--bior-success)"></i></div>
+                <div><h4 class="font-semibold text-sm" style="color:var(--bior-text-primary)">\${c.name}</h4><p class="text-xs mt-1" style="color:var(--bior-text-muted)">\${c.description}</p></div>
             </div>
         \`).join('');
     }
 
     function renderArchitecture(){
         document.getElementById('pillarGrid').innerHTML=architectureData.pillars.map(p=>\`
-            <div class="glass rounded-2xl p-6 glow-hover transition border" style="border-color:\${p.color}30">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:\${p.color}20"><i class="fas fa-\${p.icon}" style="color:\${p.color}"></i></div>
-                    <div><span class="mono text-[10px]" style="color:\${p.color}">PILLAR \${p.id}</span><h3 class="font-bold text-sm">\${p.name}</h3></div>
+            <div class="bior-card-strategy p-6" style="border-color:\${p.color}30">
+                <div class="card-header">
+                    <div class="card-icon" style="background:\${p.color}20"><i class="fas fa-\${p.icon}" style="color:\${p.color}"></i></div>
+                    <div><span class="mono text-[10px]" style="color:\${p.color}">PILLAR \${p.id}</span><div class="card-title" style="font-size:14px">\${p.name}</div></div>
                 </div>
-                <span class="mono text-xs px-2 py-0.5 rounded inline-block mb-3" style="background:\${p.color}20;color:\${p.color}">\${p.abbr}</span>
-                <p class="text-xs text-slate-400">\${p.description}</p>
+                <span class="bior-badge" style="background:\${p.color}20;color:\${p.color};border:1px solid \${p.color}40;margin-bottom:12px;display:inline-block">\${p.abbr}</span>
+                <p class="card-body">\${p.description}</p>
             </div>
         \`).join('');
         document.getElementById('dataSourceCards').innerHTML=architectureData.dataSources.map(ds=>\`
-            <div class="glass rounded-lg p-4 text-center border" style="border-color:\${ds.color}30">
+            <div class="bior-card p-4 text-center" style="border-color:\${ds.color}30">
                 <i class="fas fa-\${ds.icon} text-xl mb-2" style="color:\${ds.color}"></i>
-                <div class="text-sm font-semibold">\${ds.name}</div>
-                <div class="text-[10px] text-slate-400">\${ds.description}</div>
+                <div class="text-sm font-semibold" style="color:var(--bior-text-primary)">\${ds.name}</div>
+                <div class="text-[10px]" style="color:var(--bior-text-muted)">\${ds.description}</div>
             </div>
         \`).join('');
         document.getElementById('partnerGrid').innerHTML=architectureData.partners.map(p=>\`
-            <div class="glass rounded-xl p-4 glow-hover transition">
-                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center"><i class="fas fa-\${p.logo} text-teal-400 text-sm"></i></div><div><div class="font-bold text-sm text-teal-300">\${p.name}</div><p class="text-xs text-slate-400">\${p.role}</p></div></div>
+            <div class="bior-card p-4">
+                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(var(--bior-primary-rgb),0.2)"><i class="fas fa-\${p.logo} text-sm" style="color:var(--bior-primary)"></i></div><div><div class="font-bold text-sm" style="color:var(--bior-primary)">\${p.name}</div><p class="text-xs" style="color:var(--bior-text-muted)">\${p.role}</p></div></div>
             </div>
         \`).join('');
     }
@@ -1043,14 +1051,14 @@ function getMainHTML() {
                 <div class="hidden md:block absolute left-1/2 top-6 w-5 h-5 rounded-full border-4 -translate-x-1/2 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'#0f172a'}"></div>
                 <div class="md:w-[45%] \${isLeft?'md:mr-auto md:pr-12':'md:ml-auto md:pl-12'} pl-12 md:pl-0 relative">
                     <div class="md:hidden absolute left-0 top-6 w-5 h-5 rounded-full border-4 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'#0f172a'}"></div>
-                    <div class="glass rounded-2xl p-6 glow-hover transition border" style="border-color:\${p.color}30">
+                    <div class="bior-card p-6" style="border-color:\${p.color}30">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="mono text-xs px-2 py-0.5 rounded" style="background:\${p.color}20;color:\${p.color}">Phase \${p.id}</span>
-                            \${p.status==='active'?'<span class="text-[10px] bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded flex items-center gap-1"><span class="w-1.5 h-1.5 bg-teal-400 rounded-full pulse-dot"></span>Active</span>':''}
+                            <span class="bior-badge" style="background:\${p.color}20;color:\${p.color};border:1px solid \${p.color}40">Phase \${p.id}</span>
+                            \${p.status==='active'?'<span class=\"bior-badge bior-badge-success flex items-center gap-1\"><span class=\"w-1.5 h-1.5 rounded-full pulse-dot\" style=\"background:var(--bior-primary)\"></span>Active</span>':''}
                         </div>
                         <h3 class="font-bold text-lg mb-1" style="color:\${p.color}">\${p.name}</h3>
-                        <div class="text-xs text-slate-400 mb-4">\${p.duration}</div>
-                        <ul class="space-y-1.5">\${p.milestones.map(m=>\`<li class="text-xs text-slate-300 flex items-start gap-2"><i class="fas fa-\${p.status==='active'?'spinner fa-spin':'circle'} text-[8px] mt-1" style="color:\${p.color}"></i>\${m}</li>\`).join('')}</ul>
+                        <div class="text-xs mb-4" style="color:var(--bior-text-muted)">\${p.duration}</div>
+                        <ul class="space-y-1.5">\${p.milestones.map(m=>\`<li class="text-xs flex items-start gap-2" style="color:var(--bior-text-secondary)"><i class="fas fa-\${p.status==='active'?'spinner fa-spin':'circle'} text-[8px] mt-1" style="color:\${p.color}"></i>\${m}</li>\`).join('')}</ul>
                     </div>
                 </div>
             </div>\`;
@@ -1071,12 +1079,12 @@ function getMainHTML() {
             <span class="mono text-xs w-8 text-right" style="color:\${d.color}">\${d.weight}%</span></div>
         \`).join('')+'</div>';
         document.getElementById('methodSources').innerHTML=m.sources.map(s=>\`
-            <div class="flex items-start gap-2 text-xs text-slate-300"><i class="fas fa-check-circle text-teal-400 mt-0.5"></i><span>\${s}</span></div>
+            <div class="flex items-start gap-2 text-xs" style="color:var(--bior-text-secondary)"><i class="fas fa-check-circle mt-0.5" style="color:var(--bior-primary)"></i><span>\${s}</span></div>
         \`).join('');
         document.getElementById('methodRefs').innerHTML=m.references.map(r=>\`
-            <a href="\${r.url}" target="_blank" class="block p-3 rounded-lg bg-white/5 hover:bg-white/10 transition">
-                <div class="text-sm font-medium text-slate-200 mb-1">\${r.title}</div>
-                <div class="text-xs text-teal-400">\${r.journal}</div>
+            <a href="\${r.url}" target="_blank" class="block p-3 rounded-lg transition" style="background:var(--bior-bg-elevated)">
+                <div class="text-sm font-medium mb-1" style="color:var(--bior-text-primary)">\${r.title}</div>
+                <div class="text-xs" style="color:var(--bior-primary)">\${r.journal}</div>
             </a>
         \`).join('');
     }
