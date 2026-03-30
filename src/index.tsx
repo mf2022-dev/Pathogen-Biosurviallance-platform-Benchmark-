@@ -309,6 +309,7 @@ function getMainHTML() {
     <title>BioR-Pathogen | Pathogen Genomic Surveillance Benchmark</title>
     <meta name="description" content="BioR-Pathogen: A Multi-Dimensional Benchmarking Framework for Integrated Pathogen Genomic Surveillance Platforms with One Health and Mass Gathering Intelligence">
     <meta name="keywords" content="pathogen genomics, biosurveillance, benchmark, One Health, MERS-CoV, AMR, Hajj, Saudi Arabia">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -1064,11 +1065,11 @@ function getMainHTML() {
                 <div><div class="font-semibold text-sm" style="color:\${r.color}">\${r.label}</div><div class="text-xs text-slate-400">\${r.description}</div></div>
             </div>
         \`).join('');
-        document.getElementById('dimensionWeights').innerHTML=\`<div class="space-y-2">\${dimensionData.dimensions.map(d=>\`
+        document.getElementById('dimensionWeights').innerHTML='<div class="space-y-2">'+dimensionData.dimensions.map(d=>\`
             <div class="flex items-center gap-3"><div class="w-24 text-xs flex items-center gap-1.5"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i>\${d.name.split(' ')[0]}</div>
             <div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:\${d.weight*100/15}%;background:\${d.color}"></div></div>
             <span class="mono text-xs w-8 text-right" style="color:\${d.color}">\${d.weight}%</span></div>
-        \`).join('')}</div>`;
+        \`).join('')+'</div>';
         document.getElementById('methodSources').innerHTML=m.sources.map(s=>\`
             <div class="flex items-start gap-2 text-xs text-slate-300"><i class="fas fa-check-circle text-teal-400 mt-0.5"></i><span>\${s}</span></div>
         \`).join('');

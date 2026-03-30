@@ -5,10 +5,20 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [
-    build(),
+    build({
+      outputDir: './dist',
+      external: [],
+      emptyOutDir: false,
+    }),
     devServer({
       adapter,
-      entry: 'src/index.tsx'
+      entry: 'src/index.tsx',
+      exclude: ['/static/*', '/favicon.svg']
     })
-  ]
+  ],
+  build: {
+    outDir: 'dist',
+    emptyOutDir: false
+  },
+  publicDir: 'public'
 })
