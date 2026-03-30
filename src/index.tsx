@@ -302,7 +302,7 @@ function getMethodology() {
 // ============== MAIN HTML ==============
 function getMainHTML() {
   return `<!DOCTYPE html>
-<html lang="en" class="scroll-smooth" data-theme="dark">
+<html lang="en" class="scroll-smooth" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -333,7 +333,7 @@ function getMainHTML() {
       body{font-family:var(--bior-font);background:var(--bior-bg-page);color:var(--bior-text-primary)}
       .mono{font-family:var(--bior-font-mono)}
       .gradient-text{background:linear-gradient(135deg,var(--bior-primary) 0%,var(--bior-info) 50%,var(--bior-special) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-      .gradient-bg{background:linear-gradient(135deg,#060b14 0%,#0a1628 50%,#060b14 100%)}
+      .gradient-bg{background:linear-gradient(135deg,#e8f5e9 0%,#f0fdf4 30%,#ecfdf5 60%,#e0f2fe 100%)}
       .glass{background:var(--bior-glass-bg);backdrop-filter:blur(var(--bior-glass-blur));border:1px solid var(--bior-glass-border)}
       .glow{box-shadow:var(--bior-shadow-glow)}
       .glow-hover:hover{box-shadow:var(--bior-shadow-glow-lg);transform:translateY(-2px)}
@@ -347,7 +347,7 @@ function getMainHTML() {
       .counter{font-variant-numeric:tabular-nums}
       .timeline-line{position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--bior-primary),var(--bior-info),var(--bior-special),#ec4899,var(--bior-warning))}
       @media(max-width:768px){.timeline-line{left:24px}}
-      .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:var(--z-modal);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+      .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:var(--z-modal);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
       .modal-overlay.show{display:flex}
       .heatmap-cell{transition:all var(--bior-duration-normal) var(--bior-ease);cursor:pointer}
       .heatmap-cell:hover{transform:scale(1.15);z-index:10}
@@ -357,7 +357,7 @@ function getMainHTML() {
       .bior-accent-bg{background:rgba(var(--bior-primary-rgb),0.15)}
       /* Section backgrounds using BioR tokens */
       .section-dark{background:var(--bior-bg-page)}
-      .section-elevated{background:rgba(255,255,255,0.02)}
+      .section-elevated{background:rgba(0,168,107,0.03)}
     </style>
 </head>
 <body class="bior-scroll">
@@ -419,13 +419,13 @@ function getMainHTML() {
                 <h1 class="text-5xl sm:text-7xl font-black mb-6 leading-tight">
                     <span class="gradient-text">BioR-Pathogen</span>
                 </h1>
-                <p class="text-xl sm:text-2xl text-slate-300 mb-2 font-light">
+                <p class="text-xl sm:text-2xl mb-2 font-light" style="color:var(--bior-text-secondary)">
                     Biosurveillance Intelligence & One-Health Real-time
                 </p>
-                <p class="text-lg sm:text-xl text-slate-400 mb-4 font-light">
+                <p class="text-lg sm:text-xl mb-4 font-light" style="color:var(--bior-text-muted)">
                     Pathogen Genomics Platform
                 </p>
-                <p class="text-base text-slate-500 mb-10 max-w-3xl mx-auto leading-relaxed">
+                <p class="text-base mb-10 max-w-3xl mx-auto leading-relaxed" style="color:var(--bior-text-muted)">
                     The world's first multi-dimensional benchmarking framework for integrated pathogen genomic surveillance platforms — designed with mass gathering intelligence and One Health integration from Saudi Arabia.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4 mb-16">
@@ -467,7 +467,7 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">COMPARATIVE ANALYSIS</span>
                 <h2 class="text-4xl font-bold mb-4">Multi-Dimensional Benchmark</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">Comprehensive evaluation of 10 global pathogen genomic surveillance platforms across 8 standardized dimensions</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">Comprehensive evaluation of 10 global pathogen genomic surveillance platforms across 8 standardized dimensions</p>
             </div>
 
             <div id="dimensionCards" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12"></div>
@@ -538,7 +538,7 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">PLATFORM PROFILES</span>
                 <h2 class="text-4xl font-bold mb-4">10 Platforms Evaluated</h2>
-                <p class="text-slate-400">In-depth analysis of each platform's capabilities and limitations</p>
+                <p style="color:var(--bior-text-muted)">In-depth analysis of each platform's capabilities and limitations</p>
             </div>
             <div id="platformGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
@@ -550,23 +550,23 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">THREAT INTELLIGENCE</span>
                 <h2 class="text-4xl font-bold mb-4">Saudi Arabia Pathogen Landscape</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">Priority pathogen threats requiring genomic surveillance in the Kingdom of Saudi Arabia</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">Priority pathogen threats requiring genomic surveillance in the Kingdom of Saudi Arabia</p>
             </div>
-            <div class="glass rounded-2xl p-6 mb-8 border border-amber-500/30 bg-amber-500/5">
+            <div class="glass rounded-2xl p-6 mb-8" style="border:1px solid var(--bior-badge-warning-border);background:var(--bior-badge-warning-bg)">
                 <div class="flex items-start gap-4">
-                    <div class="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-mosque text-amber-400 text-2xl"></i>
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(245,158,11,0.15)">
+                        <i class="fas fa-mosque text-2xl" style="color:var(--bior-warning)"></i>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-lg font-bold text-amber-300 mb-2">Mass Gathering Biosurveillance — Hajj & Umrah 2026</h3>
-                        <p class="text-sm text-slate-400 mb-4">The largest annual human gathering on Earth. No existing genomic surveillance platform addresses real-time pathogen monitoring during mass gatherings at this scale.</p>
+                    <h3 class="text-lg font-bold mb-2" style="color:var(--bior-warning)">Mass Gathering Biosurveillance — Hajj & Umrah 2026</h3>
+                    <p class="text-sm mb-4" style="color:var(--bior-text-muted)">The largest annual human gathering on Earth. No existing genomic surveillance platform addresses real-time pathogen monitoring during mass gatherings at this scale.</p>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-amber-400">11.9M</div><div class="text-[10px] text-slate-400">Pilgrims 2026</div></div>
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-amber-400">180+</div><div class="text-[10px] text-slate-400">Countries</div></div>
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-amber-400">2M+</div><div class="text-[10px] text-slate-400">Monthly Umrah</div></div>
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-amber-400">5 days</div><div class="text-[10px] text-slate-400">Hajj Duration</div></div>
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-red-400">&lt;5%</div><div class="text-[10px] text-slate-400">Isolates Sequenced</div></div>
-                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold text-amber-400">3</div><div class="text-[10px] text-slate-400">Sentinel Sites</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-warning)">11.9M</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Pilgrims 2026</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-warning)">180+</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Countries</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-warning)">2M+</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Monthly Umrah</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-warning)">5 days</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Hajj Duration</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-danger)">&lt;5%</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Isolates Sequenced</div></div>
+                            <div class="text-center glass rounded-lg p-2"><div class="text-lg font-bold" style="color:var(--bior-warning)">3</div><div class="text-[10px]" style="color:var(--bior-text-muted)">Sentinel Sites</div></div>
                         </div>
                     </div>
                 </div>
@@ -581,7 +581,7 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">INNOVATION GAP</span>
                 <h2 class="text-4xl font-bold mb-4">What No Platform Solves</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">8 critical capabilities missing from all existing global platforms — uniquely addressed by BioR-Pathogen</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">8 critical capabilities missing from all existing global platforms — uniquely addressed by BioR-Pathogen</p>
             </div>
             <div class="grid lg:grid-cols-2 gap-6 mb-8">
                 <div class="bior-panel" style="border-color:var(--bior-badge-danger-border)">
@@ -607,24 +607,24 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">SYSTEM DESIGN</span>
                 <h2 class="text-4xl font-bold mb-4">BioR-Pathogen Architecture</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">7 Innovation Pillars designed to fill every gap in global pathogen genomic surveillance</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">7 Innovation Pillars designed to fill every gap in global pathogen genomic surveillance</p>
             </div>
             <div id="pillarGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
             <!-- Data Flow -->
             <div class="bior-panel">
                 <h3 class="text-xl font-bold mb-8 text-center" style="color:var(--bior-text-primary)">Integrated Data Architecture</h3>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="dataSourceCards"></div>
-                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-teal-400 animate-bounce"></i></div>
+                    <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-primary)"></i></div>
                 <div class="bior-panel text-center mb-4" style="border-color:rgba(var(--bior-primary-rgb),0.3);background:rgba(var(--bior-primary-rgb),0.05)">
                     <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-primary)">UNIFIED GENOMIC DATA LAKE</div>
                     <div class="text-xs" style="color:var(--bior-text-muted)">Sequences + Metadata + Geolocation + Temporal + Climate + Mobility Data</div>
                 </div>
-                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-purple-400 animate-bounce" style="animation-delay:.3s"></i></div>
+                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-special);animation-delay:.3s"></i></div>
                 <div class="bior-panel text-center mb-4" style="border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.05)">
                     <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-special)">AI PATHOGEN INTELLIGENCE ENGINE</div>
                     <div class="text-xs" style="color:var(--bior-text-muted)">Genomic Foundation Model | Outbreak Prediction | Mutation Impact | AMR Forecasting</div>
                 </div>
-                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl text-blue-400 animate-bounce" style="animation-delay:.6s"></i></div>
+                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-info);animation-delay:.6s"></i></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div class="bior-card p-3 text-center" style="border-color:rgba(0,168,107,0.2)"><i class="fas fa-mosque text-lg mb-1" style="color:var(--bior-success)"></i><div class="text-xs mono" style="color:var(--bior-success)">Mass Gathering Monitor</div></div>
                     <div class="bior-card p-3 text-center" style="border-color:rgba(59,130,246,0.2)"><i class="fas fa-paw text-lg mb-1" style="color:var(--bior-info)"></i><div class="text-xs mono" style="color:var(--bior-info)">One Health Nexus</div></div>
@@ -646,23 +646,23 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">STRATEGIC ALIGNMENT</span>
                 <h2 class="text-4xl font-bold mb-4">Vision 2030 Integration</h2>
-                <p class="text-slate-400">Directly supports 3 national strategic programs</p>
+                <p style="color:var(--bior-text-muted)">Directly supports 3 national strategic programs</p>
             </div>
             <div class="grid md:grid-cols-3 gap-6">
                 <div class="bior-card-strategy accent-green p-6">
                     <div class="card-icon mb-4" style="background:rgba(0,168,107,0.2)"><i class="fas fa-dna text-xl" style="color:var(--bior-success)"></i></div>
                     <h3 class="font-bold mb-2" style="color:var(--bior-badge-success-text)">National Biotechnology Strategy</h3>
-                    <p class="text-slate-400 text-sm">Expands the national genomic database and analytics platform. Aligns with the $34.6B GDP target by 2040 through genomics innovation and biomanufacturing.</p>
+                    <p style="color:var(--bior-text-muted)" class="text-sm">Expands the national genomic database and analytics platform. Aligns with the $34.6B GDP target by 2040 through genomics innovation and biomanufacturing.</p>
                 </div>
                 <div class="bior-card-strategy accent-blue p-6">
                     <div class="card-icon mb-4" style="background:rgba(59,130,246,0.2)"><i class="fas fa-hospital text-xl" style="color:var(--bior-info)"></i></div>
                     <h3 class="font-bold mb-2" style="color:var(--bior-badge-info-text)">Health Sector Transformation</h3>
-                    <p class="text-slate-400 text-sm">Digital health infrastructure for preventive care. Real-time genomic surveillance reduces outbreak detection time from weeks to hours.</p>
+                    <p style="color:var(--bior-text-muted)" class="text-sm">Digital health infrastructure for preventive care. Real-time genomic surveillance reduces outbreak detection time from weeks to hours.</p>
                 </div>
                 <div class="bior-card-strategy accent-purple p-6">
                     <div class="card-icon mb-4" style="background:rgba(139,92,246,0.2)"><i class="fas fa-shield-virus text-xl" style="color:var(--bior-special)"></i></div>
                     <h3 class="font-bold mb-2" style="color:var(--bior-badge-special-text)">National AMR Action Plan</h3>
-                    <p class="text-slate-400 text-sm">Fills the largest gap in the 2022-2025 national action plan with genomic AMR surveillance and real-time resistome tracking across clinical and environmental sources.</p>
+                    <p style="color:var(--bior-text-muted)" class="text-sm">Fills the largest gap in the 2022-2025 national action plan with genomic AMR surveillance and real-time resistome tracking across clinical and environmental sources.</p>
                 </div>
             </div>
         </div>
@@ -674,7 +674,7 @@ function getMainHTML() {
             <div class="text-center mb-16">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">IMPLEMENTATION PLAN</span>
                 <h2 class="text-4xl font-bold mb-4">Development Roadmap</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">5-phase implementation plan from prototype to MENA-wide deployment</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">5-phase implementation plan from prototype to MENA-wide deployment</p>
             </div>
             <div id="roadmapTimeline" class="relative"></div>
         </div>
@@ -686,7 +686,7 @@ function getMainHTML() {
             <div class="text-center mb-12">
                 <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">SCIENTIFIC FRAMEWORK</span>
                 <h2 class="text-4xl font-bold mb-4">Benchmark Methodology</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto">Transparent, reproducible evaluation framework grounded in published standards</p>
+                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">Transparent, reproducible evaluation framework grounded in published standards</p>
             </div>
             <div class="grid lg:grid-cols-2 gap-8">
                 <div>
@@ -727,16 +727,16 @@ function getMainHTML() {
                 <div>
                     <h4 class="font-semibold text-sm mb-3">Quick Links</h4>
                     <div class="space-y-2">
-                        <a href="#benchmark" class="block text-sm text-slate-400 hover:text-teal-400">Benchmark</a>
-                        <a href="#architecture" class="block text-sm text-slate-400 hover:text-teal-400">Architecture</a>
-                        <a href="#methodology" class="block text-sm text-slate-400 hover:text-teal-400">Methodology</a>
+                        <a href="#benchmark" class="block text-sm transition" style="color:var(--bior-text-muted)" onmouseover="this.style.color='var(--bior-primary)'" onmouseout="this.style.color='var(--bior-text-muted)'">Benchmark</a>
+                        <a href="#architecture" class="block text-sm transition" style="color:var(--bior-text-muted)" onmouseover="this.style.color='var(--bior-primary)'" onmouseout="this.style.color='var(--bior-text-muted)'">Architecture</a>
+                        <a href="#methodology" class="block text-sm transition" style="color:var(--bior-text-muted)" onmouseover="this.style.color='var(--bior-primary)'" onmouseout="this.style.color='var(--bior-text-muted)'">Methodology</a>
                     </div>
                 </div>
                 <div>
                     <h4 class="font-semibold text-sm mb-3">Resources</h4>
                     <div class="space-y-2">
-                        <a href="https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-" target="_blank" class="block text-sm text-slate-400 hover:text-teal-400"><i class="fab fa-github mr-1"></i> GitHub Repository</a>
-                        <a href="#roadmap" class="block text-sm text-slate-400 hover:text-teal-400"><i class="fas fa-road mr-1"></i> Roadmap</a>
+                        <a href="https://github.com/mf2022-dev/Pathogen-Biosurviallance-platform-Benchmark-" target="_blank" class="block text-sm transition" style="color:var(--bior-text-muted)" onmouseover="this.style.color='var(--bior-primary)'" onmouseout="this.style.color='var(--bior-text-muted)'"><i class="fab fa-github mr-1"></i> GitHub Repository</a>
+                        <a href="#roadmap" class="block text-sm transition" style="color:var(--bior-text-muted)" onmouseover="this.style.color='var(--bior-primary)'" onmouseout="this.style.color='var(--bior-text-muted)'"><i class="fas fa-road mr-1"></i> Roadmap</a>
                     </div>
                 </div>
             </div>
@@ -752,7 +752,7 @@ function getMainHTML() {
         <div class="bior-modal p-8 max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto bior-scroll">
             <div class="flex justify-between items-center mb-6">
                 <h3 id="modalTitle" class="text-2xl font-bold"></h3>
-                <button onclick="closePlatformModal()" class="text-slate-400 hover:text-white text-xl"><i class="fas fa-times"></i></button>
+                <button onclick="closePlatformModal()" class="text-xl" style="color:var(--bior-text-muted)"><i class="fas fa-times"></i></button>
             </div>
             <div id="modalContent"></div>
         </div>
@@ -843,8 +843,8 @@ function getMainHTML() {
             type:'radar',data:{labels,datasets},
             options:{
                 responsive:true,
-                scales:{r:{beginAtZero:true,max:10,ticks:{stepSize:2,color:'#64748b',backdropColor:'transparent',font:{size:10}},grid:{color:'#334155'},angleLines:{color:'#334155'},pointLabels:{color:'#94a3b8',font:{size:11}}}},
-                plugins:{legend:{display:true,position:'bottom',labels:{color:'#94a3b8',font:{size:11},padding:15,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'#1e293b',titleColor:'#f8fafc',bodyColor:'#cbd5e1',borderColor:'#475569',borderWidth:1}}
+                scales:{r:{beginAtZero:true,max:10,ticks:{stepSize:2,color:'#6b7280',backdropColor:'transparent',font:{size:10}},grid:{color:'rgba(0,0,0,0.1)'},angleLines:{color:'rgba(0,0,0,0.1)'},pointLabels:{color:'#374151',font:{size:11}}}},
+                plugins:{legend:{display:true,position:'bottom',labels:{color:'#4b5563',font:{size:11},padding:15,usePointStyle:true,pointStyle:'circle'}},tooltip:{backgroundColor:'#ffffff',titleColor:'#1a1a2e',bodyColor:'#4b5563',borderColor:'rgba(0,0,0,0.12)',borderWidth:1}}
             }
         });
     }
@@ -854,15 +854,15 @@ function getMainHTML() {
         const max=ranked[0].total;
         document.getElementById('rankingList').innerHTML=ranked.map((p,i)=>{
             const pct=(p.total/max*100).toFixed(0);
-            const medal=i===0?'text-amber-400':i===1?'text-slate-300':i===2?'text-amber-600':'text-slate-500';
+            const medal=i===0?'text-amber-400':i===1?'text-gray-400':i===2?'text-amber-600':'';
             const icon=i===0?'trophy':i===1?'medal':i===2?'award':'';
-            return \`<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-white/5 transition cursor-pointer" onclick="openPlatformModal('\${p.id}')">
+            return \`<div class="flex items-center gap-3 p-2.5 rounded-lg transition cursor-pointer" style="border-radius:var(--bior-radius-md)" onmouseover="this.style.background='var(--bior-bg-elevated)'" onmouseout="this.style.background='transparent'" onclick="openPlatformModal('\${p.id}')">
                 <span class="text-lg font-bold w-8 text-center \${medal}">\${i<3?'<i class="fas fa-'+icon+'"></i>':i+1}</span>
                 <div class="flex-1">
-                    <div class="flex justify-between items-center mb-1"><span class="text-sm font-semibold">\${p.name}</span><span class="mono text-xs text-teal-400">\${p.average}/10</span></div>
-                    <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div class="h-full rounded-full score-bar" style="width:\${pct}%;background:linear-gradient(90deg,#14b8a6,#3b82f6)"></div></div>
+                    <div class="flex justify-between items-center mb-1"><span class="text-sm font-semibold">\${p.name}</span><span class="mono text-xs" style="color:var(--bior-primary)">\${p.average}/10</span></div>
+                    <div class="h-1.5 rounded-full overflow-hidden" style="background:var(--bior-bg-elevated)"><div class="h-full rounded-full score-bar" style="width:\${pct}%;background:linear-gradient(90deg,#00A86B,#3b82f6)"></div></div>
                 </div>
-                <span class="mono text-xs text-slate-500 w-10 text-right">\${p.total}/80</span>
+                <span class="mono text-xs w-10 text-right" style="color:var(--bior-text-muted)">\${p.total}/80</span>
             </div>\`;
         }).join('');
     }
@@ -870,19 +870,19 @@ function getMainHTML() {
     function renderHeatmap(){
         const dims=dimensionData.dimensions;
         const ranked=[...platformData.platforms].sort((a,b)=>sum(b.scores)-sum(a.scores));
-        let html='<table class="w-full text-xs"><thead><tr><th class="p-2 text-left text-slate-400 sticky left-0 bg-slate-900/80 z-10 min-w-[100px]">Platform</th>';
-        dims.forEach(d=>{html+=\`<th class="p-2 text-center min-w-[60px]" title="\${d.name}"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i><div class="text-[9px] text-slate-500 mt-1">\${d.name.split(' ')[0]}</div></th>\`});
-        html+='<th class="p-2 text-center text-teal-400 font-bold">Avg</th></tr></thead><tbody>';
+        let html='<table class="w-full text-xs"><thead><tr><th class="p-2 text-left sticky left-0 z-10 min-w-[100px]" style="color:var(--bior-text-muted);background:var(--bior-bg-card)">Platform</th>';
+        dims.forEach(d=>{html+=\`<th class="p-2 text-center min-w-[60px]" title="\${d.name}"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i><div class="text-[9px] mt-1" style="color:var(--bior-text-faint)">\${d.name.split(' ')[0]}</div></th>\`});
+        html+='<th class="p-2 text-center font-bold" style="color:var(--bior-primary)">Avg</th></tr></thead><tbody>';
         ranked.forEach(p=>{
-            html+='<tr class="border-t border-white/5">';
-            html+=\`<td class="p-2 font-medium sticky left-0 bg-slate-900/80 z-10">\${p.name}</td>\`;
+            html+='<tr class="border-t" style="border-color:var(--bior-border-subtle)">';
+            html+=\`<td class="p-2 font-medium sticky left-0 z-10" style="background:var(--bior-bg-card)">\${p.name}</td>\`;
             dims.forEach(d=>{
                 const v=p.scores[d.id];
                 const intensity=v/10;
                 const bg=v>=9?'rgba(20,184,166,'+intensity*0.6+')':v>=7?'rgba(59,130,246,'+intensity*0.5+')':v>=5?'rgba(234,179,8,'+intensity*0.4+')':'rgba(239,68,68,'+intensity*0.4+')';
                 html+=\`<td class="p-1 text-center"><div class="heatmap-cell rounded-md p-2 mx-auto" style="background:\${bg}" title="\${p.name}: \${d.name} = \${v}/10"><span class="mono font-bold">\${v}</span></div></td>\`;
             });
-            html+=\`<td class="p-2 text-center mono font-bold text-teal-400">\${avg(p.scores)}</td></tr>\`;
+            html+=\`<td class="p-2 text-center mono font-bold" style="color:var(--bior-primary)">\${avg(p.scores)}</td></tr>\`;
         });
         html+='</tbody></table>';
         document.getElementById('heatmapContainer').innerHTML=html;
@@ -904,17 +904,17 @@ function getMainHTML() {
             {name:'Wastewater',check:p=>p.wastewater},
             {name:'AI Prediction',check:p=>p.aiPrediction}
         ];
-        let html='<table class="w-full text-xs"><thead><tr><th class="p-2 text-left text-slate-400 sticky left-0 bg-slate-900/80 z-10 min-w-[120px]">Feature</th>';
+        let html='<table class="w-full text-xs"><thead><tr><th class="p-2 text-left sticky left-0 z-10 min-w-[120px]" style="color:var(--bior-text-muted);background:var(--bior-bg-card)">Feature</th>';
         platformData.platforms.forEach(p=>{html+=\`<th class="p-2 text-center min-w-[70px]"><div class="text-[10px]">\${p.name}</div></th>\`});
-        html+='<th class="p-2 text-center min-w-[70px] text-teal-400 font-bold"><div class="text-[10px]">BioR-P</div></th></tr></thead><tbody>';
+        html+='<th class="p-2 text-center min-w-[70px] font-bold" style="color:var(--bior-primary)"><div class="text-[10px]">BioR-P</div></th></tr></thead><tbody>';
         features.forEach(f=>{
-            html+='<tr class="border-t border-white/5">';
-            html+=\`<td class="p-2 font-medium sticky left-0 bg-slate-900/80 z-10">\${f.name}</td>\`;
+            html+='<tr class="border-t" style="border-color:var(--bior-border-subtle)">';
+            html+=\`<td class="p-2 font-medium sticky left-0 z-10" style="background:var(--bior-bg-card)">\${f.name}</td>\`;
             platformData.platforms.forEach(p=>{
                 const has=f.check(p);
-                html+=\`<td class="p-1 text-center"><span class="feature-check \${has?'bg-green-500/20 text-green-400':'bg-red-500/10 text-red-400'}">\${has?'<i class="fas fa-check"></i>':'<i class="fas fa-minus"></i>'}</span></td>\`;
+                html+=\`<td class="p-1 text-center"><span class="feature-check" style="background:\${has?'rgba(0,168,107,0.15)':'rgba(239,68,68,0.1)'};color:\${has?'var(--bior-success)':'var(--bior-danger)'}">\${has?'<i class="fas fa-check"></i>':'<i class="fas fa-minus"></i>'}</span></td>\`;
             });
-            html+=\`<td class="p-1 text-center"><span class="feature-check bg-teal-500/20 text-teal-400"><i class="fas fa-check"></i></span></td>\`;
+            html+=\`<td class="p-1 text-center"><span class="feature-check" style="background:rgba(0,168,107,0.15);color:var(--bior-primary)"><i class="fas fa-check"></i></span></td>\`;
             html+='</tr>';
         });
         html+='</tbody></table>';
@@ -932,11 +932,11 @@ function getMainHTML() {
             const pct=(parseFloat(p.weighted)/maxW*100).toFixed(0);
             return \`<div class="glass rounded-xl p-4 glow-hover transition">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-blue-500/20 flex items-center justify-center flex-shrink-0"><span class="text-xl font-black text-teal-400">#\${i+1}</span></div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(var(--bior-primary-rgb),0.1)"><span class="text-xl font-black" style="color:var(--bior-primary)">#\${i+1}</span></div>
                     <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-1"><span class="font-bold">\${p.name}</span><div class="flex items-center gap-3"><span class="mono text-sm text-teal-400">\${p.weighted}</span><span class="text-xs text-slate-500">weighted</span></div></div>
-                        <div class="h-2 bg-slate-800 rounded-full overflow-hidden mb-2"><div class="h-full rounded-full" style="width:\${pct}%;background:linear-gradient(90deg,#14b8a6,#3b82f6,#8b5cf6)"></div></div>
-                        <div class="flex flex-wrap gap-2">\${dimensionData.dimensions.map(d=>{const v=p.scores[d.id];const cl=v>=9?'text-teal-400':v>=7?'text-blue-400':v>=5?'text-amber-400':'text-red-400';return \`<span class="text-[10px] \${cl}"><i class="fas fa-\${d.icon} mr-0.5"></i>\${v}</span>\`}).join('')}</div>
+                        <div class="flex items-center justify-between mb-1"><span class="font-bold">\${p.name}</span><div class="flex items-center gap-3"><span class="mono text-sm" style="color:var(--bior-primary)">\${p.weighted}</span><span class="text-xs" style="color:var(--bior-text-muted)">weighted</span></div></div>
+                        <div class="h-2 rounded-full overflow-hidden mb-2" style="background:var(--bior-bg-elevated)"><div class="h-full rounded-full" style="width:\${pct}%;background:linear-gradient(90deg,#00A86B,#3b82f6,#8b5cf6)"></div></div>
+                        <div class="flex flex-wrap gap-2">\${dimensionData.dimensions.map(d=>{const v=p.scores[d.id];const st=v>=9?'color:var(--bior-primary)':v>=7?'color:var(--bior-info)':v>=5?'color:var(--bior-warning)':'color:var(--bior-danger)';return \`<span class="text-[10px]" style="\${st}"><i class="fas fa-\${d.icon} mr-0.5"></i>\${v}</span>\`}).join('')}</div>
                     </div>
                 </div>
             </div>\`;
@@ -1002,11 +1002,11 @@ function getMainHTML() {
     function renderGaps(){
         const missing=gapData.capabilities.filter(c=>!c.global);
         const existing=gapData.capabilities.filter(c=>c.global);
-        const impactColors={critical:'text-red-400',high:'text-amber-400',medium:'text-yellow-400',baseline:'text-slate-400'};
+        const impactColors={critical:'color:var(--bior-danger)',high:'color:var(--bior-warning)',medium:'color:#eab308',baseline:'color:var(--bior-text-muted)'};
         document.getElementById('gapMissing').innerHTML=missing.map(c=>\`
             <div class="flex items-start gap-3 p-3 rounded-lg" style="background:var(--bior-badge-danger-bg);border:1px solid var(--bior-badge-danger-border)">
                 <div class="w-6 h-6 rounded flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(239,68,68,0.2)"><i class="fas fa-xmark text-xs" style="color:var(--bior-danger)"></i></div>
-                <div><div class="flex items-center gap-2 flex-wrap"><h4 class="font-semibold text-sm" style="color:var(--bior-text-primary)">\${c.name}</h4><span class="bior-badge bior-badge-success" style="text-transform:none">BioR-Pathogen</span><span class="text-[10px] \${impactColors[c.impact]}">\${c.impact}</span></div><p class="text-xs mt-1" style="color:var(--bior-text-muted)">\${c.description}</p></div>
+                <div><div class="flex items-center gap-2 flex-wrap"><h4 class="font-semibold text-sm" style="color:var(--bior-text-primary)">\${c.name}</h4><span class="bior-badge bior-badge-success" style="text-transform:none">BioR-Pathogen</span><span class="text-[10px]" style="\${impactColors[c.impact]}">\${c.impact}</span></div><p class="text-xs mt-1" style="color:var(--bior-text-muted)">\${c.description}</p></div>
             </div>
         \`).join('');
         document.getElementById('gapExisting').innerHTML=existing.map(c=>\`
@@ -1048,9 +1048,9 @@ function getMainHTML() {
         c.innerHTML=\`<div class="hidden md:block timeline-line"></div>\${phases.map((p,i)=>{
             const isLeft=i%2===0;
             return \`<div class="relative mb-12 md:mb-16">
-                <div class="hidden md:block absolute left-1/2 top-6 w-5 h-5 rounded-full border-4 -translate-x-1/2 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'#0f172a'}"></div>
+                <div class="hidden md:block absolute left-1/2 top-6 w-5 h-5 rounded-full border-4 -translate-x-1/2 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'var(--bior-bg-card)'}"></div>
                 <div class="md:w-[45%] \${isLeft?'md:mr-auto md:pr-12':'md:ml-auto md:pl-12'} pl-12 md:pl-0 relative">
-                    <div class="md:hidden absolute left-0 top-6 w-5 h-5 rounded-full border-4 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'#0f172a'}"></div>
+                    <div class="md:hidden absolute left-0 top-6 w-5 h-5 rounded-full border-4 z-10" style="border-color:\${p.color};background:\${p.status==='active'?p.color:'var(--bior-bg-card)'}"></div>
                     <div class="bior-card p-6" style="border-color:\${p.color}30">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="bior-badge" style="background:\${p.color}20;color:\${p.color};border:1px solid \${p.color}40">Phase \${p.id}</span>
@@ -1070,12 +1070,12 @@ function getMainHTML() {
         document.getElementById('scoringRubric').innerHTML=m.framework.scoringRubric.map(r=>\`
             <div class="flex items-center gap-3 p-3 rounded-lg" style="background:\${r.color}10;border:1px solid \${r.color}30">
                 <span class="mono text-lg font-bold w-14 text-center" style="color:\${r.color}">\${r.range}</span>
-                <div><div class="font-semibold text-sm" style="color:\${r.color}">\${r.label}</div><div class="text-xs text-slate-400">\${r.description}</div></div>
+                <div><div class="font-semibold text-sm" style="color:\${r.color}">\${r.label}</div><div class="text-xs" style="color:var(--bior-text-muted)">\${r.description}</div></div>
             </div>
         \`).join('');
         document.getElementById('dimensionWeights').innerHTML='<div class="space-y-2">'+dimensionData.dimensions.map(d=>\`
             <div class="flex items-center gap-3"><div class="w-24 text-xs flex items-center gap-1.5"><i class="fas fa-\${d.icon}" style="color:\${d.color}"></i>\${d.name.split(' ')[0]}</div>
-            <div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:\${d.weight*100/15}%;background:\${d.color}"></div></div>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:var(--bior-bg-elevated)"><div class="h-full rounded-full" style="width:\${d.weight*100/15}%;background:\${d.color}"></div></div>
             <span class="mono text-xs w-8 text-right" style="color:\${d.color}">\${d.weight}%</span></div>
         \`).join('')+'</div>';
         document.getElementById('methodSources').innerHTML=m.sources.map(s=>\`
