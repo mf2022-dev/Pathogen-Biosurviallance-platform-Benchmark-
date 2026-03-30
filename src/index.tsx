@@ -14,6 +14,7 @@ app.get('/api/gaps', (c) => c.json(getGapAnalysis()))
 app.get('/api/architecture', (c) => c.json(getArchitecture()))
 app.get('/api/roadmap', (c) => c.json(getRoadmap()))
 app.get('/api/methodology', (c) => c.json(getMethodology()))
+app.get('/api/system-architecture', (c) => c.json(getSystemArchitecture()))
 
 // ============== MAIN PAGE ==============
 app.get('/', (c) => c.html(getMainHTML()))
@@ -299,6 +300,131 @@ function getMethodology() {
   }
 }
 
+function getSystemArchitecture() {
+  return {
+    layers: [
+      {
+        id: 'data-sources',
+        name: 'DATA ACQUISITION LAYER',
+        subtitle: 'Multi-domain genomic sample collection',
+        color: '#ef4444',
+        icon: 'database',
+        position: 0,
+        nodes: [
+          { id: 'clinical', name: 'Clinical Genomics', icon: 'hospital', desc: 'Hospital WGS labs across 13 Saudi regions (KFSHRC, MOH network). Respiratory, enteric, and invasive isolates.', color: '#ef4444', inputs: ['Patient isolates', 'Blood cultures', 'Respiratory swabs', 'Wound cultures'] },
+          { id: 'wastewater', name: 'Wastewater Genomics', icon: 'droplet', desc: 'Sentinel stations at Makkah, Madinah, Jeddah Airport, and 20+ cities. Continuous multi-pathogen metagenomics.', color: '#06b6d4', inputs: ['Sewage samples', 'Airport effluent', 'Pilgrim sites', 'Urban networks'] },
+          { id: 'animal', name: 'Animal / Zoonotic', icon: 'horse', desc: 'Camel MERS-CoV surveillance, livestock AMR monitoring, poultry influenza, and wildlife sampling.', color: '#f59e0b', inputs: ['Camel nasal swabs', 'Livestock blood', 'Poultry cloacal', 'Wildlife traps'] },
+          { id: 'environmental', name: 'Environmental', icon: 'leaf', desc: 'Dust-borne metagenomics (Shamal winds), desalination plant microbiome, soil and air sampling networks.', color: '#22c55e', inputs: ['Dust filters', 'Water treatment', 'Soil cores', 'Air samplers'] }
+        ]
+      },
+      {
+        id: 'ingestion',
+        name: 'SEQUENCING & INGESTION',
+        subtitle: 'Standardized genomic data pipelines',
+        color: '#f97316',
+        icon: 'microchip',
+        position: 1,
+        nodes: [
+          { id: 'sequencing', name: 'Sequencing Platforms', icon: 'dna', desc: 'Illumina MiSeq/NextSeq for short reads, Oxford Nanopore for rapid field sequencing, PacBio HiFi for long-read assembly.', color: '#f97316' },
+          { id: 'qc', name: 'Quality Control', icon: 'check-double', desc: 'Automated QC: adapter trimming, contamination screening, depth validation, species confirmation. PHoeNIx-aligned standards.', color: '#f97316' },
+          { id: 'assembly', name: 'Assembly & Annotation', icon: 'puzzle-piece', desc: 'De novo assembly, reference-guided mapping, gene prediction, functional annotation against CARD, VFDB, and UniProt.', color: '#f97316' },
+          { id: 'metadata', name: 'Metadata Enrichment', icon: 'tags', desc: 'Geolocation, temporal stamps, climate data, patient demographics, pilgrim origin tracking, mobility patterns.', color: '#f97316' }
+        ]
+      },
+      {
+        id: 'data-lake',
+        name: 'UNIFIED GENOMIC DATA LAKE',
+        subtitle: 'Centralized multi-domain repository',
+        color: '#00A86B',
+        icon: 'layer-group',
+        position: 2,
+        nodes: [
+          { id: 'sequences', name: 'Sequence Store', icon: 'file-code', desc: 'Consensus genomes, raw reads, assembled contigs. FASTA/FASTQ/BAM indexed and versioned.', color: '#00A86B' },
+          { id: 'resistome', name: 'Resistome Database', icon: 'shield-virus', desc: 'AMR gene catalog: resistance determinants, MIC correlations, plasmid tracking, HGT networks.', color: '#ef4444' },
+          { id: 'phylo-store', name: 'Phylogenetic Store', icon: 'project-diagram', desc: 'Pre-computed trees, MLST/cgMLST/wgMLST profiles, SNP distances, cluster assignments.', color: '#3b82f6' },
+          { id: 'geo-temporal', name: 'Geo-Temporal Index', icon: 'map-marked-alt', desc: 'Spatiotemporal coordinates, pilgrim origin maps, climate overlays, mobility trajectories.', color: '#8b5cf6' }
+        ]
+      },
+      {
+        id: 'ai-engine',
+        name: 'AI PATHOGEN INTELLIGENCE ENGINE',
+        subtitle: 'Foundation models & predictive analytics',
+        color: '#8b5cf6',
+        icon: 'brain',
+        position: 3,
+        nodes: [
+          { id: 'foundation-model', name: 'Genomic Foundation Model', icon: 'atom', desc: 'ViraLM / Protein Set Transformer fine-tuned on MENA pathogen sequences. Mutation embedding, variant classification.', color: '#8b5cf6' },
+          { id: 'outbreak-predictor', name: 'Outbreak Predictor', icon: 'chart-line', desc: 'LSTM/Transformer models combining genomic mutation rates, climate variables, pilgrim mobility for early warning alerts.', color: '#8b5cf6' },
+          { id: 'amr-forecaster', name: 'AMR Forecaster', icon: 'bacteria', desc: 'Resistance emergence forecasting from wastewater and clinical resistome trends. Plasmid spread modeling.', color: '#8b5cf6' },
+          { id: 'mutation-impact', name: 'Mutation Impact Analyzer', icon: 'bolt', desc: 'Real-time analysis of spike protein evolution, immune escape prediction, drug target affinity changes.', color: '#8b5cf6' }
+        ]
+      },
+      {
+        id: 'pillars',
+        name: 'OPERATIONAL INTELLIGENCE PILLARS',
+        subtitle: '7 specialized surveillance modules',
+        color: '#3b82f6',
+        icon: 'building',
+        position: 4,
+        nodes: [
+          { id: 'mggi', name: 'MGGI', fullName: 'Mass Gathering Genomic Intelligence', icon: 'mosque', desc: 'Real-time sequencing during Hajj/Umrah from 180+ countries. Pilgrim origin-mapping and cross-border transmission tracking.', color: '#10b981' },
+          { id: 'ohzn', name: 'OHZN', fullName: 'One Health Zoonotic Nexus', icon: 'paw', desc: 'Unified camel-human-environment MERS-CoV dashboard. AI-driven spillover prediction integrating animal, human, and environmental data.', color: '#3b82f6' },
+          { id: 'wgsn', name: 'WGSN', fullName: 'Wastewater Genomic Sentinel', icon: 'water', desc: 'Permanent monitoring at Makkah, Madinah, Jeddah Airport. 100+ pathogen panel and full AMR resistome.', color: '#06b6d4' },
+          { id: 'apie', name: 'APIE', fullName: 'AI Pathogen Intelligence Engine', icon: 'brain', desc: 'Foundation models, outbreak trajectory, mutation consequence, AMR emergence forecasting.', color: '#8b5cf6' },
+          { id: 'acpo', name: 'ACPO', fullName: 'Arid Climate Pathogen Observatory', icon: 'sun', desc: 'Desert pathogen ecology. Dust-borne genomics, desalination surveillance, climate-pathogen correlations.', color: '#f59e0b' },
+          { id: 'rgdh', name: 'RGDH', fullName: 'Regional Genomic Diplomacy Hub', icon: 'globe-americas', desc: 'MENA genome repository, WHO IPSN partnership, cross-border early warning, training academy.', color: '#ec4899' },
+          { id: 'baas', name: 'BaaS', fullName: 'Benchmark-as-a-Service', icon: 'chart-bar', desc: 'Standardized Saudi reference datasets. 8-dimension scoring rubric, open-challenge datasets, global competitions.', color: '#ef4444' }
+        ]
+      },
+      {
+        id: 'outputs',
+        name: 'OUTPUT & DECISION LAYER',
+        subtitle: 'Actionable intelligence products',
+        color: '#ec4899',
+        icon: 'bullseye',
+        position: 5,
+        nodes: [
+          { id: 'dashboard', name: 'Command Dashboard', icon: 'tachometer-alt', desc: 'Real-time national pathogen surveillance dashboard for MOH/Saudi CDC decision-makers. Threat-level alerts.', color: '#00A86B' },
+          { id: 'alerts', name: 'Alert System', icon: 'bell', desc: 'Automated outbreak alerts, AMR emergence warnings, spillover notifications. SMS/email/API push.', color: '#ef4444' },
+          { id: 'reports', name: 'Genomic Reports', icon: 'file-medical', desc: 'Automated clinical reports, phylogenetic summaries, AMR profiles for clinicians and public health officers.', color: '#3b82f6' },
+          { id: 'api-layer', name: 'Open API / GISAID', icon: 'plug', desc: 'REST/GraphQL API for partner integration. Automated submission to GISAID, NCBI, ENA. WHO IPSN data exchange.', color: '#8b5cf6' }
+        ]
+      }
+    ],
+    benchmarkLayer: {
+      name: 'BENCHMARK ANALYTICAL LAYER',
+      subtitle: 'Comparative framework that informs platform design and validates performance',
+      icon: 'balance-scale',
+      color: '#14b8a6',
+      description: 'The 8-dimension benchmark evaluates 10 global platforms to identify gaps, validate BioR-Pathogen capabilities, and ensure the platform exceeds global standards. It is not the core product — it is the analytical lens through which every architectural decision is tested and justified.',
+      functions: [
+        { name: 'Gap Identification', desc: 'Discovered 8 globally missing capabilities that shaped the 7 pillars' },
+        { name: 'Performance Validation', desc: 'Ongoing scoring ensures BioR-Pathogen maintains 12/12 capability coverage' },
+        { name: 'Design Decisions', desc: 'Dimension weights drive priority of AI, One Health, and mass gathering features' },
+        { name: 'BaaS Foundation', desc: 'Reference datasets and scoring rubric power the Benchmark-as-a-Service pillar' }
+      ]
+    },
+    dataFlows: [
+      { from: 'data-sources', to: 'ingestion', label: 'Raw samples & sequences' },
+      { from: 'ingestion', to: 'data-lake', label: 'QC-passed genomes + metadata' },
+      { from: 'data-lake', to: 'ai-engine', label: 'Training data & real-time feeds' },
+      { from: 'data-lake', to: 'pillars', label: 'Queryable genomic data' },
+      { from: 'ai-engine', to: 'pillars', label: 'Predictions & classifications' },
+      { from: 'pillars', to: 'outputs', label: 'Processed intelligence' },
+      { from: 'benchmark', to: 'pillars', label: 'Gap analysis → design requirements', style: 'dashed' },
+      { from: 'benchmark', to: 'outputs', label: 'Validation scores → quality assurance', style: 'dashed' }
+    ],
+    partners: [
+      { name: 'KFSHRC', role: 'Clinical genomics lead', icon: 'hospital', layers: ['data-sources', 'ingestion'] },
+      { name: 'KAUST', role: 'AI/ML & wastewater genomics', icon: 'flask', layers: ['ai-engine', 'data-sources'] },
+      { name: 'Saudi MOH', role: 'National surveillance policy', icon: 'building-columns', layers: ['outputs', 'pillars'] },
+      { name: 'Saudi CDC', role: 'Epidemiology & response', icon: 'shield-virus', layers: ['outputs', 'pillars'] },
+      { name: 'WHO EMRO', role: 'Regional IPSN coordination', icon: 'globe', layers: ['outputs', 'pillars'] },
+      { name: 'Wellcome Sanger', role: 'Pathogenwatch integration', icon: 'dna', layers: ['ingestion', 'data-lake'] }
+    ]
+  }
+}
+
 // ============== MAIN HTML ==============
 function getMainHTML() {
   return `<!DOCTYPE html>
@@ -358,6 +484,17 @@ function getMainHTML() {
       /* Section backgrounds using BioR tokens */
       .section-dark{background:var(--bior-bg-page)}
       .section-elevated{background:rgba(0,168,107,0.03)}
+      /* Architecture diagram */
+      .arch-layer{border-radius:var(--bior-radius-lg);padding:20px;position:relative;transition:all var(--bior-duration-normal) var(--bior-ease);cursor:pointer}
+      .arch-layer:hover{box-shadow:var(--bior-shadow-md);transform:translateY(-1px)}
+      .arch-layer-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+      .arch-layer-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+      .arch-node{padding:10px 14px;border-radius:var(--bior-radius-md);transition:all var(--bior-duration-normal) var(--bior-ease);cursor:pointer;border:1px solid var(--bior-border-subtle)}
+      .arch-node:hover{box-shadow:var(--bior-shadow-sm);transform:translateY(-1px);border-color:var(--bior-border-primary)}
+      .arch-flow-arrow{display:flex;justify-content:center;align-items:center;padding:4px 0;color:var(--bior-text-faint);font-size:20px}
+      .arch-flow-arrow .flow-label{font-size:10px;font-family:var(--bior-font-mono);margin:0 12px;letter-spacing:0.5px}
+      .bench-layer{border:2px dashed;border-radius:var(--bior-radius-lg);padding:20px;position:relative}
+      .bench-layer::before{content:'ANALYTICAL LAYER';position:absolute;top:-10px;left:20px;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:0 8px;font-family:var(--bior-font-mono)}
     </style>
 </head>
 <body class="bior-scroll">
@@ -601,41 +738,36 @@ function getMainHTML() {
         </div>
     </section>
 
-    <!-- ARCHITECTURE -->
+    <!-- SYSTEM ARCHITECTURE -->
     <section id="architecture" class="py-20 section-elevated">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">SYSTEM DESIGN</span>
-                <h2 class="text-4xl font-bold mb-4">BioR-Pathogen Architecture</h2>
-                <p style="color:var(--bior-text-muted)" class="max-w-2xl mx-auto">7 Innovation Pillars designed to fill every gap in global pathogen genomic surveillance</p>
+            <div class="text-center mb-16">
+                <span class="mono text-sm mb-2 block" style="color:var(--bior-primary)">PLATFORM ARCHITECTURE</span>
+                <h2 class="text-4xl font-bold mb-4">BioR-Pathogen System Design</h2>
+                <p style="color:var(--bior-text-muted)" class="max-w-3xl mx-auto">End-to-end genomic surveillance platform — from sample collection through AI intelligence to actionable public health decisions</p>
             </div>
-            <div id="pillarGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"></div>
-            <!-- Data Flow -->
-            <div class="bior-panel">
-                <h3 class="text-xl font-bold mb-8 text-center" style="color:var(--bior-text-primary)">Integrated Data Architecture</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" id="dataSourceCards"></div>
-                    <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-primary)"></i></div>
-                <div class="bior-panel text-center mb-4" style="border-color:rgba(var(--bior-primary-rgb),0.3);background:rgba(var(--bior-primary-rgb),0.05)">
-                    <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-primary)">UNIFIED GENOMIC DATA LAKE</div>
-                    <div class="text-xs" style="color:var(--bior-text-muted)">Sequences + Metadata + Geolocation + Temporal + Climate + Mobility Data</div>
-                </div>
-                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-special);animation-delay:.3s"></i></div>
-                <div class="bior-panel text-center mb-4" style="border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.05)">
-                    <div class="mono text-sm mb-1 font-bold" style="color:var(--bior-special)">AI PATHOGEN INTELLIGENCE ENGINE</div>
-                    <div class="text-xs" style="color:var(--bior-text-muted)">Genomic Foundation Model | Outbreak Prediction | Mutation Impact | AMR Forecasting</div>
-                </div>
-                <div class="flex justify-center my-4"><i class="fas fa-angles-down text-3xl animate-bounce" style="color:var(--bior-info);animation-delay:.6s"></i></div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bior-card p-3 text-center" style="border-color:rgba(0,168,107,0.2)"><i class="fas fa-mosque text-lg mb-1" style="color:var(--bior-success)"></i><div class="text-xs mono" style="color:var(--bior-success)">Mass Gathering Monitor</div></div>
-                    <div class="bior-card p-3 text-center" style="border-color:rgba(59,130,246,0.2)"><i class="fas fa-paw text-lg mb-1" style="color:var(--bior-info)"></i><div class="text-xs mono" style="color:var(--bior-info)">One Health Nexus</div></div>
-                    <div class="bior-card p-3 text-center" style="border-color:rgba(245,158,11,0.2)"><i class="fas fa-shield-virus text-lg mb-1" style="color:var(--bior-warning)"></i><div class="text-xs mono" style="color:var(--bior-warning)">AMR Tracker</div></div>
-                    <div class="bior-card p-3 text-center" style="border-color:rgba(236,72,153,0.2)"><i class="fas fa-chart-bar text-lg mb-1" style="color:#ec4899"></i><div class="text-xs mono" style="color:#ec4899">Benchmark Scorecard</div></div>
+
+            <!-- Architecture Diagram -->
+            <div id="archDiagram" class="space-y-3 mb-12"></div>
+
+            <!-- Benchmark Analytical Layer (side panel) -->
+            <div id="benchmarkLayer" class="mb-12"></div>
+
+            <!-- Layer Detail Modal -->
+            <div id="layerModal" class="modal-overlay" onclick="if(event.target===this)closeLayerModal()">
+                <div class="bior-modal p-8 max-w-2xl w-full mx-4 max-h-[85vh] overflow-y-auto bior-scroll">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="layerModalTitle" class="text-2xl font-bold"></h3>
+                        <button onclick="closeLayerModal()" class="text-xl" style="color:var(--bior-text-muted)"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div id="layerModalContent"></div>
                 </div>
             </div>
+
             <!-- Partners -->
-            <div class="mt-12">
-                <h3 class="text-xl font-bold mb-6 text-center">Strategic Partners</h3>
-                <div id="partnerGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+            <div>
+                <h3 class="text-xl font-bold mb-6 text-center">Strategic Partners & Layer Mapping</h3>
+                <div id="archPartnerGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
         </div>
     </section>
@@ -760,21 +892,22 @@ function getMainHTML() {
 
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
-    let platformData, dimensionData, threatData, gapData, architectureData, roadmapData, methodologyData;
+    let platformData, dimensionData, threatData, gapData, architectureData, roadmapData, methodologyData, sysArchData;
     let radarChart = null;
     let selectedPlatforms = new Set();
 
     async function init() {
-        const [pR,dR,tR,gR,aR,rR,mR] = await Promise.all([
+        const [pR,dR,tR,gR,aR,rR,mR,sR] = await Promise.all([
             fetch('/api/platforms').then(r=>r.json()),
             fetch('/api/dimensions').then(r=>r.json()),
             fetch('/api/threats').then(r=>r.json()),
             fetch('/api/gaps').then(r=>r.json()),
             fetch('/api/architecture').then(r=>r.json()),
             fetch('/api/roadmap').then(r=>r.json()),
-            fetch('/api/methodology').then(r=>r.json())
+            fetch('/api/methodology').then(r=>r.json()),
+            fetch('/api/system-architecture').then(r=>r.json())
         ]);
-        platformData=pR; dimensionData=dR; threatData=tR; gapData=gR; architectureData=aR; roadmapData=rR; methodologyData=mR;
+        platformData=pR; dimensionData=dR; threatData=tR; gapData=gR; architectureData=aR; roadmapData=rR; methodologyData=mR; sysArchData=sR;
 
         // Default: select top 5
         const sorted = [...platformData.platforms].sort((a,b)=>sum(b.scores)-sum(a.scores));
@@ -790,7 +923,7 @@ function getMainHTML() {
     function renderAll(){
         renderDimensions(); renderPlatformSelector(); renderRadarChart(); renderRankings();
         renderHeatmap(); renderFeatureTable(); renderFullRankings();
-        renderPlatformGrid(); renderThreats(); renderGaps(); renderArchitecture();
+        renderPlatformGrid(); renderThreats(); renderGaps(); renderSystemArchitecture();
         renderRoadmap(); renderMethodology();
     }
 
@@ -1017,30 +1150,137 @@ function getMainHTML() {
         \`).join('');
     }
 
-    function renderArchitecture(){
-        document.getElementById('pillarGrid').innerHTML=architectureData.pillars.map(p=>\`
-            <div class="bior-card-strategy p-6" style="border-color:\${p.color}30">
-                <div class="card-header">
-                    <div class="card-icon" style="background:\${p.color}20"><i class="fas fa-\${p.icon}" style="color:\${p.color}"></i></div>
-                    <div><span class="mono text-[10px]" style="color:\${p.color}">PILLAR \${p.id}</span><div class="card-title" style="font-size:14px">\${p.name}</div></div>
+    function renderSystemArchitecture(){
+        const layers = sysArchData.layers;
+        const bench = sysArchData.benchmarkLayer;
+        
+        // Render layered architecture diagram
+        let diagramHTML = '';
+        layers.forEach((layer, i) => {
+            // Layer card
+            diagramHTML += \`<div class="arch-layer" style="background:\${layer.color}08;border:1px solid \${layer.color}25" onclick="openLayerDetail('\${layer.id}')">
+                <div class="arch-layer-header">
+                    <div class="arch-layer-num" style="background:\${layer.color}">\${i+1}</div>
+                    <div class="flex-1">
+                        <div class="mono text-[10px] font-bold tracking-wider" style="color:\${layer.color}">\${layer.name}</div>
+                        <div class="text-xs" style="color:var(--bior-text-muted)">\${layer.subtitle}</div>
+                    </div>
+                    <i class="fas fa-\${layer.icon} text-lg" style="color:\${layer.color}"></i>
                 </div>
-                <span class="bior-badge" style="background:\${p.color}20;color:\${p.color};border:1px solid \${p.color}40;margin-bottom:12px;display:inline-block">\${p.abbr}</span>
-                <p class="card-body">\${p.description}</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    \${layer.nodes.map(n=>\`<div class="arch-node" style="background:var(--bior-bg-card)" onclick="event.stopPropagation();openNodeDetail('\${layer.id}','\${n.id}')">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fas fa-\${n.icon} text-xs" style="color:\${n.color || layer.color}"></i>
+                            <span class="text-xs font-semibold" style="color:var(--bior-text-primary)">\${n.fullName || n.name}</span>
+                        </div>
+                        <p class="text-[10px] line-clamp-2" style="color:var(--bior-text-faint)">\${n.desc.slice(0,80)}...</p>
+                    </div>\`).join('')}
+                </div>
+            </div>\`;
+            // Flow arrow between layers
+            if (i < layers.length - 1) {
+                const flow = sysArchData.dataFlows[i];
+                diagramHTML += \`<div class="arch-flow-arrow">
+                    <i class="fas fa-arrow-down"></i>
+                    <span class="flow-label" style="color:var(--bior-text-muted)">\${flow ? flow.label : ''}</span>
+                    <i class="fas fa-arrow-down"></i>
+                </div>\`;
+            }
+        });
+        document.getElementById('archDiagram').innerHTML = diagramHTML;
+
+        // Benchmark analytical layer
+        document.getElementById('benchmarkLayer').innerHTML = \`
+            <div class="bench-layer" style="border-color:\${bench.color}60;background:\${bench.color}05">
+                <style>.bench-layer::before{background:var(--bior-bg-page);color:\${bench.color}}</style>
+                <div class="flex items-start gap-4 mb-4">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style="background:\${bench.color}15">
+                        <i class="fas fa-\${bench.icon} text-xl" style="color:\${bench.color}"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg mb-1" style="color:\${bench.color}">\${bench.name}</h3>
+                        <p class="text-sm" style="color:var(--bior-text-muted)">\${bench.description}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    \${bench.functions.map(f=>\`
+                        <div class="p-3 rounded-lg" style="background:\${bench.color}08;border:1px solid \${bench.color}20">
+                            <div class="text-xs font-semibold mb-1" style="color:\${bench.color}">\${f.name}</div>
+                            <div class="text-[10px]" style="color:var(--bior-text-muted)">\${f.desc}</div>
+                        </div>
+                    \`).join('')}
+                </div>
+                <div class="flex items-center gap-2 mt-4 text-xs" style="color:var(--bior-text-faint)">
+                    <i class="fas fa-info-circle"></i>
+                    <span>The benchmark informs design decisions and validates performance — it is not the core product, but the analytical lens that shapes every pillar.</span>
+                </div>
             </div>
-        \`).join('');
-        document.getElementById('dataSourceCards').innerHTML=architectureData.dataSources.map(ds=>\`
-            <div class="bior-card p-4 text-center" style="border-color:\${ds.color}30">
-                <i class="fas fa-\${ds.icon} text-xl mb-2" style="color:\${ds.color}"></i>
-                <div class="text-sm font-semibold" style="color:var(--bior-text-primary)">\${ds.name}</div>
-                <div class="text-[10px]" style="color:var(--bior-text-muted)">\${ds.description}</div>
-            </div>
-        \`).join('');
-        document.getElementById('partnerGrid').innerHTML=architectureData.partners.map(p=>\`
+        \`;
+
+        // Partners with layer mapping
+        document.getElementById('archPartnerGrid').innerHTML = sysArchData.partners.map(p=>\`
             <div class="bior-card p-4">
-                <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(var(--bior-primary-rgb),0.2)"><i class="fas fa-\${p.logo} text-sm" style="color:var(--bior-primary)"></i></div><div><div class="font-bold text-sm" style="color:var(--bior-primary)">\${p.name}</div><p class="text-xs" style="color:var(--bior-text-muted)">\${p.role}</p></div></div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(var(--bior-primary-rgb),0.2)">
+                        <i class="fas fa-\${p.icon} text-sm" style="color:var(--bior-primary)"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm" style="color:var(--bior-primary)">\${p.name}</div>
+                        <p class="text-xs" style="color:var(--bior-text-muted)">\${p.role}</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    \${p.layers.map(l=>{
+                        const layer = sysArchData.layers.find(x=>x.id===l);
+                        return layer ? \`<span class="text-[9px] mono px-2 py-0.5 rounded-full" style="background:\${layer.color}12;color:\${layer.color};border:1px solid \${layer.color}25">\${layer.name.split(' ')[0]}</span>\` : '';
+                    }).join('')}
+                </div>
             </div>
         \`).join('');
     }
+
+    function openLayerDetail(layerId) {
+        const layer = sysArchData.layers.find(l=>l.id===layerId);
+        if (!layer) return;
+        document.getElementById('layerModalTitle').innerHTML = \`<span style="color:\${layer.color}"><i class="fas fa-\${layer.icon} mr-2"></i>\${layer.name}</span>\`;
+        document.getElementById('layerModalContent').innerHTML = \`
+            <p class="text-sm mb-6" style="color:var(--bior-text-secondary)">\${layer.subtitle}</p>
+            <div class="space-y-4">
+                \${layer.nodes.map(n=>\`
+                    <div class="p-4 rounded-lg" style="background:\${(n.color||layer.color)}08;border:1px solid \${(n.color||layer.color)}25">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:\${(n.color||layer.color)}20">
+                                <i class="fas fa-\${n.icon}" style="color:\${n.color||layer.color}"></i>
+                            </div>
+                            <h4 class="font-bold" style="color:var(--bior-text-primary)">\${n.fullName || n.name}</h4>
+                        </div>
+                        <p class="text-sm mb-2" style="color:var(--bior-text-secondary)">\${n.desc}</p>
+                        \${n.inputs ? \`<div class="flex flex-wrap gap-1 mt-2">\${n.inputs.map(inp=>\`<span class="bior-badge bior-badge-info" style="text-transform:none">\${inp}</span>\`).join('')}</div>\` : ''}
+                    </div>
+                \`).join('')}
+            </div>
+        \`;
+        document.getElementById('layerModal').classList.add('show');
+    }
+
+    function openNodeDetail(layerId, nodeId) {
+        const layer = sysArchData.layers.find(l=>l.id===layerId);
+        if (!layer) return;
+        const node = layer.nodes.find(n=>n.id===nodeId);
+        if (!node) return;
+        document.getElementById('layerModalTitle').innerHTML = \`<span style="color:\${node.color||layer.color}"><i class="fas fa-\${node.icon} mr-2"></i>\${node.fullName || node.name}</span>\`;
+        document.getElementById('layerModalContent').innerHTML = \`
+            <div class="bior-badge mb-4" style="background:\${layer.color}15;color:\${layer.color};border:1px solid \${layer.color}30">\${layer.name}</div>
+            <p class="text-sm mb-4" style="color:var(--bior-text-secondary)">\${node.desc}</p>
+            \${node.inputs ? \`
+                <h4 class="font-semibold text-sm mb-2" style="color:var(--bior-text-primary)">Data Inputs</h4>
+                <div class="flex flex-wrap gap-2">\${node.inputs.map(inp=>\`<span class="bior-badge bior-badge-info" style="text-transform:none">\${inp}</span>\`).join('')}</div>
+            \` : ''}
+        \`;
+        document.getElementById('layerModal').classList.add('show');
+    }
+
+    function closeLayerModal(){document.getElementById('layerModal').classList.remove('show')}
 
     function renderRoadmap(){
         const phases=roadmapData.phases;
@@ -1110,7 +1350,7 @@ function getMainHTML() {
         });
     }
 
-    document.addEventListener('keydown',e=>{if(e.key==='Escape')closePlatformModal()});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePlatformModal();closeLayerModal()}});
     init();
     </script>
 </body>
